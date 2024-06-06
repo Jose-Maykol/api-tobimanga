@@ -5,13 +5,16 @@ import {
   Get,
   NotFoundException,
   Param,
+  ParseIntPipe,
   Post,
   Put,
+  Query,
 } from '@nestjs/common'
 import { Manga } from 'src/models/manga.entity'
 import { CreateMangaDto } from './dto/create-manga.dto'
 import { MangasService } from './mangas.service'
 import { UpdateMangaDto } from './dto/update-manga.dto'
+import { Pagination } from 'src/shared/pagination.interface'
 
 @Controller('mangas')
 export class MangasController {
@@ -23,10 +26,27 @@ export class MangasController {
   }
 
   @Get()
-  async findAll(): Promise<{ mangas: Manga[] }> {
-    const mangas = await this.mangasService.findAll()
-    if (mangas.length === 0) throw new NotFoundException('Aun no hay mangas')
-    return { mangas }
+  async findAll(
+    @Query('page', ParseIntPipe) page: number = 1,
+    @Query('limit', ParseIntPipe) limit: number = 10,
+  ): Promise<{ mangas: Manga[]; pagination: Pagination }> {
+    const { results, total } = await this.mangasService.findAll(page, limit)
+    if (results.length === 0) throw new NotFoundException('Aun no hay mangas')
+    const pages = Math.ceil(total / limit)
+
+    const pagination = {
+      total,
+      perPage: limit,
+      currentPage: page,
+      pages,
+      hasNextPage: page < pages,
+      hasPreviousPage: page > 1,
+    }
+
+    return {
+      mangas: results,
+      pagination,
+    }
   }
 
   @Get(':id')

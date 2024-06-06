@@ -17,8 +17,15 @@ export class MangasService {
     return this.mangasRepository.save(manga)
   }
 
-  async findAll(): Promise<Manga[]> {
-    return this.mangasRepository.find()
+  async findAll(
+    page: number = 1,
+    limit: number = 10,
+  ): Promise<{ results: Manga[]; total: number }> {
+    const [mangas, total] = await this.mangasRepository.findAndCount({
+      take: limit,
+      skip: (page - 1) * limit,
+    })
+    return { results: mangas, total }
   }
 
   async findOne(id: string): Promise<Manga> {
