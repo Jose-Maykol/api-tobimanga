@@ -45,7 +45,7 @@ class ConfigService {
       ],
       migrationsTableName: 'migration',
       migrations: ['src/migration/*.ts'],
-      ssl: false,
+      ssl: true,
       synchronize: false,
     }
   }
