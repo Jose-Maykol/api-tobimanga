@@ -1,6 +1,6 @@
+import { Manga } from '@/models/manga.entity'
 import { Injectable, NotFoundException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { Manga } from 'src/models/manga.entity'
 import { Repository } from 'typeorm'
 import { CreateMangaDto } from './dto/create-manga.dto'
 import { UpdateMangaDto } from './dto/update-manga.dto'

@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common'
-import { MangasService } from './mangas.service'
-import { MangasController } from './mangas.controller'
 import { TypeOrmModule } from '@nestjs/typeorm'
-import { Manga } from 'src/models/manga.entity'
+import { MangasService } from './mangas.service'
+import { Manga } from '@/models/manga.entity'
+import { MangasController } from './mangas.controller'
 
 @Module({
   imports: [TypeOrmModule.forFeature([Manga])],
