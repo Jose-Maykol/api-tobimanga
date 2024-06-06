@@ -1,6 +1,6 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm'
 import { Manga } from './manga.entity'
-import { Genre } from './gnre.entity'
+import { Genre } from './genre.entity'
 
 @Entity('manga_genres')
 export class MangaGenre {

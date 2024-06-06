@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
-import { Chapter } from '@/models/chapter.entity'
-import { Genre } from '@/models/gnre.entity'
-import { Manga } from '@/models/manga.entity'
-import { MangaGenre } from '@/models/mangaGenre.entity'
-import { User } from '@/models/user.entity'
-import { UserChapter } from '@/models/userChapter.entity'
-import { UserManga } from '@/models/userManga.entity'
+import { Chapter } from '../models/chapter.entity'
+import { Genre } from '../models/genre.entity'
+import { Manga } from '../models/manga.entity'
+import { MangaGenre } from '../models/mangaGenre.entity'
+import { User } from '../models/user.entity'
+import { UserChapter } from '../models/userChapter.entity'
+import { UserManga } from '../models/userManga.entity'
 import { TypeOrmModuleOptions } from '@nestjs/typeorm'
 
 require('dotenv').config()
