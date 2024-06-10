@@ -26,6 +26,11 @@ class ConfigService {
     return this
   }
 
+  public isProduction(): boolean {
+    const mode = this.getValue('NODE_ENV', false)
+    return mode != 'development'
+  }
+
   public getTypeOrmConfig(): TypeOrmModuleOptions {
     return {
       type: 'postgres',
@@ -45,7 +50,7 @@ class ConfigService {
       ],
       migrationsTableName: 'migration',
       migrations: ['src/migration/*.ts'],
-      ssl: true,
+      ssl: this.isProduction(),
       synchronize: false,
     }
   }
