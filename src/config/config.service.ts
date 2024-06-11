@@ -54,6 +54,10 @@ class ConfigService {
       synchronize: false,
     }
   }
+
+  public getSecretKey(): string {
+    return this.getValue('SECRET_KEY')
+  }
 }
 
 const configService = new ConfigService(process.env).ensureValues([
