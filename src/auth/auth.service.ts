@@ -26,8 +26,8 @@ export class AuthService {
     return false
   }
 
-  async validateToken(payload: any) {
-    return this.userRepository.findOne({ where: { email: payload.email } })
+  async validateToken(id: string): Promise<boolean> {
+    return this.userRepository.exists({ where: { id } })
   }
 
   async login(user: any) {

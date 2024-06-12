@@ -21,8 +21,8 @@ export class MangasController {
   constructor(private mangasService: MangasService) {}
 
   @Post()
-  create(@Body() createMangaDto: CreateMangaDto): Promise<Manga> {
-    return this.mangasService.create(createMangaDto)
+  create(@Body() createManga: CreateMangaDto): Promise<Manga> {
+    return this.mangasService.create(createManga)
   }
 
   @Get()

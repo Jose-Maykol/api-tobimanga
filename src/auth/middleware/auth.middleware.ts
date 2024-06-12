@@ -1,5 +1,6 @@
 import { AuthService } from '@/auth/auth.service'
 import { configService } from '@/config/config.service'
+import { Payload } from '@/shared/payload.interface'
 import {
   Inject,
   Injectable,
@@ -28,15 +29,11 @@ export class AuthMiddleware implements NestMiddleware {
     if (!token) {
       throw new UnauthorizedException('Token no proporcionado')
     }
-
-    console.log(token)
-
     try {
-      const payload = this.jwtService.verify(token, {
+      const payload: Payload = this.jwtService.verify(token, {
         secret: configService.getSecretKey(),
       })
-      console.log(payload)
-      const user = await this.authService.validateToken(payload)
+      const user = await this.authService.validateToken(payload.sub)
       const now = Date.now() / 1000
       if (now > payload.exp) {
         throw new UnauthorizedException('Token expirado')
@@ -44,10 +41,9 @@ export class AuthMiddleware implements NestMiddleware {
       if (!user) {
         throw new UnauthorizedException('No autorizado')
       }
-      req['user'] = user
+      req['user'] = payload
       next()
     } catch (error) {
-      console.log(error)
       throw new UnauthorizedException('Token no válido')
     }
   }

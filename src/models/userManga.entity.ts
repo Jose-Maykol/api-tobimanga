@@ -5,6 +5,7 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   ManyToOne,
+  JoinColumn,
 } from 'typeorm'
 import { User } from './user.entity'
 import { Manga } from './manga.entity'
@@ -15,12 +16,12 @@ export class UserManga {
   id: string
 
   @ManyToOne(() => User, (user) => user.id, { onDelete: 'CASCADE' })
-  @Column()
-  user_id: string
+  @JoinColumn({ name: 'user_id' })
+  user: User
 
   @ManyToOne(() => Manga, (manga) => manga.id, { onDelete: 'CASCADE' })
-  @Column()
-  manga_id: string
+  @JoinColumn({ name: 'manga_id' })
+  manga: Manga
 
   @Column({ nullable: true })
   rating: number
