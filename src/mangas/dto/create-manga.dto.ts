@@ -10,17 +10,14 @@ export class CreateMangaDto {
   @IsInt()
   chapters: number
 
-  @IsOptional()
   @IsInt()
-  release_year?: number
+  release_year: number
 
   @IsOptional()
   @IsUrl()
   image_url?: string
 
+  @IsOptional()
   @IsBoolean()
-  finalized: boolean
-
-  @IsInt()
-  rating: number
+  finalized?: boolean
 }

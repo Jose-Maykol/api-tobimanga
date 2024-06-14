@@ -14,7 +14,6 @@ import { AuthMiddleware } from './auth/middleware/auth.middleware'
 import { UserModule } from './user/user.module'
 import { JwtModule, JwtService } from '@nestjs/jwt'
 import { ChaptersModule } from './chapters/chapters.module'
-import { BullModule } from '@nestjs/bull'
 
 @Module({
   imports: [
@@ -27,15 +26,6 @@ import { BullModule } from '@nestjs/bull'
     MangasModule,
     UserModule,
     ChaptersModule,
-    BullModule.forRoot({
-      redis: {
-        host: 'localhost',
-        port: 6379,
-      },
-    }),
-    BullModule.registerQueue({
-      name: 'chapters-creation',
-    }),
   ],
   controllers: [AppController],
   providers: [AppService, JwtService, AuthMiddleware],

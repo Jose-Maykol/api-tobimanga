@@ -1,7 +1,6 @@
 import {
   Body,
   Controller,
-  Delete,
   Get,
   NotFoundException,
   Param,
@@ -15,14 +14,32 @@ import { CreateMangaDto } from './dto/create-manga.dto'
 import { Manga } from '../models/manga.entity'
 import { Pagination } from '../shared/pagination.interface'
 import { UpdateMangaDto } from './dto/update-manga.dto'
+import { InjectQueue } from '@nestjs/bull'
+import { Queue } from 'bull'
 
 @Controller('mangas')
 export class MangasController {
-  constructor(private mangasService: MangasService) {}
+  constructor(
+    private mangasService: MangasService,
+    @InjectQueue('chapters-creation')
+    private readonly chapterCreationQueue: Queue,
+  ) {}
 
   @Post()
-  create(@Body() createManga: CreateMangaDto): Promise<Manga> {
-    return this.mangasService.create(createManga)
+  async create(
+    @Body() createManga: CreateMangaDto,
+  ): Promise<{ message: string; manga: Manga }> {
+    const exists = await this.mangasService.exists(createManga.title)
+    if (exists) throw new NotFoundException('Este manga ya existe')
+    const manga = await this.mangasService.create(createManga)
+    await this.chapterCreationQueue.add('chapters-creation-job', {
+      mangaId: manga.id,
+      chapters: createManga.chapters,
+    })
+    return {
+      message: 'Manga creado con exito',
+      manga,
+    }
   }
 
   @Get()
@@ -51,7 +68,9 @@ export class MangasController {
 
   @Get(':id')
   findOne(@Param('id') id: string): Promise<Manga> {
-    return this.mangasService.findOne(id)
+    const manga = this.mangasService.findOne(id)
+    if (!manga) throw new NotFoundException(`Manga #${id} no encontrado`)
+    return manga
   }
 
   @Put(':id')
@@ -60,10 +79,5 @@ export class MangasController {
     @Body() updateMangaDto: UpdateMangaDto,
   ): Promise<Manga> {
     return this.mangasService.update(id, updateMangaDto)
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string): Promise<void> {
-    return this.mangasService.remove(id)
   }
 }

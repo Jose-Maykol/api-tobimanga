@@ -14,7 +14,19 @@ export class MangasService {
 
   async create(createMangaDto: CreateMangaDto): Promise<Manga> {
     const manga = this.mangasRepository.create(createMangaDto)
-    return this.mangasRepository.save(manga)
+    return this.mangasRepository.save(manga, {
+      data: {
+        id: true,
+        title: true,
+      },
+    })
+  }
+
+  async exists(title: string): Promise<boolean> {
+    const manga = await this.mangasRepository.exists({
+      where: { title },
+    })
+    return manga
   }
 
   async findAll(

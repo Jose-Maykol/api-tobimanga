@@ -5,6 +5,7 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   ManyToOne,
+  JoinColumn,
 } from 'typeorm'
 import { Manga } from './manga.entity'
 
@@ -14,8 +15,8 @@ export class Chapter {
   id: string
 
   @ManyToOne(() => Manga, (manga) => manga.id, { onDelete: 'CASCADE' })
-  @Column()
-  manga_id: string
+  @JoinColumn({ name: 'manga_id' })
+  manga: string
 
   @Column()
   chapter_number: number
