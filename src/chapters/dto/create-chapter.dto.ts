@@ -1,12 +1,9 @@
-import { IsDate, IsNumber, IsString } from 'class-validator'
+import { z } from 'zod'
 
-export class CreateChapterDto {
-  @IsString()
-  manga_id: string
+export const createChapterSchema = z.object({
+  manga_id: z.string(),
+  chapter_number: z.number().int(),
+  release_date: z.date(),
+})
 
-  @IsNumber()
-  chapter_number: number
-
-  @IsDate()
-  release_date: Date
-}
+export type CreateChapterDto = z.infer<typeof createChapterSchema>

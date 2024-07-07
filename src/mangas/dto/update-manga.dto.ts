@@ -1,5 +1,6 @@
-// src/mangas/dto/update-manga.dto.ts
-import { PartialType } from '@nestjs/mapped-types'
-import { CreateMangaDto } from './create-manga.dto'
+import { createMangaSchema } from './create-manga.dto'
+import { z } from 'zod'
 
-export class UpdateMangaDto extends PartialType(CreateMangaDto) {}
+export const updateMangaSchema = createMangaSchema.omit({ image_url: true })
+
+export type UpdateMangaDto = z.infer<typeof updateMangaSchema>

@@ -1,12 +1,9 @@
-import { IsEmail, IsString } from 'class-validator'
+import { z } from 'zod'
 
-export class RegisterUserDto {
-  @IsString()
-  username: string
+export const registerUserSchema = z.object({
+  username: z.string().min(3),
+  password: z.string().min(6),
+  email: z.string().email(),
+})
 
-  @IsString()
-  password: string
-
-  @IsEmail()
-  email: string
-}
+export type RegisterUserDto = z.infer<typeof registerUserSchema>

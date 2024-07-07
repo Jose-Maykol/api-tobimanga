@@ -1,13 +1,21 @@
-import { Body, Controller, NotFoundException, Post } from '@nestjs/common'
+import {
+  Body,
+  Controller,
+  NotFoundException,
+  Post,
+  UsePipes,
+} from '@nestjs/common'
 import { AuthService } from './auth.service'
-import { RegisterUserDto } from './dto/register-user.dto'
-import { LoginUserDto } from './dto/login-user.dto'
+import { RegisterUserDto, registerUserSchema } from './dto/register-user.dto'
+import { LoginUserDto, loginUserSchema } from './dto/login-user.dto'
+import { ZodValidationPipe } from '@/common/pipes/zod-validation.pipe'
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('login')
+  @UsePipes(new ZodValidationPipe(loginUserSchema))
   async login(@Body() loginUserDto: LoginUserDto) {
     const { email, password } = loginUserDto
     const user = await this.authService.findOne(email)
@@ -15,7 +23,10 @@ export class AuthController {
       throw new NotFoundException('Usuario no encontrado')
     }
     if (!(await this.authService.validate(user, password))) {
-      throw new NotFoundException('Contraseña incorrecta')
+      throw new NotFoundException(
+        'Contraseña incorrecta',
+        'Contraseña incorrecta',
+      )
     }
     const { access_token } = await this.authService.login(user)
     return {
@@ -31,6 +42,7 @@ export class AuthController {
   }
 
   @Post('register')
+  @UsePipes(new ZodValidationPipe(registerUserSchema))
   async register(@Body() registerUserDto: RegisterUserDto) {
     const userExists = await this.authService.findOne(registerUserDto.email)
     if (userExists) {

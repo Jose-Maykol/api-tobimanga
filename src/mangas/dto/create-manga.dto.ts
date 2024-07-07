@@ -1,23 +1,12 @@
-import { IsString, IsBoolean, IsInt, IsOptional, IsUrl } from 'class-validator'
+import { z } from 'zod'
 
-export class CreateMangaDto {
-  @IsString()
-  title: string
+export const createMangaSchema = z.object({
+  title: z.string().min(3),
+  description: z.string().min(10),
+  chapters: z.number().int(),
+  release_year: z.number().int(),
+  image_url: z.string().url().optional(),
+  finalized: z.boolean().optional(),
+})
 
-  @IsString()
-  description: string
-
-  @IsInt()
-  chapters: number
-
-  @IsInt()
-  release_year: number
-
-  @IsOptional()
-  @IsUrl()
-  image_url?: string
-
-  @IsOptional()
-  @IsBoolean()
-  finalized?: boolean
-}
+export type CreateMangaDto = z.infer<typeof createMangaSchema>

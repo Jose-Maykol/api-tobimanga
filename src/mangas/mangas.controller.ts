@@ -8,14 +8,16 @@ import {
   Post,
   Put,
   Query,
+  UsePipes,
 } from '@nestjs/common'
 import { MangasService } from './mangas.service'
-import { CreateMangaDto } from './dto/create-manga.dto'
+import { CreateMangaDto, createMangaSchema } from './dto/create-manga.dto'
 import { Manga } from '../models/manga.entity'
 import { Pagination } from '../shared/pagination.interface'
-import { UpdateMangaDto } from './dto/update-manga.dto'
+import { UpdateMangaDto, updateMangaSchema } from './dto/update-manga.dto'
 import { InjectQueue } from '@nestjs/bull'
 import { Queue } from 'bull'
+import { ZodValidationPipe } from '@/common/pipes/zod-validation.pipe'
 
 @Controller('mangas')
 export class MangasController {
@@ -26,6 +28,7 @@ export class MangasController {
   ) {}
 
   @Post()
+  @UsePipes(new ZodValidationPipe(createMangaSchema))
   async create(
     @Body() createManga: CreateMangaDto,
   ): Promise<{ message: string; manga: Manga }> {
@@ -74,6 +77,7 @@ export class MangasController {
   }
 
   @Put(':id')
+  @UsePipes(new ZodValidationPipe(updateMangaSchema))
   update(
     @Param('id') id: string,
     @Body() updateMangaDto: UpdateMangaDto,
