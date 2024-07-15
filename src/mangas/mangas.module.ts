@@ -30,7 +30,7 @@ import { configService } from '../config/config.service'
     }),
     BullBoardModule.forRoot({
       route: '/queues',
-      adapter: ExpressAdapter,
+      adapter: ExpressAdapter as any,
     }),
     BullBoardModule.forFeature({
       name: 'chapters-creation',
