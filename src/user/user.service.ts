@@ -1,4 +1,4 @@
-import { UserManga } from '@/models/userManga.entity'
+import { UserManga } from '../models/userManga.entity'
 import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'

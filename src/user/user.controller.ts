@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Post, Req } from '@nestjs/common'
 import { UserService } from './user.service'
 import { Request } from 'express'
-import { Payload } from '@/shared/payload.interface'
+import { Payload } from '../shared/payload.interface'
 import { AddMangaDto } from './dto/add-manga.dto'
 
 @Controller('user')

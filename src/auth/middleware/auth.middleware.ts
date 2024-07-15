@@ -1,6 +1,6 @@
-import { AuthService } from '@/auth/auth.service'
-import { configService } from '@/config/config.service'
-import { Payload } from '@/shared/payload.interface'
+import { AuthService } from '../auth.service'
+import { configService } from '../../config/config.service'
+import { Payload } from '../../shared/payload.interface'
 import {
   Inject,
   Injectable,
