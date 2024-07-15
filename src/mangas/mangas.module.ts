@@ -6,9 +6,9 @@ import { MangasController } from './mangas.controller'
 import { ChaptersModule } from '../chapters/chapters.module'
 import { Chapter } from '../models/chapter.entity'
 import { BullModule } from '@nestjs/bull'
-import { BullBoardModule } from '@bull-board/nestjs'
-import { ExpressAdapter } from '@bull-board/express'
-import { BullAdapter } from '@bull-board/api/bullAdapter'
+//import { BullBoardModule } from '@bull-board/nestjs'
+//import { ExpressAdapter } from '@bull-board/express'
+//import { BullAdapter } from '@bull-board/api/bullAdapter'
 import { configService } from '../config/config.service'
 
 @Module({
@@ -28,14 +28,14 @@ import { configService } from '../config/config.service'
         attempts: 2,
       },
     }),
-    BullBoardModule.forRoot({
+    /* BullBoardModule.forRoot({
       route: '/queues',
       adapter: ExpressAdapter as any,
-    }),
-    BullBoardModule.forFeature({
+    }), */
+    /* BullBoardModule.forFeature({
       name: 'chapters-creation',
       adapter: BullAdapter,
-    }),
+    }), */
     ChaptersModule,
   ],
   providers: [MangasService],
