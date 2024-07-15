@@ -17,7 +17,7 @@ import { Pagination } from '../shared/pagination.interface'
 import { UpdateMangaDto, updateMangaSchema } from './dto/update-manga.dto'
 import { InjectQueue } from '@nestjs/bull'
 import { Queue } from 'bull'
-import { ZodValidationPipe } from '@/common/pipes/zod-validation.pipe'
+import { ZodValidationPipe } from '../common/pipes/zod-validation.pipe'
 
 @Controller('mangas')
 export class MangasController {

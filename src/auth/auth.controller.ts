@@ -8,7 +8,7 @@ import {
 import { AuthService } from './auth.service'
 import { RegisterUserDto, registerUserSchema } from './dto/register-user.dto'
 import { LoginUserDto, loginUserSchema } from './dto/login-user.dto'
-import { ZodValidationPipe } from '@/common/pipes/zod-validation.pipe'
+import { ZodValidationPipe } from '../common/pipes/zod-validation.pipe'
 
 @Controller('auth')
 export class AuthController {
