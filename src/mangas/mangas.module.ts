@@ -9,14 +9,17 @@ import { BullModule } from '@nestjs/bull'
 import { BullBoardModule } from '@bull-board/nestjs'
 import { ExpressAdapter } from '@bull-board/express'
 import { BullAdapter } from '@bull-board/api/bullAdapter'
+import { configService } from '../config/config.service'
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Manga, Chapter]),
     BullModule.forRoot({
       redis: {
-        host: 'localhost',
-        port: 6379,
+        host: configService.getRedisConfig().host,
+        port: configService.getRedisConfig().port,
+        password: configService.getRedisConfig().password,
+        tls: {},
       },
     }),
     BullModule.registerQueue({

@@ -58,6 +58,14 @@ class ConfigService {
   public getSecretKey(): string {
     return this.getValue('SECRET_KEY')
   }
+
+  public getRedisConfig() {
+    return {
+      host: this.getValue('REDIS_HOST'),
+      port: parseInt(this.getValue('REDIS_PORT')),
+      password: this.getValue('REDIS_PASSWORD'),
+    }
+  }
 }
 
 const configService = new ConfigService(process.env).ensureValues([
@@ -66,6 +74,9 @@ const configService = new ConfigService(process.env).ensureValues([
   'POSTGRES_USER',
   'POSTGRES_PASSWORD',
   'POSTGRES_DATABASE',
+  'REDIS_HOST',
+  'REDIS_PORT',
+  'REDIS_PASSWORD',
 ])
 
 export { configService }

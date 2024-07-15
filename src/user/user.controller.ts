@@ -35,7 +35,6 @@ export class UserController {
     }
 
     const manga = await this.userService.addManga(user.sub, addManga.mangaId)
-    console.log(manga)
     return {
       message: 'Manga añadido',
       manga: {
