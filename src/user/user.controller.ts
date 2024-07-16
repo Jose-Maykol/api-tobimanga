@@ -3,10 +3,16 @@ import { UserService } from './user.service'
 import { Request } from 'express'
 import { Payload } from '../shared/payload.interface'
 import { AddMangaDto } from './dto/add-manga.dto'
+import { Queue } from 'bull'
+import { InjectQueue } from '@nestjs/bull'
 
 @Controller('user')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    @InjectQueue('chapters-creation')
+    private readonly chapterCreationQueue: Queue,
+  ) {}
 
   @Get('mangas')
   async getMangas(@Req() req: Request): Promise<{ mangas: any }> {
@@ -33,7 +39,10 @@ export class UserController {
         message: 'Este manga ya ha sido añadido',
       }
     }
-
+    await this.chapterCreationQueue.add('user-chapters-creation-job', {
+      userId: user.sub,
+      mangaId: addManga.mangaId,
+    })
     const manga = await this.userService.addManga(user.sub, addManga.mangaId)
     return {
       message: 'Manga añadido',
