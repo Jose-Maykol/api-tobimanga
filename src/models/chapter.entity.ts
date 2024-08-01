@@ -16,7 +16,7 @@ export class Chapter {
 
   @ManyToOne(() => Manga, (manga) => manga.id, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'manga_id' })
-  manga: string
+  manga: Manga
 
   @Column()
   chapter_number: number
