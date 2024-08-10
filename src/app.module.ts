@@ -14,6 +14,7 @@ import { AuthMiddleware } from './auth/middleware/auth.middleware'
 import { UserModule } from './user/user.module'
 import { JwtModule, JwtService } from '@nestjs/jwt'
 import { ChaptersModule } from './chapters/chapters.module'
+import { SnakeCaseMiddleware } from './common/middleware/snake-case.middleware'
 
 @Module({
   imports: [
@@ -34,6 +35,11 @@ export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(AuthMiddleware).forRoutes({
       path: '/user/*',
+      method: RequestMethod.ALL,
+    })
+
+    consumer.apply(SnakeCaseMiddleware).forRoutes({
+      path: '*',
       method: RequestMethod.ALL,
     })
   }
