@@ -29,9 +29,14 @@ export class UserChapter {
   @Column({ type: 'timestamptz', nullable: true })
   read_at: Date
 
-  @CreateDateColumn({ type: 'timestamptz' })
-  created_at: Date
+  @CreateDateColumn({
+    type: 'timestamptz',
+    name: 'created_at',
+    nullable: false,
+    default: () => 'CURRENT_TIMESTAMP',
+  })
+  createdAt: Date
 
-  @UpdateDateColumn({ type: 'timestamptz' })
-  updated_at: Date
+  @UpdateDateColumn({ type: 'timestamptz', name: 'updated_at' })
+  updatedAt: Date
 }
