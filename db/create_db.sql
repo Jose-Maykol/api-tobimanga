@@ -36,7 +36,7 @@ CREATE TYPE publication_status AS ENUM ('RELEASING', 'FINISHED', 'HIATUS', 'CANC
 -- Create the mangas table
 CREATE TABLE mangas (
     id UUID NOT NULL PRIMARY KEY DEFAULT uuid_generate_v4(),
-    id_demographic UUID NOT NULL REFERENCES demographics(id) ON DELETE CASCADE,
+    id_demography UUID NOT NULL REFERENCES demographics(id) ON DELETE CASCADE,
     original_name TEXT NOT NULL UNIQUE,
     alternative_names TEXT[],
     description TEXT NOT NULL,
@@ -57,7 +57,6 @@ CREATE INDEX mangas_updated_at_index ON mangas(updated_at);
 
 -- Create the manga_genres table
 CREATE TABLE manga_genres (
-    id UUID NOT NULL PRIMARY KEY DEFAULT uuid_generate_v4(),
     manga_id UUID NOT NULL REFERENCES mangas(id) ON DELETE CASCADE,
     genre_id UUID NOT NULL REFERENCES genres(id)
 );
@@ -111,7 +110,6 @@ CREATE INDEX user_chapters_created_at_index ON user_chapters(created_at);
 CREATE INDEX user_chapters_updated_at_index ON user_chapters(updated_at);
 
 CREATE TABLE user_favorite_mangas (
-    id UUID NOT NULL PRIMARY KEY DEFAULT uuid_generate_v4(),
     user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     manga_id UUID NOT NULL REFERENCES mangas(id) ON DELETE CASCADE,
     favorited_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
@@ -119,3 +117,19 @@ CREATE TABLE user_favorite_mangas (
 
 CREATE UNIQUE INDEX user_favorite_mangas_user_id_manga_id_index ON user_favorite_mangas(user_id, manga_id);
 CREATE INDEX user_favorite_mangas_favorited_at_index ON user_favorite_mangas(favorited_at);
+
+CREATE TABLE authors (
+    id UUID NOT NULL PRIMARY KEY DEFAULT uuid_generate_v4(),
+    name VARCHAR(100) NOT NULL UNIQUE,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMPTZ
+);
+
+CREATE UNIQUE INDEX authors_name_index ON authors(name);
+
+CREATE TABLE manga_authors (
+    manga_id UUID NOT NULL REFERENCES mangas(id) ON DELETE CASCADE,
+    author_id UUID NOT NULL REFERENCES authors(id) ON DELETE CASCADE
+);
+
+CREATE UNIQUE INDEX manga_authors_manga_id_author_id_index ON manga_authors(manga_id, author_id);

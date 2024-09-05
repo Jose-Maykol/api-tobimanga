@@ -20,15 +20,23 @@ export class User {
   @Column({ unique: true })
   email: string
 
-  @Column({ nullable: true })
-  profile_image_url: string
+  @Column({ nullable: true, name: 'profile_image' })
+  profileImage: string
 
-  @Column({ default: false })
-  administrator: boolean
+  @Column({ default: false, name: 'cover_image' })
+  coverImage: string
 
-  @CreateDateColumn({ type: 'timestamptz' })
-  created_at: Date
+  @Column({ default: false, name: 'is_administrator' })
+  isAdministrator: boolean
 
-  @UpdateDateColumn({ type: 'timestamptz' })
-  updated_at: Date
+  @CreateDateColumn({
+    type: 'timestamptz',
+    name: 'created_at',
+    nullable: false,
+    default: () => 'CURRENT_TIMESTAMP',
+  })
+  createdAt: Date
+
+  @UpdateDateColumn({ type: 'timestamptz', name: 'updated_at' })
+  updatedAt: Date
 }

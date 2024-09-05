@@ -1,17 +1,14 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from 'typeorm'
+import { Entity, Column, ManyToOne } from 'typeorm'
 import { Manga } from './manga.entity'
 import { Genre } from './genre.entity'
 
 @Entity('manga_genres')
 export class MangaGenre {
-  @PrimaryGeneratedColumn('uuid')
-  id: string
-
   @ManyToOne(() => Manga, (manga) => manga.id, { onDelete: 'CASCADE' })
-  @Column()
-  manga_id: string
+  @Column({ name: 'manga_id' })
+  manga: Manga
 
   @ManyToOne(() => Genre, (genre) => genre.id, { onDelete: 'CASCADE' })
-  @Column()
-  genre_id: string
+  @Column({ name: 'genre_id' })
+  genre: Genre
 }
