@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Body,
   Controller,
   Get,
@@ -14,34 +15,23 @@ import { MangasService } from './mangas.service'
 import { CreateMangaDto, createMangaSchema } from './dto/create-manga.dto'
 import { Manga } from '../models/manga.entity'
 import { Pagination } from '../shared/pagination.interface'
-import { UpdateMangaDto, updateMangaSchema } from './dto/update-manga.dto'
-import { InjectQueue } from '@nestjs/bull'
-import { Queue } from 'bull'
 import { ZodValidationPipe } from '../common/pipes/zod-validation.pipe'
 
 @Controller('mangas')
 export class MangasController {
-  constructor(
-    private mangasService: MangasService,
-    @InjectQueue('chapters-creation')
-    private readonly chapterCreationQueue: Queue,
-  ) {}
+  constructor(private mangasService: MangasService) {}
 
   @Post()
   @UsePipes(new ZodValidationPipe(createMangaSchema))
   async create(
     @Body() createManga: CreateMangaDto,
-  ): Promise<{ message: string; manga: Manga }> {
-    const exists = await this.mangasService.exists(createManga.title)
-    if (exists) throw new NotFoundException('Este manga ya existe')
-    const manga = await this.mangasService.create(createManga)
-    await this.chapterCreationQueue.add('chapters-creation-job', {
-      mangaId: manga.id,
-      chapters: createManga.chapters,
-    })
-    return {
-      message: 'Manga creado con exito',
-      manga,
+  ): Promise<{ message: string; manga: { id: string; name: string } }> {
+    console.log('createManga', createManga)
+    try {
+      const manga = await this.mangasService.createManga(createManga)
+      return { message: 'Manga creado exitosamente', manga: manga }
+    } catch (error) {
+      throw new BadRequestException(error.message)
     }
   }
 
@@ -76,12 +66,12 @@ export class MangasController {
     return manga
   }
 
-  @Put(':id')
+  /* @Put(':id')
   @UsePipes(new ZodValidationPipe(updateMangaSchema))
   update(
     @Param('id') id: string,
     @Body() updateMangaDto: UpdateMangaDto,
   ): Promise<Manga> {
     return this.mangasService.update(id, updateMangaDto)
-  }
+  } */
 }
