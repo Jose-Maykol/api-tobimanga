@@ -23,14 +23,13 @@ export class UserService {
       select: {
         id: true,
         rating: true,
-        favorite: true,
         manga: {
           id: true,
-          title: true,
+          originalName: true,
           chapters: true,
-          image_url: true,
-          created_at: true,
-          updated_at: true,
+          coverImage: true,
+          createdAt: true,
+          updatedAt: true,
         },
       },
     })

@@ -1,9 +1,21 @@
-import { Entity, UpdateDateColumn, ManyToOne, JoinColumn } from 'typeorm'
+import {
+  Entity,
+  UpdateDateColumn,
+  ManyToOne,
+  JoinColumn,
+  PrimaryColumn,
+} from 'typeorm'
 import { User } from './user.entity'
 import { Manga } from './manga.entity'
 
 @Entity('user_mangas')
-export class UserManga {
+export class UserFavoriteManga {
+  @PrimaryColumn({ name: 'user_id' })
+  userId: number
+
+  @PrimaryColumn({ name: 'manga_id' })
+  mangaId: number
+
   @ManyToOne(() => User, (user) => user.id, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'user_id' })
   user: User

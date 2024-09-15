@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
+import { UserFavoriteManga } from '@/models/userFavoriteManga.entity'
 import { Chapter } from '../models/chapter.entity'
 import { Genre } from '../models/genre.entity'
 import { Manga } from '../models/manga.entity'
@@ -7,6 +8,9 @@ import { User } from '../models/user.entity'
 import { UserChapter } from '../models/userChapter.entity'
 import { UserManga } from '../models/userManga.entity'
 import { TypeOrmModuleOptions } from '@nestjs/typeorm'
+import { Demography } from '@/models/demography.entity'
+import { Author } from '@/models/author.entity'
+import { MangaAuthor } from '@/models/mangaAuthor.entity'
 
 require('dotenv').config()
 
@@ -44,9 +48,13 @@ class ConfigService {
         Genre,
         Manga,
         MangaGenre,
+        MangaAuthor,
         Chapter,
         UserManga,
         UserChapter,
+        UserFavoriteManga,
+        Demography,
+        Author,
       ],
       migrationsTableName: 'migration',
       migrations: ['src/migration/*.ts'],
