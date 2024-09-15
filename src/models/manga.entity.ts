@@ -9,7 +9,7 @@ import {
 import { Demography } from './demography.entity'
 
 export enum PublicationStatus {
-  RELEASING = 'RELEASING',
+  ONGOING = 'ONGOING',
   FINISHED = 'FINISHED',
   HIATUS = 'HIATUS',
   CANCELLED = 'CANCELLED',
@@ -31,11 +31,11 @@ export class Manga {
   @Column({ unique: true, name: 'original_name', nullable: false })
   originalName: string
 
-  @Column({ name: 'alternative_names' })
+  @Column({ name: 'alternative_names', type: 'simple-array' })
   alternativeNames: string[]
 
   @Column({ nullable: false })
-  description: string
+  sinopsis: string
 
   @Column({ nullable: false })
   chapters: number

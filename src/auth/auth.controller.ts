@@ -35,7 +35,7 @@ export class AuthController {
         id: user.id,
         email: user.email,
         username: user.username,
-        profile_image: user.profile_image_url,
+        profile_image: user.profileImage,
       },
       access_token,
     }
