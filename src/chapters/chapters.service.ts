@@ -13,19 +13,31 @@ export class ChaptersService {
   ) {}
 
   async createChapters(mangaId: string, chapters: number) {
-    await this.dataSource
-      .createQueryBuilder()
-      .insert()
-      .into(Chapter)
-      .values([
-        ...Array.from({ length: chapters }).map((_, index) => ({
+    const queryRunner = this.dataSource.createQueryRunner()
+    await queryRunner.startTransaction()
+
+    try {
+      const chaptersValues = Array.from({ length: chapters }).map(
+        (_, index) => ({
           manga: {
             id: mangaId,
           },
           chapter_number: index + 1,
-        })),
-      ])
-      .execute()
+        }),
+      )
+      await queryRunner.manager
+        .createQueryBuilder()
+        .insert()
+        .into(Chapter)
+        .values(chaptersValues)
+        .execute()
+      await queryRunner.commitTransaction()
+    } catch (error) {
+      await queryRunner.rollbackTransaction()
+      throw new Error('Error creando los capitulos')
+    } finally {
+      await queryRunner.release()
+    }
   }
 
   async createUserChapters(chapters: { mangaId: string }[], userId: string) {
