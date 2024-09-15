@@ -15,6 +15,7 @@ import { UserModule } from './user/user.module'
 import { JwtModule, JwtService } from '@nestjs/jwt'
 import { ChaptersModule } from './chapters/chapters.module'
 import { SnakeCaseMiddleware } from './common/middleware/snake-case.middleware'
+import { CloudinaryModule } from './cloudinary/cloudinary.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { SnakeCaseMiddleware } from './common/middleware/snake-case.middleware'
     MangasModule,
     UserModule,
     ChaptersModule,
+    CloudinaryModule,
   ],
   controllers: [AppController],
   providers: [AppService, JwtService, AuthMiddleware],
