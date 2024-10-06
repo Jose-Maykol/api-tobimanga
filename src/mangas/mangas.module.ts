@@ -7,6 +7,7 @@ import { ChaptersModule } from '../chapters/chapters.module'
 import { Chapter } from '../models/chapter.entity'
 import { BullModule } from '@nestjs/bull'
 import { configService } from '../config/config.service'
+import { CloudinaryModule } from '@/cloudinary/cloudinary.module'
 
 /* import { BullBoardModule } from '@bull-board/nestjs'
 import { ExpressAdapter } from '@bull-board/express'
@@ -38,6 +39,7 @@ import { BullAdapter } from '@bull-board/api/bullAdapter' */
       adapter: BullAdapter,
     }), */
     ChaptersModule,
+    CloudinaryModule,
   ],
   providers: [MangasService],
   controllers: [MangasController],

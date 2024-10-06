@@ -36,7 +36,7 @@ export class AuthorsService {
   }
 
   public async getAuthors(): Promise<{ id: string; name: string }[]> {
-    return this.authorsRepository.find({ select: ['id', 'name'] })
+    return await this.authorsRepository.find({ select: ['id', 'name'] })
   }
 
   private async exists(name: string): Promise<boolean> {
