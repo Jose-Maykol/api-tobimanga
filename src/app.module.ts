@@ -18,6 +18,7 @@ import { SnakeCaseMiddleware } from './common/middleware/snake-case.middleware'
 import { CloudinaryModule } from './cloudinary/cloudinary.module'
 import { GenresModule } from './genres/genres.module'
 import { AuthorsModule } from './authors/authors.module';
+import { DemographicsModule } from './demographics/demographics.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { AuthorsModule } from './authors/authors.module';
     CloudinaryModule,
     GenresModule,
     AuthorsModule,
+    DemographicsModule,
   ],
   controllers: [AppController],
   providers: [AppService, JwtService, AuthMiddleware],
