@@ -3,16 +3,10 @@ import { UserService } from './user.service'
 import { Request } from 'express'
 import { Payload } from '../shared/payload.interface'
 import { AddMangaDto } from './dto/add-manga.dto'
-import { Queue } from 'bull'
-import { InjectQueue } from '@nestjs/bull'
 
 @Controller('user')
 export class UserController {
-  constructor(
-    private readonly userService: UserService,
-    @InjectQueue('chapters-creation')
-    private readonly chapterCreationQueue: Queue,
-  ) {}
+  constructor(private readonly userService: UserService) {}
 
   @Get('mangas')
   async getMangas(@Req() req: Request): Promise<{ mangas: any }> {
@@ -23,7 +17,7 @@ export class UserController {
     }
   }
 
-  @Post('mangas')
+  /* @Post('mangas')
   async addManga(
     @Body() addManga: AddMangaDto,
     @Req() req: Request,
@@ -50,5 +44,5 @@ export class UserController {
         id: manga.id,
       },
     }
-  }
+  } */
 }

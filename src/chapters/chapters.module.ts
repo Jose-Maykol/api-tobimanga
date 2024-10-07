@@ -2,7 +2,6 @@ import { Module } from '@nestjs/common'
 import { ChaptersService } from './chapters.service'
 import { Chapter } from '../models/chapter.entity'
 import { TypeOrmModule } from '@nestjs/typeorm'
-import { ChapterProcessor } from './chapters.processor'
 import { UserChapter } from '../models/userChapter.entity'
 
 @Module({
@@ -10,7 +9,7 @@ import { UserChapter } from '../models/userChapter.entity'
     TypeOrmModule.forFeature([Chapter]),
     TypeOrmModule.forFeature([UserChapter]),
   ],
-  providers: [ChaptersService, ChapterProcessor],
+  providers: [ChaptersService],
   exports: [ChaptersService],
 })
 export class ChaptersModule {}

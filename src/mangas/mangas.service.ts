@@ -27,21 +27,12 @@ export class MangasService {
       throw new Error('Este manga ya existe')
     }
 
-    const uploadedCoverImage = await this.cloudinaryService.uploadFileFromJson(
-      manga.coverImage,
-    )
-
-    const uploadedBannerImage = await this.cloudinaryService.uploadFileFromJson(
-      manga.bannerImage,
-    )
-
-    console.log('uploadedBannerImage', uploadedBannerImage)
-    console.log('uploadedCoverImage', uploadedCoverImage)
+    const { coverImage, bannerImage } = await this.uploadImages(manga)
 
     const newManga = {
       ...manga,
-      coverImage: uploadedCoverImage.secure_url,
-      bannerImage: uploadedBannerImage.secure_url,
+      coverImage: coverImage,
+      bannerImage: bannerImage,
     }
 
     const queryRunner = this.dataSource.createQueryRunner()
@@ -104,6 +95,27 @@ export class MangasService {
       throw new NotFoundException(`Manga #${id} not found`)
     }
     return manga
+  }
+
+  async uploadImages(
+    manga: CreateMangaDto,
+  ): Promise<{ coverImage: string; bannerImage: string }> {
+    try {
+      const [uploadedCoverImage, uploadedBannerImage] = await Promise.all([
+        this.cloudinaryService.uploadFileFromJson(manga.coverImage),
+        this.cloudinaryService.uploadFileFromJson(manga.bannerImage),
+      ])
+
+      console.log('uploadedBannerImage', uploadedBannerImage)
+      console.log('uploadedCoverImage', uploadedCoverImage)
+
+      return {
+        coverImage: uploadedCoverImage.secure_url,
+        bannerImage: uploadedBannerImage.secure_url,
+      }
+    } catch (error) {
+      throw new Error('Error subiendo las imágenes')
+    }
   }
 
   /*  async update(id: string, updateMangaDto: UpdateMangaDto): Promise<Manga> {

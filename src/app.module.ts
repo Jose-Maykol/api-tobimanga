@@ -17,8 +17,8 @@ import { ChaptersModule } from './chapters/chapters.module'
 import { SnakeCaseMiddleware } from './common/middleware/snake-case.middleware'
 import { CloudinaryModule } from './cloudinary/cloudinary.module'
 import { GenresModule } from './genres/genres.module'
-import { AuthorsModule } from './authors/authors.module';
-import { DemographicsModule } from './demographics/demographics.module';
+import { AuthorsModule } from './authors/authors.module'
+import { DemographicsModule } from './demographics/demographics.module'
 
 @Module({
   imports: [
