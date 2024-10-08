@@ -1,7 +1,7 @@
 import { Chapter } from '../models/chapter.entity'
 import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { DataSource, Repository } from 'typeorm'
+import { DataSource, QueryRunner, Repository } from 'typeorm'
 import { UserChapter } from '../models/userChapter.entity'
 
 @Injectable()
@@ -12,31 +12,34 @@ export class ChaptersService {
     private readonly dataSource: DataSource,
   ) {}
 
-  async createChapters(mangaId: string, chapters: number) {
-    const queryRunner = this.dataSource.createQueryRunner()
-    await queryRunner.startTransaction()
-
+  async createChapters(
+    mangaId: string,
+    chapters: number,
+    queryRunner: QueryRunner,
+  ) {
+    console.log({
+      mangaId,
+      chapters,
+    })
     try {
       const chaptersValues = Array.from({ length: chapters }).map(
         (_, index) => ({
           manga: {
             id: mangaId,
           },
-          chapter_number: index + 1,
+          chapterNumber: index + 1,
         }),
       )
+      console.log('chaptersValues', chaptersValues)
       await queryRunner.manager
         .createQueryBuilder()
         .insert()
         .into(Chapter)
         .values(chaptersValues)
         .execute()
-      await queryRunner.commitTransaction()
     } catch (error) {
-      await queryRunner.rollbackTransaction()
+      console.log(error)
       throw new Error('Error creando los capitulos')
-    } finally {
-      await queryRunner.release()
     }
   }
 

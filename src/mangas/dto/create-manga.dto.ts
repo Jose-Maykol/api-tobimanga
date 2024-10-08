@@ -66,6 +66,7 @@ export const createMangaSchema = z.object({
   }),
   publicationStatus: z.nativeEnum(PublicationStatus),
   authors: z.array(z.string()),
+  demographic: z.string(),
   genres: z.array(
     z.string({
       message: 'El género debe ser un string',

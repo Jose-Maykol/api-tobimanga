@@ -29,11 +29,18 @@ export class MangasService {
 
     const { coverImage, bannerImage } = await this.uploadImages(manga)
 
+    console.log('coverImage', coverImage)
+
+    const { authors, genres, ...mangaData } = manga
+
     const newManga = {
-      ...manga,
+      ...mangaData,
       coverImage: coverImage,
       bannerImage: bannerImage,
+      demographic: { id: manga.demographic },
     }
+
+    console.log('newManga', newManga)
 
     const queryRunner = this.dataSource.createQueryRunner()
 
@@ -48,7 +55,14 @@ export class MangasService {
         },
       })
 
-      await this.chaptersService.createChapters(savedManga.id, manga.chapters)
+      // await this.authorsService.createAuthors(savedManga.id, manga.authors)
+      // await this.genresService.createGenres(savedManga.id, manga.genres)
+
+      await this.chaptersService.createChapters(
+        savedManga.id,
+        manga.chapters,
+        queryRunner,
+      )
       await queryRunner.commitTransaction()
 
       return {
@@ -57,6 +71,7 @@ export class MangasService {
       }
     } catch (error) {
       await queryRunner.rollbackTransaction()
+      console.log('error', error)
       throw new Error('Error creando el manga')
     } finally {
       await queryRunner.release()
