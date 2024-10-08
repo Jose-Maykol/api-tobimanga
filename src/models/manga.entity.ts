@@ -5,6 +5,7 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   ManyToOne,
+  JoinColumn,
 } from 'typeorm'
 import { Demography } from './demography.entity'
 
@@ -22,11 +23,11 @@ export class Manga {
   @PrimaryGeneratedColumn('uuid')
   id: string
 
-  @ManyToOne(() => Demography, (demography) => demography.id, {
+  @ManyToOne(() => Demography, (demographic) => demographic.id, {
     onDelete: 'CASCADE',
   })
-  @Column({ name: 'demographic_id', nullable: false })
-  demograhic: string
+  @JoinColumn({ name: 'demographic_id' })
+  demographic: Demography
 
   @Column({ unique: true, name: 'original_name', nullable: false })
   originalName: string
