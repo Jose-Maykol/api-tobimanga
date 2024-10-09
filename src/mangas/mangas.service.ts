@@ -1,17 +1,23 @@
 import { Manga } from '../models/manga.entity'
 import { Injectable, NotFoundException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { DataSource, Repository } from 'typeorm'
+import { DataSource, QueryRunner, Repository } from 'typeorm'
 import { CreateMangaDto } from './dto/create-manga.dto'
-import { UpdateMangaDto } from './dto/update-manga.dto'
+/* import { UpdateMangaDto } from './dto/update-manga.dto' */
 import { CloudinaryService } from '@/cloudinary/cloudinary.service'
 import { ChaptersService } from '@/chapters/chapters.service'
+import { MangaGenre } from '@/models/mangaGenre.entity'
+import { MangaAuthor } from '@/models/mangaAuthor.entity'
 
 @Injectable()
 export class MangasService {
   constructor(
     @InjectRepository(Manga)
     private readonly mangasRepository: Repository<Manga>,
+    @InjectRepository(MangaAuthor)
+    private readonly mangaAuthorRepository: Repository<MangaAuthor>,
+    @InjectRepository(MangaGenre)
+    private readonly mangaGenreRepository: Repository<MangaGenre>,
     private readonly chaptersService: ChaptersService,
     private readonly cloudinaryService: CloudinaryService,
     private readonly dataSource: DataSource,
@@ -55,14 +61,15 @@ export class MangasService {
         },
       })
 
-      // await this.authorsService.createAuthors(savedManga.id, manga.authors)
-      // await this.genresService.createGenres(savedManga.id, manga.genres)
-
       await this.chaptersService.createChapters(
         savedManga.id,
         manga.chapters,
         queryRunner,
       )
+
+      await this.createMangaAuthors(savedManga.id, authors, queryRunner)
+      await this.createMangaGenres(savedManga.id, genres, queryRunner)
+
       await queryRunner.commitTransaction()
 
       return {
@@ -76,6 +83,30 @@ export class MangasService {
     } finally {
       await queryRunner.release()
     }
+  }
+
+  async createMangaAuthors(
+    id: string,
+    authors: string[],
+    queryRunner: QueryRunner,
+  ): Promise<void> {
+    const mangaAuthors = authors.map((author) => ({
+      mangaId: id,
+      authorId: author,
+    }))
+    await queryRunner.manager.getRepository(MangaAuthor).save(mangaAuthors)
+  }
+
+  async createMangaGenres(
+    id: string,
+    genres: string[],
+    queryRunner: QueryRunner,
+  ): Promise<void> {
+    const mangaGenres = genres.map((genre) => ({
+      mangaId: id,
+      genreId: genre,
+    }))
+    await queryRunner.manager.getRepository(MangaGenre).save(mangaGenres)
   }
 
   private async exists(title: string): Promise<boolean> {

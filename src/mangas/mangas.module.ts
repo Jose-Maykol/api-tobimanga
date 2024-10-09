@@ -6,6 +6,8 @@ import { MangasController } from './mangas.controller'
 import { ChaptersModule } from '../chapters/chapters.module'
 import { Chapter } from '../models/chapter.entity'
 import { CloudinaryModule } from '@/cloudinary/cloudinary.module'
+import { MangaAuthor } from '@/models/mangaAuthor.entity'
+import { MangaGenre } from '@/models/mangaGenre.entity'
 
 /* import { BullBoardModule } from '@bull-board/nestjs'
 import { ExpressAdapter } from '@bull-board/express'
@@ -13,7 +15,7 @@ import { BullAdapter } from '@bull-board/api/bullAdapter' */
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Manga, Chapter]),
+    TypeOrmModule.forFeature([Manga, Chapter, MangaAuthor, MangaGenre]),
     ChaptersModule,
     CloudinaryModule,
   ],
