@@ -35,8 +35,6 @@ export class MangasService {
 
     const { coverImage, bannerImage } = await this.uploadImages(manga)
 
-    console.log('coverImage', coverImage)
-
     const { authors, genres, ...mangaData } = manga
 
     const newManga = {
@@ -46,20 +44,22 @@ export class MangasService {
       demographic: { id: manga.demographic },
     }
 
-    console.log('newManga', newManga)
-
     const queryRunner = this.dataSource.createQueryRunner()
 
     await queryRunner.startTransaction()
 
     try {
-      const mangaEntity = this.mangasRepository.create(newManga)
-      const savedManga = await this.mangasRepository.save(mangaEntity, {
-        data: {
-          id: true,
-          originalName: true,
-        },
-      })
+      const mangaEntity = await queryRunner.manager
+        .getRepository(Manga)
+        .create(newManga)
+      const savedManga = await queryRunner.manager
+        .getRepository(Manga)
+        .save(mangaEntity, {
+          data: {
+            id: true,
+            originalName: true,
+          },
+        })
 
       await this.chaptersService.createChapters(
         savedManga.id,
@@ -128,19 +128,48 @@ export class MangasService {
         originalName: true,
         chapters: true,
         coverImage: true,
-        bannerImage: true,
         rating: true,
       },
     })
     return { results: mangas, total }
   }
 
-  async findOne(id: string): Promise<Manga> {
-    const manga = await this.mangasRepository.findOne({ where: { id } })
+  async findOne(
+    id: string,
+  ): Promise<Manga & { authors: string[]; genres: string[] }> {
+    const manga = await this.mangasRepository.findOne({
+      where: { id },
+      select: {
+        id: true,
+        originalName: true,
+        alternativeNames: true,
+        sinopsis: true,
+        chapters: true,
+        releaseDate: true,
+        coverImage: true,
+        bannerImage: true,
+        publicationStatus: true,
+        rating: true,
+      },
+    })
     if (!manga) {
       throw new NotFoundException(`Manga #${id} not found`)
     }
-    return manga
+    const mangaAuthors = await this.mangaAuthorRepository
+      .createQueryBuilder('mangaAuthor')
+      .innerJoinAndSelect('mangaAuthor.author', 'author')
+      .where('mangaAuthor.mangaId = :id', { id })
+      .select(['mangaAuthor.authorId', 'author.name'])
+      .getMany()
+    const authorNames = mangaAuthors.map((author) => author.author.name)
+    const mangaGenres = await this.mangaGenreRepository
+      .createQueryBuilder('mangaGenre')
+      .innerJoinAndSelect('mangaGenre.genre', 'genre')
+      .where('mangaGenre.mangaId = :id', { id })
+      .select(['mangaGenre.genreId', 'genre.name'])
+      .getMany()
+    const genres = mangaGenres.map((genre) => genre.genre.name)
+    return { ...manga, authors: authorNames, genres: genres }
   }
 
   async uploadImages(
@@ -151,9 +180,6 @@ export class MangasService {
         this.cloudinaryService.uploadFileFromJson(manga.coverImage),
         this.cloudinaryService.uploadFileFromJson(manga.bannerImage),
       ])
-
-      console.log('uploadedBannerImage', uploadedBannerImage)
-      console.log('uploadedCoverImage', uploadedCoverImage)
 
       return {
         coverImage: uploadedCoverImage.secure_url,
