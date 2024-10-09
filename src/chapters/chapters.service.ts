@@ -17,10 +17,6 @@ export class ChaptersService {
     chapters: number,
     queryRunner: QueryRunner,
   ) {
-    console.log({
-      mangaId,
-      chapters,
-    })
     try {
       const chaptersValues = Array.from({ length: chapters }).map(
         (_, index) => ({
