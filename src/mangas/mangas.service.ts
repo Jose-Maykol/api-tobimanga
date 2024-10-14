@@ -155,21 +155,29 @@ export class MangasService {
     if (!manga) {
       throw new NotFoundException(`Manga #${id} not found`)
     }
+    const mangaAuthors = await this.getMangaAuthors(id)
+    const mangaGenres = await this.getMangaGenres(id)
+    return { ...manga, authors: mangaAuthors, genres: mangaGenres }
+  }
+
+  async getMangaAuthors(id: string): Promise<string[]> {
     const mangaAuthors = await this.mangaAuthorRepository
       .createQueryBuilder('mangaAuthor')
       .innerJoinAndSelect('mangaAuthor.author', 'author')
       .where('mangaAuthor.mangaId = :id', { id })
       .select(['mangaAuthor.authorId', 'author.name'])
       .getMany()
-    const authorNames = mangaAuthors.map((author) => author.author.name)
+    return mangaAuthors.map((author) => author.author.name)
+  }
+
+  async getMangaGenres(id: string): Promise<string[]> {
     const mangaGenres = await this.mangaGenreRepository
       .createQueryBuilder('mangaGenre')
       .innerJoinAndSelect('mangaGenre.genre', 'genre')
       .where('mangaGenre.mangaId = :id', { id })
       .select(['mangaGenre.genreId', 'genre.name'])
       .getMany()
-    const genres = mangaGenres.map((genre) => genre.genre.name)
-    return { ...manga, authors: authorNames, genres: genres }
+    return mangaGenres.map((genre) => genre.genre.name)
   }
 
   async uploadImages(
@@ -188,6 +196,36 @@ export class MangasService {
     } catch (error) {
       throw new Error('Error subiendo las imágenes')
     }
+  }
+
+  async findOneBySlug(
+    slug: string,
+  ): Promise<Manga & { authors: string[]; genres: string[] }> {
+    const title = slug.replace(/-/g, ' ')
+    const manga = await this.mangasRepository
+      .createQueryBuilder('manga')
+      .innerJoinAndSelect('manga.demographic', 'demographic')
+      .where('LOWER(manga.originalName) = LOWER(:title)', { title }) // Comparación insensible a mayúsculas/minúsculas
+      .select([
+        'manga.id',
+        'manga.originalName',
+        'manga.alternativeNames',
+        'manga.sinopsis',
+        'manga.chapters',
+        'manga.releaseDate',
+        'manga.coverImage',
+        'manga.bannerImage',
+        'manga.publicationStatus',
+        'manga.rating',
+        'demographic.name',
+      ])
+      .getOne()
+    if (!manga) {
+      throw new NotFoundException(`Manga ${title} no encontrado`)
+    }
+    const mangaAuthors = await this.getMangaAuthors(manga.id)
+    const mangaGenres = await this.getMangaGenres(manga.id)
+    return { ...manga, authors: mangaAuthors, genres: mangaGenres }
   }
 
   /*  async update(id: string, updateMangaDto: UpdateMangaDto): Promise<Manga> {
