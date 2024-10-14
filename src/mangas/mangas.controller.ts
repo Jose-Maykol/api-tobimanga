@@ -59,10 +59,16 @@ export class MangasController {
     }
   }
 
-  @Get(':id')
+  /* @Get(':id')
   findOne(@Param('id') id: string): Promise<Manga> {
     const manga = this.mangasService.findOne(id)
     if (!manga) throw new NotFoundException(`Manga #${id} no encontrado`)
+    return manga
+  } */
+
+  @Get(':slug')
+  findOneBySlug(@Param('slug') slug: string): Promise<Manga> {
+    const manga = this.mangasService.findOneBySlug(slug)
     return manga
   }
 
