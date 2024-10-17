@@ -1,8 +1,17 @@
-import { Body, Controller, Get, Post, Req } from '@nestjs/common'
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Get,
+  Post,
+  Req,
+  UsePipes,
+} from '@nestjs/common'
 import { UserService } from './user.service'
 import { Request } from 'express'
 import { Payload } from '../shared/payload.interface'
-import { AddMangaDto } from './dto/add-manga.dto'
+import { FollowMangaDto, followMangaSchema } from './dto/follow-manga.dto'
+import { ZodValidationPipe } from '@/common/pipes/zod-validation.pipe'
 
 @Controller('user')
 export class UserController {
@@ -17,32 +26,24 @@ export class UserController {
     }
   }
 
-  /* @Post('mangas')
-  async addManga(
-    @Body() addManga: AddMangaDto,
+  @Post('mangas')
+  @UsePipes(new ZodValidationPipe(followMangaSchema))
+  async followManga(
+    @Body() followManga: FollowMangaDto,
     @Req() req: Request,
-  ): Promise<{ message: string; manga?: { id: string } }> {
+  ): Promise<{ message: string; manga: { id: string } }> {
     const user: Payload = req['user']
-    const alreadyAdded = await this.userService.alreadyAdded(
-      user.sub,
-      addManga.mangaId,
-    )
-
-    if (alreadyAdded) {
+    try {
+      const manga = await this.userService.followManga(
+        user.sub,
+        followManga.manga.id,
+      )
       return {
-        message: 'Este manga ya ha sido añadido',
+        message: 'Manga añadido',
+        manga,
       }
+    } catch (error) {
+      throw new BadRequestException(error.message)
     }
-    await this.chapterCreationQueue.add('user-chapters-creation-job', {
-      userId: user.sub,
-      mangaId: addManga.mangaId,
-    })
-    const manga = await this.userService.addManga(user.sub, addManga.mangaId)
-    return {
-      message: 'Manga añadido',
-      manga: {
-        id: manga.id,
-      },
-    }
-  } */
+  }
 }
