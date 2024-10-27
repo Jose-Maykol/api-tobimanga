@@ -9,6 +9,7 @@ import {
   Post,
   /*   Put, */
   Query,
+  Req,
   UsePipes,
 } from '@nestjs/common'
 import { MangasService } from './mangas.service'
@@ -16,6 +17,7 @@ import { CreateMangaDto, createMangaSchema } from './dto/create-manga.dto'
 import { Manga } from '../models/manga.entity'
 import { Pagination } from '../shared/pagination.interface'
 import { ZodValidationPipe } from '../common/pipes/zod-validation.pipe'
+import { Payload } from '@/shared/payload.interface'
 
 @Controller('mangas')
 export class MangasController {
@@ -67,8 +69,21 @@ export class MangasController {
   } */
 
   @Get(':slug')
-  findOneBySlug(@Param('slug') slug: string): Promise<Manga> {
-    const manga = this.mangasService.findOneBySlug(slug)
+  async findOneBySlug(@Param('slug') slug: string, @Req() req: Request) {
+    const user: Payload = req['user']
+    console.log('user', user)
+    const manga = await this.mangasService.findOneBySlug(slug)
+
+    if (user) {
+      const userMangaChapters = await this.mangasService.findUserMangaChapters(
+        user.sub,
+        manga.id,
+      )
+      return {
+        manga: manga,
+        chapters: userMangaChapters,
+      }
+    }
     return manga
   }
 

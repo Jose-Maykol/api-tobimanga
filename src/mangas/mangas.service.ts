@@ -8,6 +8,7 @@ import { CloudinaryService } from '@/cloudinary/cloudinary.service'
 import { ChaptersService } from '@/chapters/chapters.service'
 import { MangaGenre } from '@/models/mangaGenre.entity'
 import { MangaAuthor } from '@/models/mangaAuthor.entity'
+import { Chapter } from '@/models/chapter.entity'
 
 @Injectable()
 export class MangasService {
@@ -205,7 +206,7 @@ export class MangasService {
     const manga = await this.mangasRepository
       .createQueryBuilder('manga')
       .innerJoinAndSelect('manga.demographic', 'demographic')
-      .where('LOWER(manga.originalName) = LOWER(:title)', { title }) // Comparación insensible a mayúsculas/minúsculas
+      .where('LOWER(manga.originalName) = LOWER(:title)', { title })
       .select([
         'manga.id',
         'manga.originalName',
@@ -226,6 +227,35 @@ export class MangasService {
     const mangaAuthors = await this.getMangaAuthors(manga.id)
     const mangaGenres = await this.getMangaGenres(manga.id)
     return { ...manga, authors: mangaAuthors, genres: mangaGenres }
+  }
+
+  async findUserMangaChapters(
+    userId: string,
+    mangaId: string,
+  ): Promise<{ chapterId: string; chapterNumber: number; isRead: boolean }[]> {
+    const userMangaChapters = await this.mangasRepository
+      .createQueryBuilder('chapter')
+      .from(Chapter, 'chapters')
+      .leftJoinAndSelect(
+        'user_chapters',
+        'uc',
+        'uc.chapter_id = chapters.id AND uc.user_id = :userId',
+        { userId },
+      )
+      .where('chapters.manga_id = :mangaId', { mangaId })
+      .select([
+        'chapters.id AS chapter_id', // ID del capítulo
+        'chapters.chapter_number AS chapter_number', // Número del capítulo
+        'COALESCE(uc.read, false) AS is_read', // Estado de lectura (falso si no hay registro)
+      ])
+      .orderBy('chapters.chapter_number', 'DESC')
+      .getRawMany()
+    console.log('userMangaChapters', userMangaChapters)
+    return userMangaChapters.map((chapter) => ({
+      chapterId: chapter.chapter_id,
+      chapterNumber: chapter.chapter_number,
+      isRead: chapter.is_read,
+    }))
   }
 
   /*  async update(id: string, updateMangaDto: UpdateMangaDto): Promise<Manga> {
