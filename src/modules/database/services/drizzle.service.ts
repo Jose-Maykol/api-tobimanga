@@ -6,7 +6,7 @@ import { DATABASE_CONNECTION } from '../constants/constants'
 
 @Injectable()
 export class DrizzleService {
-  private db: NodePgDatabase<typeof databaseSchema>
+  public db: NodePgDatabase<typeof databaseSchema>
   private readonly logger = new Logger(DrizzleService.name)
 
   constructor(@Inject(DATABASE_CONNECTION) private readonly pool: Pool) {

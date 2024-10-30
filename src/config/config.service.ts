@@ -15,7 +15,7 @@ import { MangaAuthor } from '@/models/mangaAuthor.entity'
 require('dotenv').config()
 
 class ConfigService {
-  constructor(private env: { [k: string]: string | undefined }) {}
+  constructor(private env: { [k: string]: string }) {}
 
   private getValue(key: string, throwOnMissing = true): string {
     const value = this.env[key]
@@ -42,7 +42,7 @@ class ConfigService {
       port: parseInt(this.getValue('POSTGRES_PORT')),
       username: this.getValue('POSTGRES_USER'),
       password: this.getValue('POSTGRES_PASSWORD'),
-      database: this.getValue('POSTGRES_DATABASE'),
+      database: 'tobimanga', //this.getValue('POSTGRES_DATABASE'),
       entities: [
         User,
         Genre,
@@ -76,7 +76,9 @@ class ConfigService {
   }
 }
 
-const configService = new ConfigService(process.env).ensureValues([
+const configService = new ConfigService(
+  process.env as { [k: string]: string },
+).ensureValues([
   'POSTGRES_HOST',
   'POSTGRES_PORT',
   'POSTGRES_USER',
