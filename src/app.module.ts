@@ -23,6 +23,7 @@ import { PermissiveAuthMiddleware } from './auth/middleware/permissive-auth.midd
 import { DatabaseModule } from './modules/database/database.module'
 import { ConfigModule } from '@nestjs/config'
 import { MangaModule } from './modules/v1/manga/manga.module'
+import { RouterModule } from '@nestjs/core'
 
 @Module({
   imports: [
@@ -42,8 +43,19 @@ import { MangaModule } from './modules/v1/manga/manga.module'
     GenresModule,
     AuthorsModule,
     DemographicsModule,
-    MangaModule,
     DatabaseModule,
+    RouterModule.register([
+      {
+        path: '/v1',
+        children: [
+          {
+            module: MangaModule,
+            path: 'mangas',
+          },
+        ],
+      },
+    ]),
+    MangaModule,
   ],
   controllers: [AppController],
   providers: [AppService, JwtService, AuthMiddleware],
