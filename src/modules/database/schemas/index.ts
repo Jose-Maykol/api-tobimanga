@@ -1,6 +1,6 @@
 import { authors } from './author.schema'
 import { chapters } from './chapter.schema'
-import { demographics } from './demographics.schema'
+import { demographics } from './demographic.schema'
 import { genres } from './genres.schema'
 import { mangaAuthors } from './manga-author'
 import { mangaGenres } from './manga-genre.schema'

@@ -14,13 +14,13 @@ export class FindPaginatedMangasHandler
 
   async execute(query: FindPaginatedMangasQuery) {
     const { page, limit } = query
-    const [mangas, total] = await this.mangaRepository.findPaginatedMangas(
+    const [mangas, total] = await this.mangaRepository.findPaginated(
       page,
       limit,
     )
 
     if (mangas.length === 0) {
-      throw new NotFoundException('no se encontraron mangas')
+      throw new NotFoundException('No se encontraron mangas')
     }
 
     const pages = Math.ceil(total[0].count / limit)
