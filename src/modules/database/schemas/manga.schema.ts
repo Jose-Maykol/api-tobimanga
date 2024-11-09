@@ -7,7 +7,7 @@ import {
   timestamp,
   uuid,
 } from 'drizzle-orm/pg-core'
-import { demographics } from './demographics.schema'
+import { demographics } from './demographic.schema'
 import { sql } from 'drizzle-orm'
 import { publicationStatusEnum } from './publication-status.schema'
 
