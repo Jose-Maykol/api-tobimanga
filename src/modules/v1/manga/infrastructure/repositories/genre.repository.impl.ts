@@ -12,7 +12,7 @@ export class GenreRepositoryImpl implements GenreRepository {
     const genre = await this.drizzle.db
       .select()
       .from(genres)
-      .where(eq(genres.genreId, id))
+      .where(eq(genres.id, id))
     return genre[0]
   }
 
@@ -20,7 +20,7 @@ export class GenreRepositoryImpl implements GenreRepository {
     const listGenres = await this.drizzle.db
       .select()
       .from(genres)
-      .where(inArray(genres.genreId, ids))
+      .where(inArray(genres.id, ids))
     return listGenres
   }
 
@@ -39,7 +39,7 @@ export class GenreRepositoryImpl implements GenreRepository {
         name,
       })
       .returning({
-        id: genres.genreId,
+        id: genres.id,
       })
 
     return {

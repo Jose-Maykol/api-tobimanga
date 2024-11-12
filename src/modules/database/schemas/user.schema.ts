@@ -9,7 +9,7 @@ import {
 } from 'drizzle-orm/pg-core'
 
 export const users = pgTable('users', {
-  userId: uuid('user_id')
+  id: uuid('user_id')
     .default(sql`uuid_generate_v4()`)
     .unique()
     .primaryKey(),

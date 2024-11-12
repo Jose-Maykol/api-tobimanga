@@ -12,7 +12,7 @@ export class DemographicRepositoryImpl implements DemographicRepository {
     const demographic = await this.drizzle.db
       .select()
       .from(demographics)
-      .where(eq(demographics.demographicId, id))
+      .where(eq(demographics.id, id))
     return demographic[0]
   }
 
@@ -32,7 +32,7 @@ export class DemographicRepositoryImpl implements DemographicRepository {
         name,
       })
       .returning({
-        id: demographics.demographicId,
+        id: demographics.id,
       })
 
     return {

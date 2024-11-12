@@ -12,12 +12,12 @@ import { sql } from 'drizzle-orm'
 import { publicationStatusEnum } from './publication-status.schema'
 
 export const mangas = pgTable('mangas', {
-  mangaId: uuid('manga_id')
+  id: uuid('manga_id')
     .default(sql`uuid_generate_v4()`)
     .primaryKey(),
   demographicId: uuid('demographic_id')
     .notNull()
-    .references(() => demographics.demographicId, { onDelete: 'cascade' }),
+    .references(() => demographics.id, { onDelete: 'cascade' }),
   originalName: text('original_name').notNull().unique(),
   alternativeNames: text('alternative_names').array(),
   sinopsis: text('sinopsis').notNull(),
