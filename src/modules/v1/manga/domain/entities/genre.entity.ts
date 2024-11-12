@@ -2,6 +2,7 @@ type GenreProps = {
   id: string
   name: string
   createdAt: Date
+  updatedAt?: Date
 }
 
 export class Genre {
@@ -14,6 +15,7 @@ export class Genre {
     this.id = props.id
     this.name = props.name
     this.createdAt = props.createdAt
+    this.updatedAt = props.updatedAt
   }
 
   getId(): string {

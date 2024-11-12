@@ -12,7 +12,7 @@ export class AuthorRepositoryImpl implements AuthorRepository {
     const author = await this.drizzle.db
       .select()
       .from(authors)
-      .where(eq(authors.authorId, id))
+      .where(eq(authors.id, id))
 
     return author[0]
   }
@@ -21,7 +21,7 @@ export class AuthorRepositoryImpl implements AuthorRepository {
     const listAuthors = await this.drizzle.db
       .select()
       .from(authors)
-      .where(inArray(authors.authorId, ids))
+      .where(inArray(authors.id, ids))
 
     return listAuthors
   }
@@ -41,7 +41,7 @@ export class AuthorRepositoryImpl implements AuthorRepository {
         name,
       })
       .returning({
-        id: authors.authorId,
+        id: authors.id,
       })
 
     return {

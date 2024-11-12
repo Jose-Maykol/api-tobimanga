@@ -7,9 +7,9 @@ export const mangaGenres = pgTable('manga_genres', {
   mangaId: uuid('id')
     .default(sql`uuid_generate_v4()`)
     .notNull()
-    .references(() => mangas.mangaId, { onDelete: 'cascade' }),
+    .references(() => mangas.id, { onDelete: 'cascade' }),
   genreId: uuid('genre_id')
     .default(sql`uuid_generate_v4()`)
     .notNull()
-    .references(() => genres.genreId, { onDelete: 'cascade' }),
+    .references(() => genres.id, { onDelete: 'cascade' }),
 })

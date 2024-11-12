@@ -6,10 +6,10 @@ export const userChapters = pgTable('user_chapters', {
   id: uuid('id').defaultRandom().primaryKey(),
   userId: uuid('user_id')
     .notNull()
-    .references(() => users.userId, { onDelete: 'cascade' }),
+    .references(() => users.id, { onDelete: 'cascade' }),
   chapterId: uuid('chapter_id')
     .notNull()
-    .references(() => chapters.chapterId, { onDelete: 'cascade' }),
+    .references(() => chapters.id, { onDelete: 'cascade' }),
   read: boolean('read').default(false).notNull(),
   readAt: timestamp('read_at'),
   createdAt: timestamp('created_at').defaultNow().notNull(),

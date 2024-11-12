@@ -11,10 +11,10 @@ export const userMangas = pgTable('user_mangas', {
     .primaryKey(),
   userId: uuid('user_id')
     .notNull()
-    .references(() => users.userId, { onDelete: 'cascade' }),
+    .references(() => users.id, { onDelete: 'cascade' }),
   mangaId: uuid('manga_id')
     .notNull()
-    .references(() => mangas.mangaId, { onDelete: 'cascade' }),
+    .references(() => mangas.id, { onDelete: 'cascade' }),
   rating: smallint('rating'),
   readingStatus: readingStatusEnum('reading_status').notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),

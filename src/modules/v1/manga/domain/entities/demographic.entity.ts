@@ -1,19 +1,27 @@
+type DemographicProps = {
+  id: string
+  name: string
+  createdAt: Date
+  updatedAt?: Date
+}
+
 export class Demographic {
   private id: string
   private name: string
   private createdAt: Date
   private updatedAt?: Date
 
-  constructor(id: string, name: string, createdAt: Date, updatedAt?: Date) {
-    this.id = id
-    this.name = name
-    this.createdAt = createdAt
-    this.updatedAt = updatedAt
+  constructor(props: DemographicProps) {
+    this.id = props.id
+    this.name = props.name
+    this.createdAt = props.createdAt
+    this.updatedAt = props.updatedAt
   }
 
   getId(): string {
     return this.id
   }
+
   getName(): string {
     return this.name
   }
@@ -22,7 +30,7 @@ export class Demographic {
     return this.createdAt
   }
 
-  getUpdatedAt(): Date | undefined {
-    return this.updatedAt
+  getUpdatedAt(): Date | null {
+    return this.updatedAt || null
   }
 }

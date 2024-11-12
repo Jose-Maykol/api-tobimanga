@@ -8,7 +8,7 @@ import { MangaMapper } from '../mappers/manga.mapper'
 import { PgTransaction } from 'drizzle-orm/pg-core'
 import { databaseSchema } from '@/modules/database/schemas'
 import { NodePgQueryResultHKT } from 'drizzle-orm/node-postgres'
-import { mangaAuthors } from '@/modules/database/schemas/manga-author'
+import { mangaAuthors } from '@/modules/database/schemas/manga-author.schema'
 import { mangaGenres } from '@/modules/database/schemas/manga-genre.schema'
 import { chapters } from '@/modules/database/schemas/chapter.schema'
 
@@ -60,7 +60,7 @@ export class MangaRepositoryImpl implements MangaRepository {
         demographicId: mangaPersistence.demographic,
       })
       .returning({
-        id: mangas.mangaId,
+        id: mangas.id,
       })
 
     return {
