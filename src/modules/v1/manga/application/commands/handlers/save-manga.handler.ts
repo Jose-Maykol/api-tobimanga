@@ -8,6 +8,9 @@ import { DrizzleService } from '@/modules/database/services/drizzle.service'
 import { AuthorRepository } from '../../../domain/repositories/author.repository'
 import { GenreRepository } from '../../../domain/repositories/genre.repository'
 import { DemographicRepository } from '../../../domain/repositories/demographic.repository'
+import { Demographic } from '../../../domain/entities/demographic.entity'
+import { Author } from '../../../domain/entities/author.entity'
+import { Genre } from '../../../domain/entities/genre.entity'
 
 @CommandHandler(SaveMangaCommand)
 export class SaveMangaHandler implements ICommandHandler<SaveMangaCommand> {
@@ -30,8 +33,6 @@ export class SaveMangaHandler implements ICommandHandler<SaveMangaCommand> {
 
     const genreIds = genres.map((genre) => genre.id)
     const authorIds = authors.map((author) => author.id)
-
-    console.log('demo', demographic.id)
 
     const [mangaExists, demographicData, authorsData, genresData] =
       await Promise.all([
@@ -73,11 +74,13 @@ export class SaveMangaHandler implements ICommandHandler<SaveMangaCommand> {
       bannerImage: uploadedBannerImage.secure_url,
     })
 
-    newManga.addAuthors(authorsData)
-    newManga.addGenres(genresData)
-    newManga.addDemographic(demographicData)
+    const authorsEntity = authorsData.map((author) => new Author(author))
+    const genresEntity = genresData.map((genre) => new Genre(genre))
+    const demographicEntity = new Demographic(demographicData)
 
-    console.log(newManga)
+    newManga.addAuthors(authorsEntity)
+    newManga.addGenres(genresEntity)
+    newManga.addDemographic(demographicEntity)
 
     const savedManga = await this.drizzleService.db.transaction(async (tx) => {
       const savedManga = await this.mangaRepository.save(newManga, tx)
