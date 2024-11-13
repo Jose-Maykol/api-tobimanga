@@ -14,15 +14,18 @@ import { DemographicRepositoryImpl } from './infrastructure/repositories/demogra
 import { MangaFactory } from './domain/factories/manga.factory'
 import { AuthorController } from './interface/controllers/author.controller'
 import { FindAuthorsHandler } from './application/queries/handlers/find-authors.handler'
+import { FindGenresHandler } from './application/queries/handlers/find-genres.handler'
+import { GenreController } from './interface/controllers/genres.controller'
 
 @Module({
   imports: [CqrsModule, DatabaseModule, CloudinaryModule],
-  controllers: [MangaController, AuthorController],
+  controllers: [MangaController, AuthorController, GenreController],
   providers: [
     DrizzleService,
     CloudinaryService,
     FindPaginatedMangasHandler,
     FindAuthorsHandler,
+    FindGenresHandler,
     SaveMangaHandler,
     {
       provide: 'MangaRepository',

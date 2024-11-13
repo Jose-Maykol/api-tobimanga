@@ -8,6 +8,11 @@ import { eq, inArray } from 'drizzle-orm'
 export class GenreRepositoryImpl implements GenreRepository {
   constructor(private readonly drizzle: DrizzleService) {}
 
+  async find(): Promise<any[]> {
+    const allGenres = await this.drizzle.db.select().from(genres)
+    return allGenres
+  }
+
   async findById(id: string): Promise<any> {
     const genre = await this.drizzle.db
       .select()
