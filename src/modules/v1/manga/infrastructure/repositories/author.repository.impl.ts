@@ -8,6 +8,11 @@ import { eq, inArray } from 'drizzle-orm'
 export class AuthorRepositoryImpl implements AuthorRepository {
   constructor(private readonly drizzle: DrizzleService) {}
 
+  async find(): Promise<any[]> {
+    const allAuthors = await this.drizzle.db.select().from(authors)
+    return allAuthors
+  }
+
   async findById(id: string): Promise<any> {
     const author = await this.drizzle.db
       .select()
