@@ -8,6 +8,11 @@ import { eq } from 'drizzle-orm'
 export class DemographicRepositoryImpl implements DemographicRepository {
   constructor(private readonly drizzle: DrizzleService) {}
 
+  async find(): Promise<any[]> {
+    const allDemographics = await this.drizzle.db.select().from(demographics)
+    return allDemographics
+  }
+
   async findById(id: string): Promise<any> {
     const demographic = await this.drizzle.db
       .select()
