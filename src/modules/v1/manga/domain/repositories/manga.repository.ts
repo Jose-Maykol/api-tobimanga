@@ -6,6 +6,7 @@ import { ExtractTablesWithRelations } from 'drizzle-orm'
 
 export interface MangaRepository {
   findPaginated(page: number, limit: number): Promise<any>
+  findOneByTitle(title: string): Promise<any>
   exists(title: string): Promise<boolean>
   save(
     manga: Manga,
