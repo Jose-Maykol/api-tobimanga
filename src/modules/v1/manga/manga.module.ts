@@ -16,6 +16,7 @@ import { AuthorController } from './interface/controllers/author.controller'
 import { FindAuthorsHandler } from './application/queries/handlers/find-authors.handler'
 import { FindGenresHandler } from './application/queries/handlers/find-genres.handler'
 import { GenreController } from './interface/controllers/genres.controller'
+import { FindDemographicsHandler } from './application/queries/handlers/find-demographics.handler'
 
 @Module({
   imports: [CqrsModule, DatabaseModule, CloudinaryModule],
@@ -26,6 +27,7 @@ import { GenreController } from './interface/controllers/genres.controller'
     FindPaginatedMangasHandler,
     FindAuthorsHandler,
     FindGenresHandler,
+    FindDemographicsHandler,
     SaveMangaHandler,
     {
       provide: 'MangaRepository',
