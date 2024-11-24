@@ -27,7 +27,7 @@ export class MangaController {
 
   @Get()
   async findPaginatedMangas(@Query() pagination: PaginationDto) {
-    const { page, limit } = pagination
+    const { page = 1, limit = 12 } = pagination
     const query = new FindPaginatedMangasQuery({ page, limit })
     return await this.queryBus.execute(query)
   }
