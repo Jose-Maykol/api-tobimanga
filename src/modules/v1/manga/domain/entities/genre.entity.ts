@@ -1,14 +1,14 @@
 type GenreProps = {
-  id: string
+  id?: string
   name: string
-  createdAt: Date
+  createdAt?: Date
   updatedAt?: Date
 }
 
 export class Genre {
-  private id: string
+  private id?: string
   private name: string
-  private createdAt: Date
+  private createdAt?: Date
   private updatedAt?: Date
 
   constructor(props: GenreProps) {
@@ -18,7 +18,10 @@ export class Genre {
     this.updatedAt = props.updatedAt
   }
 
-  getId(): string {
+  getId(): string | null {
+    if (!this.id) {
+      return null
+    }
     return this.id
   }
 

@@ -18,10 +18,20 @@ import { FindGenresHandler } from './application/queries/handlers/find-genres.ha
 import { GenreController } from './interface/controllers/genres.controller'
 import { FindDemographicsHandler } from './application/queries/handlers/find-demographics.handler'
 import { FindMangaHandler } from './application/queries/handlers/find-manga.handler'
+import { DemographicController } from './interface/controllers/demographic.controller'
+import { SaveAuthorHandler } from './application/commands/handlers/save-author.handler'
+import { AuthorFactory } from './domain/factories/author.factory'
+import { SaveGenreHandler } from './application/commands/handlers/save-genre.handler'
+import { GenreFactory } from './domain/factories/genre.factory'
 
 @Module({
   imports: [CqrsModule, DatabaseModule, CloudinaryModule],
-  controllers: [MangaController, AuthorController, GenreController],
+  controllers: [
+    AuthorController,
+    GenreController,
+    DemographicController,
+    MangaController, //* Debe estar al final para evitar conflictos con las ruta manga/:slug
+  ],
   providers: [
     DrizzleService,
     CloudinaryService,
@@ -30,6 +40,8 @@ import { FindMangaHandler } from './application/queries/handlers/find-manga.hand
     FindGenresHandler,
     FindDemographicsHandler,
     SaveMangaHandler,
+    SaveAuthorHandler,
+    SaveGenreHandler,
     FindMangaHandler,
     {
       provide: 'MangaRepository',
@@ -48,6 +60,8 @@ import { FindMangaHandler } from './application/queries/handlers/find-manga.hand
       useClass: DemographicRepositoryImpl,
     },
     MangaFactory,
+    AuthorFactory,
+    GenreFactory,
   ],
 })
 export class MangaModule {}
