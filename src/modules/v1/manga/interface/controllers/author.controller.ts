@@ -14,9 +14,7 @@ export class AuthorController {
 
   @Get()
   async findAuthors() {
-    console.log('findAuthors')
     const query = new FindAuthorsQuery()
-    console.log('query', query)
     return await this.queryBus.execute(query)
   }
 

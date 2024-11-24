@@ -8,7 +8,6 @@ import { AppController } from './app.controller'
 import { AppService } from './app.service'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { configService } from './config/config.service'
-import { MangasModule } from './mangas/mangas.module'
 import { AuthModule } from './auth/auth.module'
 import { AuthMiddleware } from './auth/middleware/auth.middleware'
 import { UserModule } from './user/user.module'
@@ -16,9 +15,6 @@ import { JwtModule, JwtService } from '@nestjs/jwt'
 import { ChaptersModule } from './chapters/chapters.module'
 import { SnakeCaseMiddleware } from './common/middleware/snake-case.middleware'
 import { CloudinaryModule } from './cloudinary/cloudinary.module'
-import { GenresModule } from './genres/genres.module'
-import { AuthorsModule } from './authors/authors.module'
-import { DemographicsModule } from './demographics/demographics.module'
 import { PermissiveAuthMiddleware } from './auth/middleware/permissive-auth.middleware'
 import { DatabaseModule } from './modules/database/database.module'
 import { ConfigModule } from '@nestjs/config'
@@ -36,13 +32,10 @@ import { RouterModule } from '@nestjs/core'
       signOptions: { expiresIn: '1d' },
     }),
     AuthModule,
-    MangasModule,
+    /* MangasModule, */
     UserModule,
     ChaptersModule,
     CloudinaryModule,
-    GenresModule,
-    AuthorsModule,
-    DemographicsModule,
     DatabaseModule,
     RouterModule.register([
       {

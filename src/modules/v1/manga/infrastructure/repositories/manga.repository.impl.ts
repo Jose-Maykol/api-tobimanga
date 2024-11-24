@@ -58,6 +58,11 @@ export class MangaRepositoryImpl implements MangaRepository {
         ),
       )
       .limit(1)
+
+    if (manga.length === 0) {
+      return null
+    }
+
     const allAnimeAuthors = await this.drizzle.db
       .select({
         id: authors.id,
