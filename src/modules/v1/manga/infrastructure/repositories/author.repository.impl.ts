@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common'
 import { AuthorRepository } from '../../domain/repositories/author.repository'
 import { authors } from '@/modules/database/schemas/author.schema'
 import { eq, inArray } from 'drizzle-orm'
+import { Author } from '../../domain/entities/author.entity'
 
 @Injectable()
 export class AuthorRepositoryImpl implements AuthorRepository {
@@ -39,7 +40,8 @@ export class AuthorRepositoryImpl implements AuthorRepository {
     return author.length > 0
   }
 
-  async save(name: string): Promise<{ id: string }> {
+  async save(author: Author): Promise<{ id: string }> {
+    const name = author.getName()
     const insertedAuthor = await this.drizzle.db
       .insert(authors)
       .values({
