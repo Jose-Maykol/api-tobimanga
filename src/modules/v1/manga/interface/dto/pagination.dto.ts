@@ -24,7 +24,7 @@ export const paginationSchema = z.object({
       message: 'limit debe ser un número positivo',
     })
     .optional()
-    .default(10),
+    .default(12),
 })
 
 export type PaginationDto = z.infer<typeof paginationSchema>
