@@ -3,6 +3,7 @@ import { GenreRepository } from '../../domain/repositories/genre.repository'
 import { DrizzleService } from '@/modules/database/services/drizzle.service'
 import { genres } from '@/modules/database/schemas/genres.schema'
 import { eq, inArray } from 'drizzle-orm'
+import { Genre } from '../../domain/entities/genre.entity'
 
 @Injectable()
 export class GenreRepositoryImpl implements GenreRepository {
@@ -37,7 +38,8 @@ export class GenreRepositoryImpl implements GenreRepository {
     return genre.length > 0
   }
 
-  async save(name: string): Promise<{ id: string }> {
+  async save(genre: Genre): Promise<{ id: string }> {
+    const name = genre.getName()
     const insertedGenre = await this.drizzle.db
       .insert(genres)
       .values({
