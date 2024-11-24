@@ -24,6 +24,22 @@ import { AuthorFactory } from './domain/factories/author.factory'
 import { SaveGenreHandler } from './application/commands/handlers/save-genre.handler'
 import { GenreFactory } from './domain/factories/genre.factory'
 
+const CommandHandlers = [SaveMangaHandler, SaveAuthorHandler, SaveGenreHandler]
+const QueryHandlers = [
+  FindPaginatedMangasHandler,
+  FindAuthorsHandler,
+  FindGenresHandler,
+  FindDemographicsHandler,
+  FindMangaHandler,
+]
+const Factories = [MangaFactory, AuthorFactory, GenreFactory]
+const Repositories = [
+  { provide: 'MangaRepository', useClass: MangaRepositoryImpl },
+  { provide: 'AuthorRepository', useClass: AuthorRepositoryImpl },
+  { provide: 'GenreRepository', useClass: GenreRepositoryImpl },
+  { provide: 'DemographicRepository', useClass: DemographicRepositoryImpl },
+]
+
 @Module({
   imports: [CqrsModule, DatabaseModule, CloudinaryModule],
   controllers: [
@@ -35,33 +51,10 @@ import { GenreFactory } from './domain/factories/genre.factory'
   providers: [
     DrizzleService,
     CloudinaryService,
-    FindPaginatedMangasHandler,
-    FindAuthorsHandler,
-    FindGenresHandler,
-    FindDemographicsHandler,
-    SaveMangaHandler,
-    SaveAuthorHandler,
-    SaveGenreHandler,
-    FindMangaHandler,
-    {
-      provide: 'MangaRepository',
-      useClass: MangaRepositoryImpl,
-    },
-    {
-      provide: 'AuthorRepository',
-      useClass: AuthorRepositoryImpl,
-    },
-    {
-      provide: 'GenreRepository',
-      useClass: GenreRepositoryImpl,
-    },
-    {
-      provide: 'DemographicRepository',
-      useClass: DemographicRepositoryImpl,
-    },
-    MangaFactory,
-    AuthorFactory,
-    GenreFactory,
+    ...CommandHandlers,
+    ...QueryHandlers,
+    ...Factories,
+    ...Repositories,
   ],
 })
 export class MangaModule {}
