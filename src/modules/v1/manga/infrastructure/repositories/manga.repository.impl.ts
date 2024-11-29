@@ -32,6 +32,40 @@ export class MangaRepositoryImpl implements MangaRepository {
     return [paginatedMangas, totalMangas]
   }
 
+  async findPaginatedChaptersByMangaTitle(
+    title: string,
+    page: number,
+    limit: number,
+  ): Promise<any> {
+    const offset = (page - 1) * limit
+    const paginatedChapters = await this.drizzle.db
+      .select({
+        id: chapters.id,
+        chapterNumber: chapters.chapterNumber,
+      })
+      .from(chapters)
+      .innerJoin(mangas, eq(chapters.mangaId, mangas.id))
+      .where(
+        eq(
+          sql<string>`lower(${mangas.originalName})`,
+          sql<string>`lower(${title})`,
+        ),
+      )
+      .offset(offset)
+      .limit(limit)
+    const totalChapters = await this.drizzle.db
+      .select({ count: count() })
+      .from(chapters)
+      .innerJoin(mangas, eq(chapters.mangaId, mangas.id))
+      .where(
+        eq(
+          sql<string>`lower(${mangas.originalName})`,
+          sql<string>`lower(${title})`,
+        ),
+      )
+    return [paginatedChapters, totalChapters]
+  }
+
   async findOneByTitle(title: string): Promise<any> {
     const manga = await this.drizzle.db
       .select({

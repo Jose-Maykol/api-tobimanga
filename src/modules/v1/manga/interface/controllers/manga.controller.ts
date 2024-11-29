@@ -17,7 +17,7 @@ import {
 import { ZodValidationPipe } from '@/common/pipes/zod-validation.pipe'
 import { SaveMangaCommand } from '../../application/commands/save-manga.command'
 import { FindMangaQuery } from '../../application/queries/find-manga.query'
-
+import { FindPaginatedChaptersQuery } from '../../application/queries/find-paginated-chapters.query'
 @Controller()
 export class MangaController {
   constructor(
@@ -35,6 +35,16 @@ export class MangaController {
   @Get(':slug')
   async findMangaBySlug(@Param('slug') slug: string) {
     const query = new FindMangaQuery(slug)
+    return await this.queryBus.execute(query)
+  }
+
+  @Get(':slug/chapters')
+  async findPaginatedChapters(
+    @Param('slug') slug: string,
+    @Query() pagination: PaginationDto,
+  ) {
+    const { page = 1, limit = 20 } = pagination
+    const query = new FindPaginatedChaptersQuery(slug, { page, limit })
     return await this.queryBus.execute(query)
   }
 

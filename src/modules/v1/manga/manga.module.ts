@@ -23,10 +23,12 @@ import { SaveAuthorHandler } from './application/commands/handlers/save-author.h
 import { AuthorFactory } from './domain/factories/author.factory'
 import { SaveGenreHandler } from './application/commands/handlers/save-genre.handler'
 import { GenreFactory } from './domain/factories/genre.factory'
+import { FindPaginatedChaptersHandler } from './application/queries/handlers/find-paginated-chapters.handler'
 
 const CommandHandlers = [SaveMangaHandler, SaveAuthorHandler, SaveGenreHandler]
 const QueryHandlers = [
   FindPaginatedMangasHandler,
+  FindPaginatedChaptersHandler,
   FindAuthorsHandler,
   FindGenresHandler,
   FindDemographicsHandler,
