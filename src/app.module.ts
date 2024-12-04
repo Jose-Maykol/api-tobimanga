@@ -20,6 +20,7 @@ import { DatabaseModule } from './modules/database/database.module'
 import { ConfigModule } from '@nestjs/config'
 import { MangaModule } from './modules/v1/manga/manga.module'
 import { RouterModule } from '@nestjs/core'
+import { AuthModule } from './modules/v1/auth/auth.module';
 
 @Module({
   imports: [

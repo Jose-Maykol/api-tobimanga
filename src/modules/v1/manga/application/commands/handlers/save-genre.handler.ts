@@ -1,5 +1,5 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs'
-import { SaveGenreCommand } from '../save-genre.handler'
+import { SaveGenreCommand } from '../save-genre.command'
 import { ConflictException, Inject } from '@nestjs/common'
 import { GenreRepository } from '../../../domain/repositories/genre.repository'
 import { GenreFactory } from '../../../domain/factories/genre.factory'
