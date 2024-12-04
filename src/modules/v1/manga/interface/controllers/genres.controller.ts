@@ -3,7 +3,7 @@ import { CommandBus, QueryBus } from '@nestjs/cqrs'
 import { FindGenresQuery } from '../../application/queries/find-genres.query'
 import { SaveGenreDto, saveGenreSchema } from '../dto/save-genre.dto'
 import { ZodValidationPipe } from '@/common/pipes/zod-validation.pipe'
-import { SaveGenreCommand } from '../../application/commands/save-genre.handler'
+import { SaveGenreCommand } from '../../application/commands/save-genre.command'
 
 @Controller('genres')
 export class GenreController {
