@@ -8,11 +8,8 @@ import { AppController } from './app.controller'
 import { AppService } from './app.service'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { configService } from './config/config.service'
-import { AuthModule } from './auth/auth.module'
 import { AuthMiddleware } from './auth/middleware/auth.middleware'
-import { UserModule } from './user/user.module'
 import { JwtModule, JwtService } from '@nestjs/jwt'
-import { ChaptersModule } from './chapters/chapters.module'
 import { SnakeCaseMiddleware } from './common/middleware/snake-case.middleware'
 import { CloudinaryModule } from './cloudinary/cloudinary.module'
 import { PermissiveAuthMiddleware } from './auth/middleware/permissive-auth.middleware'
@@ -20,7 +17,7 @@ import { DatabaseModule } from './modules/database/database.module'
 import { ConfigModule } from '@nestjs/config'
 import { MangaModule } from './modules/v1/manga/manga.module'
 import { RouterModule } from '@nestjs/core'
-import { AuthModule } from './modules/v1/auth/auth.module';
+import { AuthModule } from './modules/v1/auth/auth.module'
 
 @Module({
   imports: [
@@ -32,10 +29,6 @@ import { AuthModule } from './modules/v1/auth/auth.module';
       secret: configService.getSecretKey(),
       signOptions: { expiresIn: '1d' },
     }),
-    AuthModule,
-    /* MangasModule, */
-    UserModule,
-    ChaptersModule,
     CloudinaryModule,
     DatabaseModule,
     RouterModule.register([
@@ -43,12 +36,17 @@ import { AuthModule } from './modules/v1/auth/auth.module';
         path: '/v1',
         children: [
           {
+            module: AuthModule,
+            path: 'auth',
+          },
+          {
             module: MangaModule,
             path: 'mangas',
           },
         ],
       },
     ]),
+    AuthModule,
     MangaModule,
   ],
   controllers: [AppController],
