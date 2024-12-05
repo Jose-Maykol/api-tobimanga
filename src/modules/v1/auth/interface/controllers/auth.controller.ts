@@ -3,8 +3,10 @@ import { RegisterUserDto, registerUserSchema } from '../dto/register-user.dto'
 import { ZodValidationPipe } from '@/common/pipes/zod-validation.pipe'
 import { CommandBus, QueryBus } from '@nestjs/cqrs'
 import { RegisterUserCommand } from '../../application/commands/register-user.command'
+import { UserLoginQuery } from '../../application/queries/login-user.query'
+import { UserLoginDto, userLoginSchema } from '../dto/login-user.dto'
 
-@Controller('auth')
+@Controller()
 export class AuthController {
   constructor(
     private readonly commandBus: CommandBus,
@@ -12,8 +14,11 @@ export class AuthController {
   ) {}
 
   @Post('login')
-  async login() {
-    return 'Login exitoso'
+  @UsePipes(new ZodValidationPipe(userLoginSchema))
+  async login(@Body() userLoginDto: UserLoginDto) {
+    const { email, password } = userLoginDto
+    const command = new UserLoginQuery(email, password)
+    return await this.queryBus.execute(command)
   }
 
   @Post('register')
