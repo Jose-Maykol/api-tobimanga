@@ -19,7 +19,10 @@ export class UserController {
 
   @Get('mangas')
   async getMangas(@Req() req: Request): Promise<{ mangas: any }> {
-    const user: Payload = req['user']
+    const user: Payload = req['user'] as Payload
+    if (!user) {
+      throw new BadRequestException('User not found in request')
+    }
     const mangas = await this.userService.findMangaByUser(user.sub)
     return {
       mangas,
@@ -32,7 +35,10 @@ export class UserController {
     @Body() followManga: FollowMangaDto,
     @Req() req: Request,
   ): Promise<{ message: string; manga: { id: string } }> {
-    const user: Payload = req['user']
+    const user: Payload = req['user'] as Payload
+    if (!user) {
+      throw new BadRequestException('User not found in request')
+    }
     try {
       const manga = await this.userService.followManga(
         user.sub,

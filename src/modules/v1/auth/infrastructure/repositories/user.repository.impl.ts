@@ -3,6 +3,8 @@ import { UserRepository } from '../../domain/repositories/user.repository'
 import { DrizzleService } from '@/modules/database/services/drizzle.service'
 import { users } from '@/modules/database/schemas/user.schema'
 import { eq } from 'drizzle-orm'
+import { User } from '../../domain/entities/user.entity'
+import { UserMapper } from '../mappers/user.mapper'
 
 @Injectable()
 export class UserRepositoryImpl implements UserRepository {
@@ -22,13 +24,13 @@ export class UserRepositoryImpl implements UserRepository {
     return user[0]
   }
 
-  async findByEmail(email: string): Promise<any> {
+  async findByEmail(email: string): Promise<User> {
     const user = await this.drizzle.db
       .select()
       .from(users)
       .where(eq(users.email, email))
 
-    return user[0]
+    return UserMapper.toDomain(user[0])
   }
 
   async findByUsername(username: string): Promise<any> {

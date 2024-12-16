@@ -23,7 +23,7 @@ export class RegisterUserHandler
       throw new Error('Este usuario ya existe')
     }
 
-    const hashedPassword = await bcrypt.hash(user.password)
+    const hashedPassword = await bcrypt.hash(user.password, 10)
 
     const userEntity = this.userFactory.create({
       ...user,

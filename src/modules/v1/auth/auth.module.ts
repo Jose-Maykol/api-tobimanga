@@ -1,4 +1,3 @@
-import { AuthController } from '@/auth/auth.controller'
 import { DatabaseModule } from '@/modules/database/database.module'
 import { DrizzleService } from '@/modules/database/services/drizzle.service'
 import { Module } from '@nestjs/common'
@@ -11,6 +10,8 @@ import { CheckUserExistsQuery } from './application/queries/check-user-exists.qu
 import { PassportModule } from '@nestjs/passport'
 import { JwtModule } from '@nestjs/jwt'
 import { ConfigModule, ConfigService } from '@nestjs/config'
+import { AuthMiddleware } from './interface/middlewares/auth.middleware'
+import { AuthController } from './interface/controllers/auth.controller'
 
 const CommandHandlers = [RegisterUserHandler]
 const QueryHandlers = [UserLoginHandler, CheckUserExistsQuery]
@@ -36,6 +37,7 @@ const Repositories = [
   controllers: [AuthController],
   providers: [
     DrizzleService,
+    AuthMiddleware,
     ...CommandHandlers,
     ...QueryHandlers,
     ...Factories,
