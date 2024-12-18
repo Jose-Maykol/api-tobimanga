@@ -15,6 +15,8 @@ export class UserLoginHandler implements IQueryHandler<UserLoginQuery> {
 
   async execute(query: UserLoginQuery) {
     const { email, password } = query
+
+    // TODO: se puede optimizar para no obtener todos los campos en el find
     const user = await this.userRepository.findByEmail(email)
 
     if (!user) {
@@ -35,7 +37,14 @@ export class UserLoginHandler implements IQueryHandler<UserLoginQuery> {
     const accessToken = this.jwtService.sign(payload)
 
     return {
+      message: 'Login exitoso',
       accessToken,
+      user: {
+        id: user.getId(),
+        email: user.getEmail(),
+        username: user.getUsername(),
+        profileImage: user.getProfileImage(),
+      },
     }
   }
 }

@@ -5,6 +5,7 @@ import {
   Param,
   Post,
   Query,
+  UseGuards,
   UsePipes,
 } from '@nestjs/common'
 import { CommandBus, QueryBus } from '@nestjs/cqrs'
@@ -18,6 +19,7 @@ import { ZodValidationPipe } from '@/common/pipes/zod-validation.pipe'
 import { SaveMangaCommand } from '../../application/commands/save-manga.command'
 import { FindMangaQuery } from '../../application/queries/find-manga.query'
 import { FindPaginatedChaptersQuery } from '../../application/queries/find-paginated-chapters.query'
+import { JwtAuthGuard } from '@/modules/v1/auth/interface/guards/auth.guard'
 @Controller()
 export class MangaController {
   constructor(
@@ -48,7 +50,9 @@ export class MangaController {
     return await this.queryBus.execute(query)
   }
 
+  // TODO: Crear el guard para el admin
   @Post()
+  @UseGuards(JwtAuthGuard)
   @UsePipes(new ZodValidationPipe(saveCompleteMangaSchema))
   async createManga(@Body() saveCompleteMangaDto: SaveCompleteMangaDto) {
     const { manga, authors, genres, demographic } = saveCompleteMangaDto

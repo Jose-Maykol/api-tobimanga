@@ -12,6 +12,7 @@ import { JwtModule } from '@nestjs/jwt'
 import { ConfigModule, ConfigService } from '@nestjs/config'
 import { AuthMiddleware } from './interface/middlewares/auth.middleware'
 import { AuthController } from './interface/controllers/auth.controller'
+import { JwtStrategy } from './application/strategies/jwt.strategy'
 
 const CommandHandlers = [RegisterUserHandler]
 const QueryHandlers = [UserLoginHandler, CheckUserExistsQuery]
@@ -38,6 +39,7 @@ const Repositories = [
   providers: [
     DrizzleService,
     AuthMiddleware,
+    JwtStrategy,
     ...CommandHandlers,
     ...QueryHandlers,
     ...Factories,

@@ -48,4 +48,12 @@ export class User {
   getEmail(): string {
     return this.email
   }
+
+  getProfileImage(): string | null {
+    return this.profileImage || null
+  }
+
+  getCoverImage(): string | null {
+    return this.coverImage || null
+  }
 }
