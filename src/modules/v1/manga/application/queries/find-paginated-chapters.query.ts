@@ -7,7 +7,7 @@ export class FindPaginatedChaptersQuery implements IQuery {
 
   constructor(slug: string, pagination: { page: number; limit: number }) {
     this.slug = slug
-    this.page = pagination.page
-    this.limit = pagination.limit
+    this.page = Number(pagination.page)
+    this.limit = Number(pagination.limit)
   }
 }

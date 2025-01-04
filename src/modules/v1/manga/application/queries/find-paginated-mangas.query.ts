@@ -5,6 +5,7 @@ export class FindPaginatedMangasQuery implements IQuery {
   readonly limit: number
 
   constructor(pagination: { page: number; limit: number }) {
-    Object.assign(this, pagination)
+    this.page = Number(pagination.page)
+    this.limit = Number(pagination.limit)
   }
 }
