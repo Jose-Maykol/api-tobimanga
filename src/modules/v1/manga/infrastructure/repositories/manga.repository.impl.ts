@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common'
 import { MangaRepository } from '../../domain/repositories/manga.repository'
 import { DrizzleService } from '@/modules/database/services/drizzle.service'
 import { mangas } from '@/modules/database/schemas/manga.schema'
-import { count, eq, ExtractTablesWithRelations, sql } from 'drizzle-orm'
+import { count, desc, eq, ExtractTablesWithRelations, sql } from 'drizzle-orm'
 import { Manga } from '../../domain/entities/manga.entity'
 import { MangaMapper } from '../mappers/manga.mapper'
 import { PgTransaction } from 'drizzle-orm/pg-core'
@@ -51,6 +51,7 @@ export class MangaRepositoryImpl implements MangaRepository {
           sql<string>`lower(${title})`,
         ),
       )
+      .orderBy(desc(chapters.chapterNumber))
       .offset(offset)
       .limit(limit)
     const totalChapters = await this.drizzle.db
