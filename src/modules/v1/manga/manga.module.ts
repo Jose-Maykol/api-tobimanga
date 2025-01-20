@@ -24,6 +24,7 @@ import { AuthorFactory } from './domain/factories/author.factory'
 import { SaveGenreHandler } from './application/commands/handlers/save-genre.handler'
 import { GenreFactory } from './domain/factories/genre.factory'
 import { FindPaginatedChaptersHandler } from './application/queries/handlers/find-paginated-chapters.handler'
+import { SyncAllMangasChaptersHandler } from './application/commands/handlers/sync-all-mangas-chapters.handler'
 
 const CommandHandlers = [SaveMangaHandler, SaveAuthorHandler, SaveGenreHandler]
 const QueryHandlers = [
@@ -33,6 +34,7 @@ const QueryHandlers = [
   FindGenresHandler,
   FindDemographicsHandler,
   FindMangaHandler,
+  SyncAllMangasChaptersHandler,
 ]
 const Factories = [MangaFactory, AuthorFactory, GenreFactory]
 const Repositories = [

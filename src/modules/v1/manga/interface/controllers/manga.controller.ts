@@ -20,6 +20,7 @@ import { SaveMangaCommand } from '../../application/commands/save-manga.command'
 import { FindMangaQuery } from '../../application/queries/find-manga.query'
 import { FindPaginatedChaptersQuery } from '../../application/queries/find-paginated-chapters.query'
 import { JwtAuthGuard } from '@/modules/v1/auth/interface/guards/auth.guard'
+import { SyncAllMangasChaptersCommand } from '../../application/commands/sync-all-mangas-chapters.command'
 @Controller()
 export class MangaController {
   constructor(
@@ -57,6 +58,13 @@ export class MangaController {
   async createManga(@Body() saveCompleteMangaDto: SaveCompleteMangaDto) {
     const { manga, authors, genres, demographic } = saveCompleteMangaDto
     const command = new SaveMangaCommand(manga, authors, genres, demographic)
+    return await this.commandBus.execute(command)
+  }
+
+  @Post('sync-chapters')
+  /* @UseGuards(JwtAuthGuard) */
+  async syncAllMangasChapters() {
+    const command = new SyncAllMangasChaptersCommand()
     return await this.commandBus.execute(command)
   }
 }
