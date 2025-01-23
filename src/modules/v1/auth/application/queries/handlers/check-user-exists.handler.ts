@@ -4,7 +4,7 @@ import { Inject, NotFoundException } from '@nestjs/common'
 import { UserRepository } from '../../../domain/repositories/user.repository'
 
 @QueryHandler(CheckUserExistsQuery)
-export class ValidateTokenHandler
+export class CheckUserExistsHandler
   implements IQueryHandler<CheckUserExistsQuery>
 {
   constructor(
@@ -19,5 +19,7 @@ export class ValidateTokenHandler
     if (!user) {
       throw new NotFoundException('Usuario no encontrado')
     }
+
+    return user
   }
 }

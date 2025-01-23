@@ -13,8 +13,9 @@ import { ConfigModule, ConfigService } from '@nestjs/config'
 import { AuthMiddleware } from './interface/middlewares/auth.middleware'
 import { AuthController } from './interface/controllers/auth.controller'
 import { JwtStrategy } from './application/strategies/jwt.strategy'
+import { CheckUserExistsHandler } from './application/queries/handlers/check-user-exists.handler'
 
-const CommandHandlers = [RegisterUserHandler]
+const CommandHandlers = [RegisterUserHandler, CheckUserExistsHandler]
 const QueryHandlers = [UserLoginHandler, CheckUserExistsQuery]
 const Factories = [UserFactory]
 const Repositories = [
