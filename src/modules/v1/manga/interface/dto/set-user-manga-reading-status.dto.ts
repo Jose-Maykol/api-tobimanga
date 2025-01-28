@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import { mangaReadingStatus } from './update-user-manga-reading-status.dto'
+import { mangaReadingStatus } from './manga-reading-status.dto'
 
 export const setUserMangaReadingStatusSchema = z.object({
   status: mangaReadingStatus,

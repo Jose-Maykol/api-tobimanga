@@ -4,7 +4,9 @@ import {
   Get,
   Param,
   Post,
+  Put,
   Query,
+  Request,
   UseGuards,
   UsePipes,
 } from '@nestjs/common'
@@ -21,6 +23,15 @@ import { FindMangaQuery } from '../../application/queries/find-manga.query'
 import { FindPaginatedChaptersQuery } from '../../application/queries/find-paginated-chapters.query'
 import { JwtAuthGuard } from '@/modules/v1/auth/interface/guards/auth.guard'
 import { SyncAllMangasChaptersCommand } from '../../application/commands/sync-all-mangas-chapters.command'
+import {
+  UpdateUserMangaReadingStatusDto,
+  updateUserMangaReadingStatusSchema,
+} from '../dto/update-user-manga-reading-status.dto'
+import { UpdateUserMangaReadingStatusCommand } from '../../application/commands/update-user-manga-reading-status.command'
+import {
+  SetUserMangaReadingStatusDto,
+  setUserMangaReadingStatusSchema,
+} from '../dto/set-user-manga-reading-status.dto'
 @Controller()
 export class MangaController {
   constructor(
@@ -65,6 +76,41 @@ export class MangaController {
   /* @UseGuards(JwtAuthGuard) */
   async syncAllMangasChapters() {
     const command = new SyncAllMangasChaptersCommand()
+    return await this.commandBus.execute(command)
+  }
+
+  @Post('id/status')
+  @UseGuards(JwtAuthGuard)
+  @UsePipes(new ZodValidationPipe(setUserMangaReadingStatusSchema))
+  async setUserMangaReadingStatus(
+    @Param('id') id: string,
+    @Body() body: SetUserMangaReadingStatusDto,
+    @Request() req,
+  ) {
+    const user = req.user
+    const { status } = body
+    const command = new UpdateUserMangaReadingStatusCommand(
+      user.sub,
+      id,
+      status,
+    )
+    return await this.commandBus.execute(command)
+  }
+
+  @Put(':id/status')
+  @UseGuards(JwtAuthGuard)
+  @UsePipes(new ZodValidationPipe(updateUserMangaReadingStatusSchema))
+  async updateUserMangaReadingStatus(
+    @Param('id') id: string,
+    @Body() body: UpdateUserMangaReadingStatusDto,
+    @Request() req,
+  ) {
+    const user = req.user
+    const command = new UpdateUserMangaReadingStatusCommand(
+      user.sub,
+      id,
+      body.status,
+    )
     return await this.commandBus.execute(command)
   }
 }
