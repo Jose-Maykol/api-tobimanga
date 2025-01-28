@@ -21,7 +21,8 @@ export class SyncAllMangasChaptersHandler
     try {
       await page.goto(MANGADEX_URL)
       const searchInput = await page.locator('//*[@id="header-search-input"]')
-      await searchInput.fill('Sousou no Frieren')
+      await searchInput.fill('Dandadan')
+      /* await searchInput.fill('Sousou no Frieren') */
       await page.keyboard.press('Enter')
       const searchResults = await page.locator(
         'xpath=/html/body/div[1]/div[1]/div[2]/div[3]/div/div[3]/div//a',
