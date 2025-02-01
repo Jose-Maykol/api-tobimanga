@@ -3,11 +3,14 @@ import { SetUserMangaReadingStatusCommand } from '../set-user-manga-reading-stat
 import { MangaRepository } from '../../../domain/repositories/manga.repository'
 import { UserMangaRepository } from '../../../domain/repositories/user-manga.repository'
 import { UserMangaFactory } from '../../../domain/factories/user-manga.factory'
+import { Inject } from '@nestjs/common'
 
 @CommandHandler(SetUserMangaReadingStatusCommand)
 export class SetUserMangaReadingStatusHandler {
   constructor(
+    @Inject('MangaRepository')
     private readonly mangaRepository: MangaRepository,
+    @Inject('UserMangaRepository')
     private readonly userMangaRepository: UserMangaRepository,
     private readonly userMangaFactory: UserMangaFactory,
   ) {}

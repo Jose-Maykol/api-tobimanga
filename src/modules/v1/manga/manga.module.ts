@@ -26,8 +26,18 @@ import { GenreFactory } from './domain/factories/genre.factory'
 import { FindPaginatedChaptersHandler } from './application/queries/handlers/find-paginated-chapters.handler'
 import { SyncAllMangasChaptersHandler } from './application/commands/handlers/sync-all-mangas-chapters.handler'
 import { UpdateUserMangaReadingStatusHandler } from './application/commands/handlers/update-user-manga-reading-status.handler'
+import { UserMangaRepositoryImpl } from './infrastructure/repositories/user-manga.repository.impl'
+import { SetUserMangaReadingStatusHandler } from './application/commands/handlers/set-user-manga-reading-status.handler'
+import { UserMangaFactory } from './domain/factories/user-manga.factory'
 
-const CommandHandlers = [SaveMangaHandler, SaveAuthorHandler, SaveGenreHandler]
+const CommandHandlers = [
+  SaveMangaHandler,
+  SaveAuthorHandler,
+  SaveGenreHandler,
+  SyncAllMangasChaptersHandler,
+  SetUserMangaReadingStatusHandler,
+  UpdateUserMangaReadingStatusHandler,
+]
 const QueryHandlers = [
   FindPaginatedMangasHandler,
   FindPaginatedChaptersHandler,
@@ -35,15 +45,14 @@ const QueryHandlers = [
   FindGenresHandler,
   FindDemographicsHandler,
   FindMangaHandler,
-  SyncAllMangasChaptersHandler,
-  UpdateUserMangaReadingStatusHandler,
 ]
-const Factories = [MangaFactory, AuthorFactory, GenreFactory]
+const Factories = [MangaFactory, AuthorFactory, GenreFactory, UserMangaFactory]
 const Repositories = [
   { provide: 'MangaRepository', useClass: MangaRepositoryImpl },
   { provide: 'AuthorRepository', useClass: AuthorRepositoryImpl },
   { provide: 'GenreRepository', useClass: GenreRepositoryImpl },
   { provide: 'DemographicRepository', useClass: DemographicRepositoryImpl },
+  { provide: 'UserMangaRepository', useClass: UserMangaRepositoryImpl },
 ]
 
 @Module({
