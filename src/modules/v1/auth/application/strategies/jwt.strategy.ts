@@ -30,6 +30,11 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
     const query = new CheckUserExistsQuery(sub)
     const user = await this.queryBus.execute(query)
+
+    if (!user) {
+      throw new UnauthorizedException('Usuario no encontrado')
+    }
+
     return user
   }
 }
