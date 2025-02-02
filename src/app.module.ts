@@ -6,10 +6,8 @@ import {
 } from '@nestjs/common'
 import { AppController } from './app.controller'
 import { AppService } from './app.service'
-import { TypeOrmModule } from '@nestjs/typeorm'
-import { configService } from './config/config.service'
 /* import { AuthMiddleware } from './auth/middleware/auth.middleware' */
-import { JwtModule, JwtService } from '@nestjs/jwt'
+import { JwtService } from '@nestjs/jwt'
 import { SnakeCaseMiddleware } from './common/middleware/snake-case.middleware'
 import { CloudinaryModule } from './cloudinary/cloudinary.module'
 import { DatabaseModule } from './modules/database/database.module'
@@ -22,11 +20,6 @@ import { AuthModule } from './modules/v1/auth/auth.module'
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-    }),
-    TypeOrmModule.forRoot(configService.getTypeOrmConfig()),
-    JwtModule.register({
-      secret: configService.getSecretKey(),
-      signOptions: { expiresIn: '1d' },
     }),
     CloudinaryModule,
     DatabaseModule,
