@@ -76,17 +76,14 @@ export class MangaController {
 
   @Post(':id/status')
   @UseGuards(JwtAuthGuard)
-  @UsePipes(new ZodValidationPipe(setUserMangaReadingStatusSchema))
   async setUserMangaReadingStatus(
     @Param('id') id: string,
-    @Body() body: SetUserMangaReadingStatusDto,
+    @Body(new ZodValidationPipe(setUserMangaReadingStatusSchema))
+    body: SetUserMangaReadingStatusDto,
     @Request() req,
   ) {
     const user = req.user
     const { status } = body
-    console.log('status', status)
-    console.log('user', user)
-    console.log('id', id)
     const command = new SetUserMangaReadingStatusCommand(user.id, id, status)
     return await this.commandBus.execute(command)
   }
@@ -100,10 +97,10 @@ export class MangaController {
 
   @Put(':id/status')
   @UseGuards(JwtAuthGuard)
-  @UsePipes(new ZodValidationPipe(updateUserMangaReadingStatusSchema))
   async updateUserMangaReadingStatus(
     @Param('id') id: string,
-    @Body() body: UpdateUserMangaReadingStatusDto,
+    @Body(new ZodValidationPipe(updateUserMangaReadingStatusSchema))
+    body: UpdateUserMangaReadingStatusDto,
     @Request() req,
   ) {
     const user = req.user

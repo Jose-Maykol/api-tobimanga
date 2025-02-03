@@ -17,7 +17,6 @@ export class SetUserMangaReadingStatusHandler {
 
   async execute(command: SetUserMangaReadingStatusCommand) {
     const { userId, mangaId, status } = command
-    console.log('SetUserMangaReadingStatusCommand', command)
     const mangaExists = await this.mangaRepository.existsById(mangaId)
 
     if (!mangaExists) {
@@ -30,7 +29,7 @@ export class SetUserMangaReadingStatusHandler {
       readingStatus: status,
     })
 
-    await this.userMangaRepository.save(userId, mangaId, status)
+    await this.userMangaRepository.save(newUserManga)
 
     return {
       message: 'El estado de lectura del manga del usuario ha sido actualizado',

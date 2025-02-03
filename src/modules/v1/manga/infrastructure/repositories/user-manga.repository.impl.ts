@@ -6,26 +6,19 @@ import { MangaReadingStatus } from '../../domain/enums/manga-reading-status.enum
 import { eq } from 'drizzle-orm'
 import { userChapters } from '@/modules/database/schemas/user-chapter.schema'
 import { chapters } from '@/modules/database/schemas/chapter.schema'
+import { UserMangaMapper } from '../mappers/user-manga.mapper'
+import { UserManga } from '../../domain/entities/user-manga.entity'
 
 @Injectable()
 export class UserMangaRepositoryImpl implements UserMangaRepository {
   constructor(private readonly drizzle: DrizzleService) {}
 
-  async save(
-    userId: string,
-    mangaId: string,
-    readingStatus: MangaReadingStatus,
-  ): Promise<void> {
+  async save(userManga: UserManga): Promise<void> {
     const db = this.drizzle.db
-
+    const userMangaPersistence = UserMangaMapper.toPersistence(userManga)
     await db.transaction(async (tx) => {
-      await this.drizzle.db.insert(userMangas).values({
-        userId,
-        mangaId,
-        readingStatus,
-        createdAt: new Date(),
-      })
-
+      await this.drizzle.db.insert(userMangas).values(userMangaPersistence)
+      const { userId, mangaId, readingStatus } = userMangaPersistence
       if (readingStatus === MangaReadingStatus.READING) {
         await this.createChapters(userId, mangaId, tx)
       }

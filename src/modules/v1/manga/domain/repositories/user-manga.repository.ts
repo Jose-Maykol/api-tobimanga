@@ -1,4 +1,6 @@
+import { UserManga } from '../entities/user-manga.entity'
+
 export interface UserMangaRepository {
-  save(userId: string, mangaId: string, readingStatus: string): Promise<void>
+  save(userManga: UserManga): Promise<void>
   createChapters(userId: string, mangaId: string): Promise<void>
 }
