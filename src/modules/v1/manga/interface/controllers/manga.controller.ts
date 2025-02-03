@@ -32,6 +32,8 @@ import {
   SetUserMangaReadingStatusDto,
   setUserMangaReadingStatusSchema,
 } from '../dto/set-user-manga-reading-status.dto'
+import { SetUserMangaReadingStatusCommand } from '../../application/commands/set-user-manga-reading-status.command'
+
 @Controller()
 export class MangaController {
   constructor(
@@ -72,14 +74,7 @@ export class MangaController {
     return await this.commandBus.execute(command)
   }
 
-  @Post('sync-chapters')
-  /* @UseGuards(JwtAuthGuard) */
-  async syncAllMangasChapters() {
-    const command = new SyncAllMangasChaptersCommand()
-    return await this.commandBus.execute(command)
-  }
-
-  @Post('id/status')
+  @Post(':id/status')
   @UseGuards(JwtAuthGuard)
   @UsePipes(new ZodValidationPipe(setUserMangaReadingStatusSchema))
   async setUserMangaReadingStatus(
@@ -89,11 +84,17 @@ export class MangaController {
   ) {
     const user = req.user
     const { status } = body
-    const command = new UpdateUserMangaReadingStatusCommand(
-      user.sub,
-      id,
-      status,
-    )
+    console.log('status', status)
+    console.log('user', user)
+    console.log('id', id)
+    const command = new SetUserMangaReadingStatusCommand(user.id, id, status)
+    return await this.commandBus.execute(command)
+  }
+
+  @Post('sync-chapters')
+  /* @UseGuards(JwtAuthGuard) */
+  async syncAllMangasChapters() {
+    const command = new SyncAllMangasChaptersCommand()
     return await this.commandBus.execute(command)
   }
 

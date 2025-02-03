@@ -13,6 +13,7 @@ export interface MangaRepository {
   ): Promise<any>
   findOneByTitle(title: string): Promise<any>
   exists(title: string): Promise<boolean>
+  existsById(id: string): Promise<boolean>
   save(
     manga: Manga,
     transaction: PgTransaction<

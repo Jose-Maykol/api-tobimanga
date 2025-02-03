@@ -1,17 +1,11 @@
-export enum ReadingStatusEnum {
-  READING = 'READING',
-  COMPLETED = 'COMPLETED',
-  DROPPED = 'DROPPED',
-  PLANNING_TO_READ = 'PLANNING_TO_READ',
-  PAUSED = 'PAUSED',
-  UNKNOWN = 'UNKNOWN',
-}
+import { MangaReadingStatus } from '../enums/manga-reading-status.enum'
+
 type UsuarioMangaProps = {
   id?: string
   userId: string
   mangaId: string
   rating?: number
-  readingStatus: ReadingStatusEnum
+  readingStatus: MangaReadingStatus
   createdAt?: Date
   updatedAt?: Date
 }
@@ -20,7 +14,7 @@ export class UsuarioManga {
   private userId: string
   private mangaId: string
   private rating?: number
-  private readingStatus: ReadingStatusEnum
+  private readingStatus: MangaReadingStatus
   private createdAt: Date
   private updatedAt?: Date
 
@@ -32,11 +26,11 @@ export class UsuarioManga {
     this.createdAt = new Date()
   }
 
-  changeReadingStatus(readingStatus: ReadingStatusEnum): void {
+  changeReadingStatus(readingStatus: MangaReadingStatus): void {
     this.readingStatus = readingStatus
   }
 
-  setReadingStatus(readingStatus: ReadingStatusEnum): void {
+  setReadingStatus(readingStatus: MangaReadingStatus): void {
     this.readingStatus = readingStatus
     this.updatedAt = new Date()
   }

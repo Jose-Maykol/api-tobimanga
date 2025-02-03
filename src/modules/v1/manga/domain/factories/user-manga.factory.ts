@@ -1,10 +1,11 @@
-import { ReadingStatusEnum, UsuarioManga } from '../entities/user-manga.entity'
+import { UsuarioManga } from '../entities/user-manga.entity'
+import { MangaReadingStatus } from '../enums/manga-reading-status.enum'
 
 type UsuarioMangaProps = {
   userId: string
   mangaId: string
   rating?: number
-  readingStatus: ReadingStatusEnum
+  readingStatus: MangaReadingStatus
 }
 
 export class UserMangaFactory {

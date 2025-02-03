@@ -3,7 +3,7 @@ import { SetUserMangaReadingStatusCommand } from '../set-user-manga-reading-stat
 import { MangaRepository } from '../../../domain/repositories/manga.repository'
 import { UserMangaRepository } from '../../../domain/repositories/user-manga.repository'
 import { UserMangaFactory } from '../../../domain/factories/user-manga.factory'
-import { Inject } from '@nestjs/common'
+import { Inject, NotFoundException } from '@nestjs/common'
 
 @CommandHandler(SetUserMangaReadingStatusCommand)
 export class SetUserMangaReadingStatusHandler {
@@ -17,14 +17,12 @@ export class SetUserMangaReadingStatusHandler {
 
   async execute(command: SetUserMangaReadingStatusCommand) {
     const { userId, mangaId, status } = command
-
-    const mangaExists = await this.mangaRepository.exists(mangaId)
+    console.log('SetUserMangaReadingStatusCommand', command)
+    const mangaExists = await this.mangaRepository.existsById(mangaId)
 
     if (!mangaExists) {
-      throw new Error('Este manga no existe')
+      throw new NotFoundException('El manga no existe')
     }
-
-    //TODO: Validar si el usuario existe
 
     const newUserManga = this.userMangaFactory.create({
       userId,
@@ -32,7 +30,7 @@ export class SetUserMangaReadingStatusHandler {
       readingStatus: status,
     })
 
-    await this.userMangaRepository.save(userId, mangaId, newUserManga)
+    await this.userMangaRepository.save(userId, mangaId, status)
 
     return {
       message: 'El estado de lectura del manga del usuario ha sido actualizado',
