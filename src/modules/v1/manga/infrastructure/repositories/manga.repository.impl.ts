@@ -129,6 +129,14 @@ export class MangaRepositoryImpl implements MangaRepository {
     return manga.length > 0
   }
 
+  async existsById(id: string): Promise<boolean> {
+    const manga = await this.drizzle.db
+      .select()
+      .from(mangas)
+      .where(eq(mangas.id, id))
+    return manga.length > 0
+  }
+
   async save(
     manga: Manga,
     transaction: PgTransaction<
