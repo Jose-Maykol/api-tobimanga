@@ -5,5 +5,5 @@ export interface AuthorRepository {
   findById(id: string): Promise<any>
   findByIds(ids: string[]): Promise<any[]>
   exists(name: string): Promise<boolean>
-  save(author: Author): Promise<{ id: string }>
+  save(author: Author): Promise<Author>
 }

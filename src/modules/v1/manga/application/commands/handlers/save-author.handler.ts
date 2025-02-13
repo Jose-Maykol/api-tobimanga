@@ -14,7 +14,9 @@ export class SaveAuthorHandler implements ICommandHandler<SaveAuthorCommand> {
 
   async execute(command: SaveAuthorCommand) {
     const { author } = command
-    const authorExists = await this.authorRepository.exists(author.name)
+    const { name } = author
+
+    const authorExists = await this.authorRepository.exists(name)
 
     if (authorExists) {
       throw new ConflictException('Este autor ya existe')
@@ -26,7 +28,7 @@ export class SaveAuthorHandler implements ICommandHandler<SaveAuthorCommand> {
     return {
       message: 'Autor creado con exito',
       author: {
-        id: savedAuthor.id,
+        id: savedAuthor.getId(),
       },
     }
   }

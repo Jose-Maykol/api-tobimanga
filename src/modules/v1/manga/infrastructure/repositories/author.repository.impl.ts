@@ -4,6 +4,7 @@ import { AuthorRepository } from '../../domain/repositories/author.repository'
 import { authors } from '@/modules/database/schemas/author.schema'
 import { eq, inArray } from 'drizzle-orm'
 import { Author } from '../../domain/entities/author.entity'
+import { AuthorMapper } from '../mappers/author.mapper'
 
 @Injectable()
 export class AuthorRepositoryImpl implements AuthorRepository {
@@ -40,19 +41,16 @@ export class AuthorRepositoryImpl implements AuthorRepository {
     return author.length > 0
   }
 
-  async save(author: Author): Promise<{ id: string }> {
-    const name = author.getName()
-    const insertedAuthor = await this.drizzle.db
-      .insert(authors)
-      .values({
-        name,
-      })
-      .returning({
-        id: authors.id,
-      })
+  async save(author: Author): Promise<Author> {
+    const persistenceAuthor = AuthorMapper.toPersistence(author)
 
-    return {
-      id: insertedAuthor[0].id,
-    }
+    const savedAuthor = await this.drizzle.db
+      .insert(authors)
+      .values(persistenceAuthor)
+      .returning()
+
+    const { id, name, createdAt, updatedAt } = savedAuthor[0]
+
+    return AuthorMapper.toDomain({ id, name, createdAt, updatedAt })
   }
 }
