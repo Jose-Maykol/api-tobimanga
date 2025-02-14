@@ -10,9 +10,9 @@ import { AuthorMapper } from '../mappers/author.mapper'
 export class AuthorRepositoryImpl implements AuthorRepository {
   constructor(private readonly drizzle: DrizzleService) {}
 
-  async find(): Promise<any[]> {
+  async findAll(): Promise<any[]> {
     const allAuthors = await this.drizzle.db.select().from(authors)
-    return allAuthors
+    return allAuthors.map((author) => AuthorMapper.toDomain(author))
   }
 
   async findById(id: string): Promise<any> {
@@ -21,7 +21,7 @@ export class AuthorRepositoryImpl implements AuthorRepository {
       .from(authors)
       .where(eq(authors.id, id))
 
-    return author[0]
+    return AuthorMapper.toDomain(author[0])
   }
 
   async findByIds(ids: string[]): Promise<any[]> {
@@ -30,15 +30,16 @@ export class AuthorRepositoryImpl implements AuthorRepository {
       .from(authors)
       .where(inArray(authors.id, ids))
 
-    return listAuthors
+    return listAuthors.map((author) => AuthorMapper.toDomain(author))
   }
 
-  async exists(name: string): Promise<boolean> {
+  async findByName(name: string): Promise<any> {
     const author = await this.drizzle.db
       .select()
       .from(authors)
       .where(eq(authors.name, name))
-    return author.length > 0
+
+    return AuthorMapper.toDomain(author[0])
   }
 
   async save(author: Author): Promise<Author> {

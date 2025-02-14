@@ -1,8 +1,9 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs'
 import { SaveAuthorCommand } from '../save-author.command'
-import { ConflictException, Inject } from '@nestjs/common'
+import { Inject } from '@nestjs/common'
 import { AuthorRepository } from '../../../domain/repositories/author.repository'
 import { AuthorFactory } from '../../../domain/factories/author.factory'
+import { AuthorAlreadyExistsException } from '../../exceptions/author-already-exist.exception'
 
 @CommandHandler(SaveAuthorCommand)
 export class SaveAuthorHandler implements ICommandHandler<SaveAuthorCommand> {
@@ -16,10 +17,10 @@ export class SaveAuthorHandler implements ICommandHandler<SaveAuthorCommand> {
     const { author } = command
     const { name } = author
 
-    const authorExists = await this.authorRepository.exists(name)
+    const authorExists = await this.authorRepository.findByName(name)
 
     if (authorExists) {
-      throw new ConflictException('Este autor ya existe')
+      throw new AuthorAlreadyExistsException(authorExists.getName())
     }
 
     const authorEntity = this.authorFactory.create(author)
