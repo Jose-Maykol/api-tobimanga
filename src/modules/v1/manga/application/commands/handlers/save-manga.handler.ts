@@ -74,7 +74,15 @@ export class SaveMangaHandler implements ICommandHandler<SaveMangaCommand> {
       bannerImage: uploadedBannerImage.secure_url,
     })
 
-    const authorsEntity = authorsData.map((author) => new Author(author))
+    const authorsEntity = authorsData.map(
+      (author) =>
+        new Author({
+          id: author.getId(),
+          name: author.getName(),
+          createdAt: author.getCreatedAt(),
+          updatedAt: author.getUpdatedAt(),
+        }),
+    )
     const genresEntity = genresData.map((genre) => new Genre(genre))
     const demographicEntity = new Demographic(demographicData)
 
