@@ -1,3 +1,4 @@
+import { InvalidAuthorException } from '../../application/exceptions/invalid-author.exception'
 import AuthorType from '../types/author'
 
 export class Author {
@@ -36,5 +37,16 @@ export class Author {
 
   setUpdatedAt(updatedAt: Date): void {
     this.updatedAt = updatedAt
+  }
+
+  validateName(name: string): void {
+    if (name?.trim().length === 0) {
+      throw new InvalidAuthorException('El nombre del autor es requerido')
+    }
+    if (name.length > 100) {
+      throw new InvalidAuthorException(
+        'El nombre del autor no puede exceder los 100 caracteres',
+      )
+    }
   }
 }
