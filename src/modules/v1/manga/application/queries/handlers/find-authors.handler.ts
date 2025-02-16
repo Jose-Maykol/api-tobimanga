@@ -1,7 +1,8 @@
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs'
 import { FindAuthorsQuery } from '../find-authors.query'
 import { AuthorRepository } from '../../../domain/repositories/author.repository'
-import { Inject, NotFoundException } from '@nestjs/common'
+import { Inject } from '@nestjs/common'
+import { AuthorNotFoundException } from '../../exceptions/author-not-found.exception'
 
 @QueryHandler(FindAuthorsQuery)
 export class FindAuthorsHandler implements IQueryHandler<FindAuthorsQuery> {
@@ -13,8 +14,8 @@ export class FindAuthorsHandler implements IQueryHandler<FindAuthorsQuery> {
   async execute() {
     const authors = await this.authorRepository.findAll()
 
-    if (authors.length === 0) {
-      throw new NotFoundException('No se encontraron autores')
+    if (authors?.length === 0) {
+      throw new AuthorNotFoundException()
     }
 
     return {

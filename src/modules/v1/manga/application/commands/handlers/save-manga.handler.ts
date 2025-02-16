@@ -50,7 +50,7 @@ export class SaveMangaHandler implements ICommandHandler<SaveMangaCommand> {
       throw new NotFoundException('La demografia del manga no existe')
     }
 
-    if (authorsData.length !== authors.length) {
+    if (authorsData?.length !== authors.length) {
       throw new NotFoundException('Uno o mas autores no existen')
     }
 

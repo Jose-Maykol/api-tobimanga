@@ -21,6 +21,8 @@ export class AuthorRepositoryImpl implements AuthorRepository {
       .from(authors)
       .where(eq(authors.id, id))
 
+    if (author.length === 0) return null
+
     return AuthorMapper.toDomain(author[0])
   }
 
@@ -30,14 +32,18 @@ export class AuthorRepositoryImpl implements AuthorRepository {
       .from(authors)
       .where(inArray(authors.id, ids))
 
+    if (listAuthors.length === 0) return []
+
     return listAuthors.map((author) => AuthorMapper.toDomain(author))
   }
 
-  async findByName(name: string): Promise<any> {
+  async findByName(name: string): Promise<Author | null> {
     const author = await this.drizzle.db
       .select()
       .from(authors)
       .where(eq(authors.name, name))
+
+    if (author.length === 0) return null
 
     return AuthorMapper.toDomain(author[0])
   }
