@@ -15,7 +15,7 @@ export class SaveGenreHandler implements ICommandHandler<SaveGenreCommand> {
   async execute(command: SaveGenreCommand) {
     const { genre } = command
 
-    const genreExists = await this.genreRepository.exists(genre.name)
+    const genreExists = await this.genreRepository.findByName(genre.name)
 
     if (genreExists) {
       throw new ConflictException('Este genero ya existe')
@@ -27,7 +27,7 @@ export class SaveGenreHandler implements ICommandHandler<SaveGenreCommand> {
     return {
       message: 'Genero creado con exito',
       genre: {
-        id: savedGenre.id,
+        id: savedGenre.getId(),
       },
     }
   }

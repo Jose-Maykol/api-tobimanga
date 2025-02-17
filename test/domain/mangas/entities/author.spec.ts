@@ -1,9 +1,9 @@
 import { InvalidAuthorException } from '@/modules/v1/manga/application/exceptions/invalid-author.exception'
 import { Author } from '@/modules/v1/manga/domain/entities/author.entity'
-import AuthorType from '@/modules/v1/manga/domain/types/author'
+import AuthorRecord from '@/modules/v1/manga/domain/types/author'
 
 describe('Author Entity', () => {
-  const validAuthorProps: AuthorType = {
+  const validAuthorProps: AuthorRecord = {
     id: '1',
     name: 'Author Name',
     createdAt: new Date(),

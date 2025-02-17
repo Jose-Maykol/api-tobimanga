@@ -1,8 +1,8 @@
-type AuthorRecord = {
+type GenreRecord = {
   id: string
   name: string
   createdAt: Date
   updatedAt: Date | null
 }
 
-export default AuthorRecord
+export default GenreRecord

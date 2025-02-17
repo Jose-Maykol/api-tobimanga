@@ -1,8 +1,8 @@
 import { Author } from '../../domain/entities/author.entity'
-import AuthorType from '../../domain/types/author'
+import AuthorRecord from '../../domain/types/author'
 
 export class AuthorMapper {
-  static toDomain(author: AuthorType): Author {
+  static toDomain(author: AuthorRecord): Author {
     return new Author({
       id: author.id,
       name: author.name,
@@ -11,7 +11,7 @@ export class AuthorMapper {
     })
   }
 
-  static toPersistence(author: Author): AuthorType {
+  static toPersistence(author: Author): AuthorRecord {
     return {
       id: author.getId(),
       name: author.getName(),

@@ -1,5 +1,5 @@
 import { InvalidAuthorException } from '../../application/exceptions/invalid-author.exception'
-import AuthorType from '../types/author'
+import AuthorRecord from '../types/author'
 
 export class Author {
   private id: string
@@ -7,7 +7,7 @@ export class Author {
   private createdAt: Date
   private updatedAt: Date | null
 
-  constructor(props: AuthorType) {
+  constructor(props: AuthorRecord) {
     this.id = props.id
     this.name = props.name
     this.createdAt = props.createdAt
@@ -37,6 +37,10 @@ export class Author {
 
   setUpdatedAt(updatedAt: Date): void {
     this.updatedAt = updatedAt
+  }
+
+  validate(): void {
+    this.validateName(this.name)
   }
 
   validateName(name: string): void {

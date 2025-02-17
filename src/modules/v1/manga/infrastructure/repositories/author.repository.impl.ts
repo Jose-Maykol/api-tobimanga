@@ -10,30 +10,27 @@ import { AuthorMapper } from '../mappers/author.mapper'
 export class AuthorRepositoryImpl implements AuthorRepository {
   constructor(private readonly drizzle: DrizzleService) {}
 
-  async findAll(): Promise<any[]> {
+  async findAll(): Promise<Author[] | null> {
     const allAuthors = await this.drizzle.db.select().from(authors)
+    if (allAuthors.length === 0) return null
     return allAuthors.map((author) => AuthorMapper.toDomain(author))
   }
 
-  async findById(id: string): Promise<any> {
+  async findById(id: string): Promise<Author | null> {
     const author = await this.drizzle.db
       .select()
       .from(authors)
       .where(eq(authors.id, id))
-
     if (author.length === 0) return null
-
     return AuthorMapper.toDomain(author[0])
   }
 
-  async findByIds(ids: string[]): Promise<any[]> {
+  async findByIds(ids: string[]): Promise<Author[] | null> {
     const listAuthors = await this.drizzle.db
       .select()
       .from(authors)
       .where(inArray(authors.id, ids))
-
     if (listAuthors.length === 0) return []
-
     return listAuthors.map((author) => AuthorMapper.toDomain(author))
   }
 
@@ -42,22 +39,17 @@ export class AuthorRepositoryImpl implements AuthorRepository {
       .select()
       .from(authors)
       .where(eq(authors.name, name))
-
     if (author.length === 0) return null
-
     return AuthorMapper.toDomain(author[0])
   }
 
   async save(author: Author): Promise<Author> {
     const persistenceAuthor = AuthorMapper.toPersistence(author)
-
     const savedAuthor = await this.drizzle.db
       .insert(authors)
       .values(persistenceAuthor)
       .returning()
-
     const { id, name, createdAt, updatedAt } = savedAuthor[0]
-
     return AuthorMapper.toDomain({ id, name, createdAt, updatedAt })
   }
 }
