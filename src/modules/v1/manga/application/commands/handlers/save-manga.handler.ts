@@ -9,8 +9,6 @@ import { AuthorRepository } from '../../../domain/repositories/author.repository
 import { GenreRepository } from '../../../domain/repositories/genre.repository'
 import { DemographicRepository } from '../../../domain/repositories/demographic.repository'
 import { Demographic } from '../../../domain/entities/demographic.entity'
-import { Author } from '../../../domain/entities/author.entity'
-import { Genre } from '../../../domain/entities/genre.entity'
 
 @CommandHandler(SaveMangaCommand)
 export class SaveMangaHandler implements ICommandHandler<SaveMangaCommand> {
@@ -54,7 +52,7 @@ export class SaveMangaHandler implements ICommandHandler<SaveMangaCommand> {
       throw new NotFoundException('Uno o mas autores no existen')
     }
 
-    if (genresData.length !== genres.length) {
+    if (genresData?.length !== genres.length) {
       throw new NotFoundException('Uno o mas generos no existen')
     }
 
@@ -74,20 +72,10 @@ export class SaveMangaHandler implements ICommandHandler<SaveMangaCommand> {
       bannerImage: uploadedBannerImage.secure_url,
     })
 
-    const authorsEntity = authorsData.map(
-      (author) =>
-        new Author({
-          id: author.getId(),
-          name: author.getName(),
-          createdAt: author.getCreatedAt(),
-          updatedAt: author.getUpdatedAt(),
-        }),
-    )
-    const genresEntity = genresData.map((genre) => new Genre(genre))
     const demographicEntity = new Demographic(demographicData)
 
-    newManga.addAuthors(authorsEntity)
-    newManga.addGenres(genresEntity)
+    newManga.addAuthors(authorsData)
+    newManga.addGenres(genresData)
     newManga.addDemographic(demographicEntity)
 
     const savedManga = await this.drizzleService.db.transaction(async (tx) => {

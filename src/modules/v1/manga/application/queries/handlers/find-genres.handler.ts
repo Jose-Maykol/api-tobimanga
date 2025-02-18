@@ -13,7 +13,7 @@ export class FindGenresHandler implements IQueryHandler<FindGenresQuery> {
   async execute() {
     const genres = await this.genreRepository.find()
 
-    if (genres.length === 0) {
+    if (!genres) {
       throw new NotFoundException('No se encontraron géneros')
     }
 

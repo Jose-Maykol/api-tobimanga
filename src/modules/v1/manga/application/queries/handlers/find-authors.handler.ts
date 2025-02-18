@@ -14,7 +14,7 @@ export class FindAuthorsHandler implements IQueryHandler<FindAuthorsQuery> {
   async execute() {
     const authors = await this.authorRepository.findAll()
 
-    if (authors?.length === 0) {
+    if (!authors) {
       throw new AuthorNotFoundException()
     }
 
