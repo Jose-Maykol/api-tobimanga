@@ -1,4 +1,4 @@
-import { InvalidAuthorException } from '../../application/exceptions/invalid-author.exception'
+import { InvalidAuthorException } from '../exceptions/invalid-author.exception'
 import AuthorRecord from '../types/author'
 
 export class Author {

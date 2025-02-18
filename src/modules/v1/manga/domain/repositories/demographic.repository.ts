@@ -1,6 +1,7 @@
+import { Demographic } from '../entities/demographic.entity'
+
 export interface DemographicRepository {
-  find(): Promise<any[]>
-  findById(id: string): Promise<any>
-  exists(name: string): Promise<boolean>
-  save(name: string): Promise<{ id: string }>
+  findAll(): Promise<Demographic[] | null>
+  findById(id: string): Promise<Demographic | null>
+  save(demographic: Demographic): Promise<Demographic>
 }

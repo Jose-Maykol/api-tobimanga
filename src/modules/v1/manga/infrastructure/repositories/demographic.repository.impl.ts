@@ -3,45 +3,37 @@ import { DemographicRepository } from '../../domain/repositories/demographic.rep
 import { DrizzleService } from '@/modules/database/services/drizzle.service'
 import { demographics } from '@/modules/database/schemas/demographic.schema'
 import { eq } from 'drizzle-orm'
+import { Demographic } from '../../domain/entities/demographic.entity'
+import { DemographicMapper } from '../mappers/demographic.mapper'
 
 @Injectable()
 export class DemographicRepositoryImpl implements DemographicRepository {
   constructor(private readonly drizzle: DrizzleService) {}
 
-  async find(): Promise<any[]> {
+  async findAll(): Promise<Demographic[] | null> {
     const allDemographics = await this.drizzle.db.select().from(demographics)
-    return allDemographics
+    if (allDemographics.length === 0) return null
+    return allDemographics.map((demographic) =>
+      DemographicMapper.toDomain(demographic),
+    )
   }
 
-  async findById(id: string): Promise<any> {
+  async findById(id: string): Promise<Demographic | null> {
     const demographic = await this.drizzle.db
       .select()
       .from(demographics)
       .where(eq(demographics.id, id))
-    return demographic[0]
+    if (demographic.length === 0) return null
+    return DemographicMapper.toDomain(demographic[0])
   }
 
-  async exists(name: string): Promise<boolean> {
-    const demographic = await this.drizzle.db
-      .select()
-      .from(demographics)
-      .where(eq(demographics.name, name))
-
-    return demographic.length > 0
-  }
-
-  async save(name: string): Promise<{ id: string }> {
+  async save(demographic: Demographic): Promise<Demographic> {
+    const persistenceDemographic = DemographicMapper.toPersistence(demographic)
     const insertedDemographic = await this.drizzle.db
       .insert(demographics)
-      .values({
-        name,
-      })
-      .returning({
-        id: demographics.id,
-      })
+      .values(persistenceDemographic)
+      .returning()
 
-    return {
-      id: insertedDemographic[0].id,
-    }
+    return DemographicMapper.toDomain(insertedDemographic[0])
   }
 }

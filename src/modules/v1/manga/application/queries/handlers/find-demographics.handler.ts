@@ -1,7 +1,8 @@
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs'
 import { FindDemographicsQuery } from '../find-demographics.query'
-import { Inject, NotFoundException } from '@nestjs/common'
+import { Inject } from '@nestjs/common'
 import { DemographicRepository } from '../../../domain/repositories/demographic.repository'
+import { DemographicNotFoundException } from '../../exceptions/demographic-not-found.exception'
 
 @QueryHandler(FindDemographicsQuery)
 export class FindDemographicsHandler
@@ -13,10 +14,10 @@ export class FindDemographicsHandler
   ) {}
 
   async execute() {
-    const demographics = await this.demographicRepository.find()
+    const demographics = await this.demographicRepository.findAll()
 
-    if (demographics.length === 0) {
-      throw new NotFoundException('No se encontraron demograficos')
+    if (!demographics) {
+      throw new DemographicNotFoundException()
     }
 
     return {

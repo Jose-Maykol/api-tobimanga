@@ -1,4 +1,4 @@
-import { InvalidAuthorException } from '@/modules/v1/manga/application/exceptions/invalid-author.exception'
+import { InvalidAuthorException } from '@/modules/v1/manga/domain/exceptions/invalid-author.exception'
 import { Author } from '@/modules/v1/manga/domain/entities/author.entity'
 import AuthorRecord from '@/modules/v1/manga/domain/types/author'
 

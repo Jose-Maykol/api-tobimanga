@@ -8,7 +8,6 @@ import { DrizzleService } from '@/modules/database/services/drizzle.service'
 import { AuthorRepository } from '../../../domain/repositories/author.repository'
 import { GenreRepository } from '../../../domain/repositories/genre.repository'
 import { DemographicRepository } from '../../../domain/repositories/demographic.repository'
-import { Demographic } from '../../../domain/entities/demographic.entity'
 
 @CommandHandler(SaveMangaCommand)
 export class SaveMangaHandler implements ICommandHandler<SaveMangaCommand> {
@@ -72,11 +71,9 @@ export class SaveMangaHandler implements ICommandHandler<SaveMangaCommand> {
       bannerImage: uploadedBannerImage.secure_url,
     })
 
-    const demographicEntity = new Demographic(demographicData)
-
     newManga.addAuthors(authorsData)
     newManga.addGenres(genresData)
-    newManga.addDemographic(demographicEntity)
+    newManga.addDemographic(demographicData)
 
     const savedManga = await this.drizzleService.db.transaction(async (tx) => {
       const savedManga = await this.mangaRepository.save(newManga, tx)
