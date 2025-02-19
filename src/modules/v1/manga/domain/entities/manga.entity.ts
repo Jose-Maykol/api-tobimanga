@@ -1,21 +1,15 @@
+import MangaRecord from '../types/manga'
 import { Author } from './author.entity'
 import { Demographic } from './demographic.entity'
 import { Genre } from './genre.entity'
 
-type MangaProps = {
-  originalName: string
-  alternativeNames?: string[]
-  sinopsis: string
-  chapters: number
-  releaseDate: Date
-  coverImage: string
-  bannerImage: string
-  publicationStatus: string
-}
+type MangaProps = Omit<MangaRecord, 'authors' | 'genres' | 'demographic'>
 
 export class Manga {
   private originalName: string
-  private alternativeNames?: string[]
+  private alternativeNames: string[] | null
+  private slugName: string
+  private scrappingName: string
   private sinopsis: string
   private chapters: number
   private releaseDate: Date
@@ -28,18 +22,22 @@ export class Manga {
   private genres: Genre[] = []
   private demographic: Demographic
   private createdAt: Date
-  private updatedAt?: Date
+  private updatedAt: Date | null
 
   constructor(props: MangaProps) {
     this.originalName = props.originalName
     this.alternativeNames = props.alternativeNames
+    this.slugName = props.slugName
+    this.scrappingName = props.scrappingName
+    this.rating = props.rating
     this.sinopsis = props.sinopsis
     this.chapters = props.chapters
     this.releaseDate = props.releaseDate
     this.coverImage = props.coverImage
     this.bannerImage = props.bannerImage
     this.publicationStatus = props.publicationStatus
-    this.createdAt = new Date()
+    this.createdAt = props.createdAt
+    this.updatedAt = props.updatedAt
   }
 
   addAuthors(authors: Author[]): void {
@@ -58,10 +56,7 @@ export class Manga {
     return this.originalName
   }
 
-  getAlternativeNames(): string[] {
-    if (this.alternativeNames === undefined) {
-      return []
-    }
+  getAlternativeNames(): string[] | null {
     return this.alternativeNames
   }
 

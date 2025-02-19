@@ -62,7 +62,7 @@ export class SaveMangaHandler implements ICommandHandler<SaveMangaCommand> {
 
     const newManga = this.mangaFactory.create({
       originalName: manga.originalName,
-      alternativeNames: manga.alternativesNames,
+      alternativeNames: manga.alternativesNames || null,
       sinopsis: manga.sinopsis,
       chapters: manga.chapters,
       releaseDate: new Date(manga.releaseDate),

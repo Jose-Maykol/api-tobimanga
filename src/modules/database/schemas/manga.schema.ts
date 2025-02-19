@@ -19,6 +19,8 @@ export const mangas = pgTable('mangas', {
     .notNull()
     .references(() => demographics.id, { onDelete: 'cascade' }),
   originalName: text('original_name').notNull().unique(),
+  slugName: text('slug_name').unique(), // TODO: Add unique constraint
+  scrappingName: text('scrapping_name').unique(), // TODO: Add unique constraint
   alternativeNames: text('alternative_names').array(),
   sinopsis: text('sinopsis').notNull(),
   chapters: smallint('chapters').notNull(),
