@@ -33,7 +33,7 @@ export class SaveMangaHandler implements ICommandHandler<SaveMangaCommand> {
 
     const [mangaExists, demographicData, authorsData, genresData] =
       await Promise.all([
-        this.mangaRepository.exists(manga.originalName),
+        this.mangaRepository.existsByTitle(manga.originalName),
         this.demographicRepository.findById(demographic.id),
         this.authorRepository.findByIds(authorIds),
         this.genreRepository.findByIds(genreIds),
@@ -71,11 +71,13 @@ export class SaveMangaHandler implements ICommandHandler<SaveMangaCommand> {
       bannerImage: uploadedBannerImage.secure_url,
     })
 
-    newManga.addAuthors(authorsData)
-    newManga.addGenres(genresData)
-    newManga.addDemographic(demographicData)
+    newManga.authors = authorsData
+    newManga.genres = genresData
+    newManga.demographic = demographicData
 
-    const savedManga = await this.drizzleService.db.transaction(async (tx) => {
+    const savedManga = await this.mangaRepository.save(newManga)
+
+    /* const savedManga = await this.drizzleService.db.transaction(async (tx) => {
       const savedManga = await this.mangaRepository.save(newManga, tx)
       const { id: mangaId } = savedManga
       await this.mangaRepository.saveAuthors(authorIds, mangaId, tx)
@@ -83,7 +85,7 @@ export class SaveMangaHandler implements ICommandHandler<SaveMangaCommand> {
       await this.mangaRepository.saveChapters(manga.chapters, mangaId, tx)
 
       return savedManga
-    })
+    }) */
 
     return {
       message: 'Manga creado exitosamente',

@@ -23,12 +23,12 @@ export class FindPaginatedMangasHandler
       throw new NotFoundException('No se encontraron mangas')
     }
 
-    const pages = Math.ceil(total[0].count / limit)
+    const pages = Math.ceil(total.count / limit)
     const hasNextPage = page < pages
     const hasPreviousPage = page > 1
 
     const pagination = {
-      total: total[0].count,
+      total: total.count,
       perPage: limit,
       currentPage: page,
       pages,

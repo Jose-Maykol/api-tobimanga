@@ -16,7 +16,7 @@ export class UpdateUserMangaReadingStatusHandler {
     console.log(`Updating user manga reading status: ${status}`)
     console.log(`User ID: ${userId}`)
 
-    const mangaExists = await this.mangaRepository.exists(mangaId)
+    const mangaExists = await this.mangaRepository.existsById(mangaId)
 
     if (!mangaExists) {
       throw new Error('Este manga no existe')
