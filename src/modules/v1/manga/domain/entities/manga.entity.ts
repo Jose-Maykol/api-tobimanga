@@ -6,23 +6,24 @@ import { Genre } from './genre.entity'
 type MangaProps = Omit<MangaRecord, 'authors' | 'genres' | 'demographic'>
 
 export class Manga {
-  private originalName: string
-  private alternativeNames: string[] | null
-  private slugName: string
-  private scrappingName: string
-  private sinopsis: string
-  private chapters: number
-  private releaseDate: Date
-  private coverImage: string
-  private bannerImage: string
-  private publicationStatus: string
-  private rating: number
-  private active: boolean
-  private authors: Author[] = []
-  private genres: Genre[] = []
-  private demographic: Demographic
-  private createdAt: Date
-  private updatedAt: Date | null
+  private _id: string
+  private _originalName: string
+  private _alternativeNames: string[] | null
+  private _slugName: string
+  private _scrappingName: string
+  private _sinopsis: string
+  private _chapters: number
+  private _releaseDate: Date
+  private _coverImage: string
+  private _bannerImage: string
+  private _publicationStatus: string
+  private _rating: number
+  private _active: boolean
+  private _authors: Author[] = []
+  private _genres: Genre[] = []
+  private _demographic: Demographic
+  private _createdAt: Date
+  private _updatedAt: Date | null
 
   constructor(props: MangaProps) {
     this.originalName = props.originalName
@@ -40,67 +41,147 @@ export class Manga {
     this.updatedAt = props.updatedAt
   }
 
-  addAuthors(authors: Author[]): void {
-    this.authors = authors
+  public get id(): string {
+    return this._id
   }
 
-  addGenres(genres: Genre[]): void {
-    this.genres = genres
+  public set id(value: string) {
+    this._id = value
   }
 
-  addDemographic(demographic: Demographic): void {
-    this.demographic = demographic
+  public get originalName(): string {
+    return this._originalName
   }
 
-  getOriginalName(): string {
-    return this.originalName
+  public set originalName(value: string) {
+    this._originalName = value
   }
 
-  getAlternativeNames(): string[] | null {
-    return this.alternativeNames
+  public get alternativeNames(): string[] | null {
+    return this._alternativeNames
   }
 
-  getSinopsis(): string {
-    return this.sinopsis
+  public set alternativeNames(value: string[] | null) {
+    this._alternativeNames = value
   }
 
-  getChapters(): number {
-    return this.chapters
+  public get slugName(): string {
+    return this._slugName
   }
 
-  getReleaseDate(): Date {
-    return this.releaseDate
+  public set slugName(value: string) {
+    this._slugName = value
   }
 
-  getCoverImage(): string {
-    return this.coverImage
+  public get scrappingName(): string {
+    return this._scrappingName
   }
 
-  getBannerImage(): string {
-    return this.bannerImage
+  public set scrappingName(value: string) {
+    this._scrappingName = value
   }
 
-  getPublicationStatus(): string {
-    return this.publicationStatus
+  public get sinopsis(): string {
+    return this._sinopsis
   }
 
-  getRating(): number {
-    return this.rating
+  public set sinopsis(value: string) {
+    this._sinopsis = value
   }
 
-  getDemographic(): Demographic {
-    return this.demographic
+  public get chapters(): number {
+    return this._chapters
   }
 
-  getActive(): boolean {
-    return this.active
+  public set chapters(value: number) {
+    this._chapters = value
   }
 
-  getAuthors(): Author[] {
-    return this.authors
+  public get releaseDate(): Date {
+    return this._releaseDate
   }
 
-  getGenres(): Genre[] {
-    return this.genres
+  public set releaseDate(value: Date) {
+    this._releaseDate = value
+  }
+
+  public get coverImage(): string {
+    return this._coverImage
+  }
+
+  public set coverImage(value: string) {
+    this._coverImage = value
+  }
+
+  public get bannerImage(): string {
+    return this._bannerImage
+  }
+
+  public set bannerImage(value: string) {
+    this._bannerImage = value
+  }
+
+  public get publicationStatus(): string {
+    return this._publicationStatus
+  }
+
+  public set publicationStatus(value: string) {
+    this._publicationStatus = value
+  }
+
+  public get rating(): number {
+    return this._rating
+  }
+
+  public set rating(value: number) {
+    this._rating = value
+  }
+
+  public get active(): boolean {
+    return this._active
+  }
+
+  public set active(value: boolean) {
+    this._active = value
+  }
+
+  public get authors(): Author[] {
+    return this._authors
+  }
+
+  public set authors(value: Author[]) {
+    this._authors = value
+  }
+
+  public get genres(): Genre[] {
+    return this._genres
+  }
+
+  public set genres(value: Genre[]) {
+    this._genres = value
+  }
+
+  public get demographic(): Demographic {
+    return this._demographic
+  }
+
+  public set demographic(value: Demographic) {
+    this._demographic = value
+  }
+
+  public get createdAt(): Date {
+    return this._createdAt
+  }
+
+  public set createdAt(value: Date) {
+    this._createdAt = value
+  }
+
+  public get updatedAt(): Date | null {
+    return this._updatedAt
+  }
+
+  public set updatedAt(value: Date | null) {
+    this._updatedAt = value
   }
 }
