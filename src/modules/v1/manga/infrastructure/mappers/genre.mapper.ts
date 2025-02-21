@@ -13,10 +13,10 @@ export class GenreMapper {
 
   static toPersistence(genre: Genre): GenreRecord {
     return {
-      id: genre.getId(),
-      name: genre.getName(),
-      createdAt: genre.getCreatedAt(),
-      updatedAt: genre.getUpdatedAt(),
+      id: genre.id,
+      name: genre.name,
+      createdAt: genre.createdAt,
+      updatedAt: genre.updatedAt,
     }
   }
 }

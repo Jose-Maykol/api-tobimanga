@@ -27,7 +27,7 @@ export class SaveGenreHandler implements ICommandHandler<SaveGenreCommand> {
     return {
       message: 'Genero creado con exito',
       genre: {
-        id: savedGenre.getId(),
+        id: savedGenre.id,
       },
     }
   }

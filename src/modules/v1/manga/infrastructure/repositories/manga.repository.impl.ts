@@ -175,17 +175,23 @@ export class MangaRepositoryImpl implements MangaRepository {
 
   async existsByTitle(title: string): Promise<boolean> {
     const manga = await this.drizzle.db
-      .select()
+      .select({
+        exists: sql`1`,
+      })
       .from(mangas)
       .where(eq(mangas.originalName, title))
+      .limit(1)
     return manga.length > 0
   }
 
   async existsById(id: string): Promise<boolean> {
     const manga = await this.drizzle.db
-      .select()
+      .select({
+        exists: sql`1`,
+      })
       .from(mangas)
       .where(eq(mangas.id, id))
+      .limit(1)
     return manga.length > 0
   }
 
