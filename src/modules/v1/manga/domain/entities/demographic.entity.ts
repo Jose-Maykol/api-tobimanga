@@ -2,10 +2,10 @@ import { InvalidDemographicException } from '../exceptions/invalid-demographic.e
 import DemographicRecord from '../types/demographic'
 
 export class Demographic {
-  private id: string
-  private name: string
-  private createdAt: Date
-  private updatedAt: Date | null
+  private _id: string
+  private _name: string
+  private _createdAt: Date
+  private _updatedAt: Date | null
 
   constructor(props: DemographicRecord) {
     this.id = props.id
@@ -14,24 +14,36 @@ export class Demographic {
     this.updatedAt = props.updatedAt
   }
 
-  getId(): string {
-    return this.id
+  public get id(): string {
+    return this._id
   }
 
-  getName(): string {
-    return this.name
+  public set id(value: string) {
+    this._id = value
   }
 
-  setName(name: string): void {
-    this.name = name
+  public get name(): string {
+    return this._name
   }
 
-  getCreatedAt(): Date {
-    return this.createdAt
+  public set name(value: string) {
+    this._name = value
   }
 
-  getUpdatedAt(): Date | null {
-    return this.updatedAt
+  public get createdAt(): Date {
+    return this._createdAt
+  }
+
+  public set createdAt(value: Date) {
+    this._createdAt = value
+  }
+
+  public get updatedAt(): Date | null {
+    return this._updatedAt
+  }
+
+  public set updatedAt(value: Date | null) {
+    this._updatedAt = value
   }
 
   validate(): void {

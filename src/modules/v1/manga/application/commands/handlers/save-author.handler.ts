@@ -20,7 +20,7 @@ export class SaveAuthorHandler implements ICommandHandler<SaveAuthorCommand> {
     const authorExists = await this.authorRepository.findByName(name)
 
     if (authorExists) {
-      throw new AuthorAlreadyExistsException(authorExists.getName())
+      throw new AuthorAlreadyExistsException(authorExists.name)
     }
 
     const authorEntity = this.authorFactory.create(author)
@@ -29,7 +29,7 @@ export class SaveAuthorHandler implements ICommandHandler<SaveAuthorCommand> {
     return {
       message: 'Autor creado con exito',
       author: {
-        id: savedAuthor.getId(),
+        id: savedAuthor.id,
       },
     }
   }
