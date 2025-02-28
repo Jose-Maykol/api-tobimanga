@@ -2,8 +2,7 @@ import { DrizzleService } from '@/modules/database/services/drizzle.service'
 import { Injectable } from '@nestjs/common'
 import { UserMangaRepository } from '../../domain/repositories/user-manga.repository'
 import { userMangas } from '@/modules/database/schemas/user-manga.schema'
-import { MangaReadingStatus } from '../../domain/enums/manga-reading-status.enum'
-import { eq } from 'drizzle-orm'
+import { and, eq } from 'drizzle-orm'
 import { userChapters } from '@/modules/database/schemas/user-chapter.schema'
 import { chapters } from '@/modules/database/schemas/chapter.schema'
 import { UserMangaMapper } from '../mappers/user-manga.mapper'
@@ -14,15 +13,25 @@ export class UserMangaRepositoryImpl implements UserMangaRepository {
   constructor(private readonly drizzle: DrizzleService) {}
 
   async save(userManga: UserManga): Promise<void> {
-    const db = this.drizzle.db
     const userMangaPersistence = UserMangaMapper.toPersistence(userManga)
-    await db.transaction(async (tx) => {
-      await this.drizzle.db.insert(userMangas).values(userMangaPersistence)
-      const { userId, mangaId, readingStatus } = userMangaPersistence
-      if (readingStatus === MangaReadingStatus.READING) {
-        await this.createChapters(userId, mangaId, tx)
-      }
-    })
+    await this.drizzle.db
+      .insert(userMangas)
+      .values(userMangaPersistence)
+      .execute()
+  }
+
+  async find(mangaId: string, userId: string): Promise<UserManga | null> {
+    const userManga = await this.drizzle.db
+      .select()
+      .from(userMangas)
+      .where(
+        and(eq(userMangas.mangaId, mangaId), eq(userMangas.userId, userId)),
+      )
+      .limit(1)
+
+    if (userManga.length === 0) return null
+
+    return userManga.map((manga) => UserMangaMapper.toDomain(manga))[0]
   }
 
   async createChapters(

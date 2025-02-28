@@ -29,6 +29,7 @@ import { UpdateUserMangaReadingStatusHandler } from './application/commands/hand
 import { UserMangaRepositoryImpl } from './infrastructure/repositories/user-manga.repository.impl'
 import { SetUserMangaReadingStatusHandler } from './application/commands/handlers/set-user-manga-reading-status.handler'
 import { UserMangaFactory } from './domain/factories/user-manga.factory'
+import { GetUserMangaReadingStatusHandler } from './application/queries/handlers/get-user-manga-reading-status.handler'
 
 const CommandHandlers = [
   SaveMangaHandler,
@@ -45,6 +46,7 @@ const QueryHandlers = [
   FindGenresHandler,
   FindDemographicsHandler,
   FindMangaHandler,
+  GetUserMangaReadingStatusHandler,
 ]
 const Factories = [MangaFactory, AuthorFactory, GenreFactory, UserMangaFactory]
 const Repositories = [

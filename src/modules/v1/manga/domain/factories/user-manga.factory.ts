@@ -1,20 +1,20 @@
 import { UserManga } from '../entities/user-manga.entity'
-import { MangaReadingStatus } from '../enums/manga-reading-status.enum'
+import UserMangaRecord from '../types/user-manga'
 
-type UserMangaProps = {
-  userId: string
-  mangaId: string
-  rating?: number
-  readingStatus: MangaReadingStatus
-}
+type UserMangaProps = Omit<
+  UserMangaRecord,
+  'rating' | 'createdAt' | 'updatedAt'
+>
 
 export class UserMangaFactory {
-  create(userManga: UserMangaProps): any {
+  create(userManga: UserMangaProps): UserManga {
     return new UserManga({
       userId: userManga.userId,
       mangaId: userManga.mangaId,
-      rating: userManga.rating || 0,
       readingStatus: userManga.readingStatus,
+      rating: 0,
+      createdAt: new Date(),
+      updatedAt: null,
     })
   }
 }

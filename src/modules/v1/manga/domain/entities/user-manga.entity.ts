@@ -1,22 +1,15 @@
 import { MangaReadingStatus } from '../enums/manga-reading-status.enum'
+import UserMangaRecord from '../types/user-manga'
 
-type UserMangaProps = {
-  id?: string
-  userId: string
-  mangaId: string
-  rating?: number
-  readingStatus: MangaReadingStatus
-  createdAt?: Date
-  updatedAt?: Date
-}
+type UserMangaProps = UserMangaRecord
 
 export class UserManga {
-  private userId: string
-  private mangaId: string
-  private rating?: number
-  private readingStatus: MangaReadingStatus
-  private createdAt: Date
-  private updatedAt?: Date
+  private _userId: string
+  private _mangaUniqueId: string
+  private _rating: number | 0
+  private _readingStatus: MangaReadingStatus
+  private _createdAt: Date
+  private _updatedAt: Date | null
 
   constructor(props: UserMangaProps) {
     this.userId = props.userId
@@ -26,42 +19,46 @@ export class UserManga {
     this.createdAt = new Date()
   }
 
-  changeReadingStatus(readingStatus: MangaReadingStatus): void {
-    this.readingStatus = readingStatus
+  public get userId(): string {
+    return this._userId
+  }
+  public set userId(value: string) {
+    this._userId = value
   }
 
-  setReadingStatus(readingStatus: MangaReadingStatus): void {
-    this.readingStatus = readingStatus
-    this.updatedAt = new Date()
+  public get mangaId(): string {
+    return this._mangaUniqueId
+  }
+  public set mangaId(value: string) {
+    this._mangaUniqueId = value
   }
 
-  getUserId(): string {
-    return this.userId
+  public get rating(): number | 0 {
+    return this._rating
+  }
+  public set rating(value: number | 0) {
+    this._rating = value
   }
 
-  getMangaId(): string {
-    return this.mangaId
+  public get readingStatus(): MangaReadingStatus {
+    return this._readingStatus
+  }
+  public set readingStatus(value: MangaReadingStatus) {
+    this._readingStatus = value
   }
 
-  getRating(): number {
-    if (!this.rating) {
-      return 0
-    }
-    return this.rating
+  public get createdAt(): Date {
+    return this._createdAt
+  }
+  public set createdAt(value: Date) {
+    this._createdAt = value
   }
 
-  getReadingStatus(): MangaReadingStatus {
-    return this.readingStatus
+  public get updatedAt(): Date | null {
+    return this._updatedAt
   }
 
-  getCreatedAt(): Date {
-    return this.createdAt
-  }
-
-  getUpdatedAt(): Date | null {
-    if (!this.updatedAt) {
-      return null
-    }
-    return this.updatedAt
+  public set updatedAt(value: Date | null) {
+    this._updatedAt = value
   }
 }
