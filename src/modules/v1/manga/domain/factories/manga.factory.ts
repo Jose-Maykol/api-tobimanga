@@ -31,8 +31,6 @@ export class MangaFactory {
       scrappingName: manga.originalName, // TODO: Implement scrapping name
       rating: 0,
       active: true,
-      createdAt: new Date(),
-      updatedAt: null,
       originalName: manga.originalName,
       alternativeNames: manga.alternativeNames,
       sinopsis: manga.sinopsis,
@@ -41,6 +39,8 @@ export class MangaFactory {
       publicationStatus: manga.publicationStatus,
       coverImage: manga.coverImage,
       bannerImage: manga.bannerImage,
+      createdAt: new Date(),
+      updatedAt: null,
     })
   }
 }

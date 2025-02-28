@@ -33,6 +33,7 @@ import {
   setUserMangaReadingStatusSchema,
 } from '../dto/set-user-manga-reading-status.dto'
 import { SetUserMangaReadingStatusCommand } from '../../application/commands/set-user-manga-reading-status.command'
+import { GetUserMangaReadingStatusQuery } from '../../application/queries/get-user-manga-reading-status.query'
 
 @Controller()
 export class MangaController {
@@ -95,6 +96,15 @@ export class MangaController {
     return await this.commandBus.execute(command)
   }
 
+  @Get(':id/status')
+  @UseGuards(JwtAuthGuard)
+  async getUserMangaReadingStatus(@Param('id') id: string, @Request() req) {
+    const user = req.user
+    console.log(user)
+    const query = new GetUserMangaReadingStatusQuery(id, user.id)
+    return await this.queryBus.execute(query)
+  }
+
   @Put(':id/status')
   @UseGuards(JwtAuthGuard)
   async updateUserMangaReadingStatus(
@@ -105,7 +115,7 @@ export class MangaController {
   ) {
     const user = req.user
     const command = new UpdateUserMangaReadingStatusCommand(
-      user.sub,
+      user.id,
       id,
       body.status,
     )
