@@ -2,11 +2,12 @@ import { DrizzleService } from '@/modules/database/services/drizzle.service'
 import { Injectable } from '@nestjs/common'
 import { UserMangaRepository } from '../../domain/repositories/user-manga.repository'
 import { userMangas } from '@/modules/database/schemas/user-manga.schema'
-import { and, eq } from 'drizzle-orm'
+import { and, count, desc, eq } from 'drizzle-orm'
 import { userChapters } from '@/modules/database/schemas/user-chapter.schema'
 import { chapters } from '@/modules/database/schemas/chapter.schema'
 import { UserMangaMapper } from '../mappers/user-manga.mapper'
 import { UserManga } from '../../domain/entities/user-manga.entity'
+import ChapterRecord from '../../domain/types/chapter'
 
 @Injectable()
 export class UserMangaRepositoryImpl implements UserMangaRepository {
@@ -32,6 +33,53 @@ export class UserMangaRepositoryImpl implements UserMangaRepository {
     if (userManga.length === 0) return null
 
     return userManga.map((manga) => UserMangaMapper.toDomain(manga))[0]
+  }
+
+  async findPaginatedChaptersReadingTrackingByMangaId(
+    mangaId: string,
+    page: number,
+    limit: number,
+    userId: string,
+  ): Promise<
+    [
+      Partial<ChapterRecord & { readAt: Date | null; read: boolean }>[],
+      { count: number },
+    ]
+  > {
+    const offset = (page - 1) * limit
+
+    const paginatedChapters = await this.drizzle.db
+      .select({
+        id: chapters.id,
+        chapterNumber: chapters.chapterNumber,
+        readAt: userChapters.readAt,
+        read: userChapters.read,
+      })
+      .from(userChapters)
+      .innerJoin(chapters, eq(userChapters.chapterId, chapters.id))
+      .innerJoin(userMangas, eq(userMangas.mangaId, mangaId))
+      .where(
+        and(eq(userMangas.mangaId, mangaId), eq(userChapters.userId, userId)),
+      )
+      .offset(offset)
+      .limit(limit)
+      .orderBy(desc(chapters.chapterNumber))
+
+    const totalChapters = await this.drizzle.db
+      .select({ count: count() })
+      .from(userChapters)
+      .innerJoin(chapters, eq(userChapters.chapterId, chapters.id))
+      .innerJoin(userMangas, eq(userMangas.mangaId, mangaId))
+      .where(
+        and(eq(userMangas.mangaId, mangaId), eq(userChapters.userId, userId)),
+      )
+
+    return [
+      paginatedChapters,
+      {
+        count: totalChapters[0].count,
+      },
+    ]
   }
 
   async createChapters(

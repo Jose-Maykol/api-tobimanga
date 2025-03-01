@@ -3,11 +3,17 @@ import { IQuery } from '@nestjs/cqrs'
 export class FindPaginatedChaptersQuery implements IQuery {
   readonly page: number
   readonly limit: number
-  readonly slug: string
+  readonly mangaId: string
+  readonly userId?: string
 
-  constructor(slug: string, pagination: { page: number; limit: number }) {
-    this.slug = slug
+  constructor(
+    mangaId: string,
+    pagination: { page: number; limit: number },
+    userId?: string,
+  ) {
+    this.mangaId = mangaId
     this.page = Number(pagination.page)
     this.limit = Number(pagination.limit)
+    this.userId = userId
   }
 }

@@ -34,6 +34,7 @@ import {
 } from '../dto/set-user-manga-reading-status.dto'
 import { SetUserMangaReadingStatusCommand } from '../../application/commands/set-user-manga-reading-status.command'
 import { GetUserMangaReadingStatusQuery } from '../../application/queries/get-user-manga-reading-status.query'
+import { OptionalJwtAuthGuard } from '@/modules/v1/auth/interface/guards/optional-auth.guard'
 
 @Controller()
 export class MangaController {
@@ -55,13 +56,20 @@ export class MangaController {
     return await this.queryBus.execute(query)
   }
 
-  @Get(':slug/chapters')
+  @Get(':id/chapters')
+  @UseGuards(OptionalJwtAuthGuard)
   async findPaginatedChapters(
-    @Param('slug') slug: string,
+    @Param('id') mangaId: string,
     @Query() pagination: PaginationDto,
+    @Request() req,
   ) {
+    const user = req.user
     const { page = 1, limit = 20 } = pagination
-    const query = new FindPaginatedChaptersQuery(slug, { page, limit })
+    const query = new FindPaginatedChaptersQuery(
+      mangaId,
+      { page, limit },
+      user?.id,
+    )
     return await this.queryBus.execute(query)
   }
 
@@ -100,7 +108,6 @@ export class MangaController {
   @UseGuards(JwtAuthGuard)
   async getUserMangaReadingStatus(@Param('id') id: string, @Request() req) {
     const user = req.user
-    console.log(user)
     const query = new GetUserMangaReadingStatusQuery(id, user.id)
     return await this.queryBus.execute(query)
   }

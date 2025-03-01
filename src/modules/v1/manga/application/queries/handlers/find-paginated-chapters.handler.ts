@@ -1,7 +1,8 @@
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs'
 import { FindPaginatedChaptersQuery } from '../find-paginated-chapters.query'
 import { MangaRepository } from '../../../domain/repositories/manga.repository'
-import { Inject, NotFoundException } from '@nestjs/common'
+import { Inject } from '@nestjs/common'
+import { UserMangaRepository } from '../../../domain/repositories/user-manga.repository'
 
 @QueryHandler(FindPaginatedChaptersQuery)
 export class FindPaginatedChaptersHandler
@@ -10,38 +11,54 @@ export class FindPaginatedChaptersHandler
   constructor(
     @Inject('MangaRepository')
     private readonly mangaRepository: MangaRepository,
+    @Inject('UserMangaRepository')
+    private readonly userMangaRepository: UserMangaRepository,
   ) {}
 
   async execute(query: FindPaginatedChaptersQuery) {
-    const { page, limit, slug } = query
-    const title = slug.replace(/-/g, ' ')
+    const { page, limit, mangaId, userId } = query
+
+    const calculatePagination = (
+      total: number,
+      page: number,
+      limit: number,
+    ) => {
+      const pages = Math.ceil(total / limit)
+      return {
+        total,
+        perPage: limit,
+        currentPage: page,
+        pages,
+        hasNextPage: page < pages,
+        hasPreviousPage: page > 1,
+      }
+    }
+
+    if (userId) {
+      const [chapters, total] =
+        await this.userMangaRepository.findPaginatedChaptersReadingTrackingByMangaId(
+          mangaId,
+          page,
+          limit,
+          userId,
+        )
+
+      return {
+        chapters,
+        pagination: calculatePagination(total.count, page, limit),
+      }
+    }
+
     const [chapters, total] =
-      await this.mangaRepository.findPaginatedChaptersByMangaTitle(
-        title,
+      await this.mangaRepository.findPaginatedChaptersByMangaId(
+        mangaId,
         page,
         limit,
       )
 
-    if (chapters.length === 0) {
-      throw new NotFoundException('No se encontraron capítulos para este manga')
-    }
-
-    const pages = Math.ceil(total.count / limit)
-    const hasNextPage = page < pages
-    const hasPreviousPage = page > 1
-
-    const pagination = {
-      total: total.count,
-      perPage: limit,
-      currentPage: page,
-      pages,
-      hasNextPage,
-      hasPreviousPage,
-    }
-
     return {
       chapters,
-      pagination,
+      pagination: calculatePagination(total.count, page, limit),
     }
   }
 }

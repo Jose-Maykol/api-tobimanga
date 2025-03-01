@@ -7,8 +7,8 @@ export interface MangaRepository {
     page: number,
     limit: number,
   ): Promise<[DeepPartial<MangaRecord[]>, { count: number }]>
-  findPaginatedChaptersByMangaTitle(
-    title: string,
+  findPaginatedChaptersByMangaId(
+    mangaId: string,
     page: number,
     limit: number,
   ): Promise<[DeepPartial<ChapterRecord[]>, { count: number }]>
