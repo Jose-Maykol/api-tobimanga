@@ -61,11 +61,11 @@ export class MangaRepositoryImpl implements MangaRepository {
     ]
   }
 
-  async findPaginatedChaptersByMangaTitle(
-    title: string,
+  async findPaginatedChaptersByMangaId(
+    mangaId: string,
     page: number,
     limit: number,
-  ): Promise<[DeepPartial<ChapterRecord[]>, { count: number }]> {
+  ): Promise<[Partial<ChapterRecord>[], { count: number }]> {
     const offset = (page - 1) * limit
     const paginatedChapters = await this.drizzle.db
       .select({
@@ -74,12 +74,7 @@ export class MangaRepositoryImpl implements MangaRepository {
       })
       .from(chapters)
       .innerJoin(mangas, eq(chapters.mangaId, mangas.id))
-      .where(
-        eq(
-          sql<string>`lower(${mangas.originalName})`,
-          sql<string>`lower(${title})`,
-        ),
-      )
+      .where(eq(mangas.id, mangaId))
       .orderBy(desc(chapters.chapterNumber))
       .offset(offset)
       .limit(limit)
@@ -87,12 +82,7 @@ export class MangaRepositoryImpl implements MangaRepository {
       .select({ count: count() })
       .from(chapters)
       .innerJoin(mangas, eq(chapters.mangaId, mangas.id))
-      .where(
-        eq(
-          sql<string>`lower(${mangas.originalName})`,
-          sql<string>`lower(${title})`,
-        ),
-      )
+      .where(eq(mangas.id, mangaId))
     return [
       paginatedChapters,
       {
