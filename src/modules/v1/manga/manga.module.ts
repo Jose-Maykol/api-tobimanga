@@ -30,11 +30,13 @@ import { UserMangaRepositoryImpl } from './infrastructure/repositories/user-mang
 import { SetUserMangaReadingStatusHandler } from './application/commands/handlers/set-user-manga-reading-status.handler'
 import { UserMangaFactory } from './domain/factories/user-manga.factory'
 import { GetUserMangaReadingStatusHandler } from './application/queries/handlers/get-user-manga-reading-status.handler'
+import { SaveReadingMangaChapterCommand } from './application/commands/save-reading-manga-chapter.command'
 
 const CommandHandlers = [
   SaveMangaHandler,
   SaveAuthorHandler,
   SaveGenreHandler,
+  SaveReadingMangaChapterCommand,
   SyncAllMangasChaptersHandler,
   SetUserMangaReadingStatusHandler,
   UpdateUserMangaReadingStatusHandler,
