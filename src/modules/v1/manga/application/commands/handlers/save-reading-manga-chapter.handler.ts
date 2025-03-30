@@ -1,8 +1,8 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs'
 import { SaveReadingMangaChapterCommand } from '../save-reading-manga-chapter.command'
-import { UserChapterRepository } from '../../../domain/repositories/user-chapter.repository'
-import { UserChapter } from '../../../domain/entities/user-chapter.entitiy'
+import { UserChapterRepository } from '../../../../user/domain/repositories/user-chapter.repository'
 import { Inject } from '@nestjs/common'
+import { UserChapter } from '@/modules/v1/user/domain/entities/user-chapter.entitiy'
 
 @CommandHandler(SaveReadingMangaChapterCommand)
 export class SaveReadingMangaChapterHandler

@@ -26,14 +26,10 @@ import { SyncAllMangasChaptersCommand } from '../../application/commands/sync-al
 import {
   UpdateUserMangaReadingStatusDto,
   updateUserMangaReadingStatusSchema,
-} from '../dto/update-user-manga-reading-status.dto'
-import { UpdateUserMangaReadingStatusCommand } from '../../application/commands/update-user-manga-reading-status.command'
-import {
-  SetUserMangaReadingStatusDto,
-  setUserMangaReadingStatusSchema,
-} from '../dto/set-user-manga-reading-status.dto'
-import { SetUserMangaReadingStatusCommand } from '../../application/commands/set-user-manga-reading-status.command'
-import { GetUserMangaReadingStatusQuery } from '../../application/queries/get-user-manga-reading-status.query'
+} from '../../../user/interface/dto/update-user-manga-reading-status.dto'
+import { UpdateUserMangaReadingStatusCommand } from '../../../user/application/commands/update-user-manga-reading-status.command'
+import { SetUserMangaReadingStatusCommand } from '../../../user/application/commands/set-user-manga-reading-status.command'
+import { GetUserMangaReadingStatusQuery } from '../../../user/application/queries/get-user-manga-reading-status.query'
 import { OptionalJwtAuthGuard } from '@/modules/v1/auth/interface/guards/optional-auth.guard'
 
 @Controller()
@@ -80,20 +76,6 @@ export class MangaController {
   async createManga(@Body() saveCompleteMangaDto: SaveCompleteMangaDto) {
     const { manga, authors, genres, demographic } = saveCompleteMangaDto
     const command = new SaveMangaCommand(manga, authors, genres, demographic)
-    return await this.commandBus.execute(command)
-  }
-
-  @Post(':id/status')
-  @UseGuards(JwtAuthGuard)
-  async setUserMangaReadingStatus(
-    @Param('id') id: string,
-    @Body(new ZodValidationPipe(setUserMangaReadingStatusSchema))
-    body: SetUserMangaReadingStatusDto,
-    @Request() req,
-  ) {
-    const user = req.user
-    const { status } = body
-    const command = new SetUserMangaReadingStatusCommand(user.id, id, status)
     return await this.commandBus.execute(command)
   }
 

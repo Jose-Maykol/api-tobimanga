@@ -2,7 +2,7 @@ import { IQueryHandler, QueryHandler } from '@nestjs/cqrs'
 import { FindPaginatedChaptersQuery } from '../find-paginated-chapters.query'
 import { MangaRepository } from '../../../domain/repositories/manga.repository'
 import { Inject } from '@nestjs/common'
-import { UserMangaRepository } from '../../../domain/repositories/user-manga.repository'
+import { UserMangaRepository } from '../../../../user/domain/repositories/user-manga.repository'
 
 @QueryHandler(FindPaginatedChaptersQuery)
 export class FindPaginatedChaptersHandler
@@ -11,8 +11,6 @@ export class FindPaginatedChaptersHandler
   constructor(
     @Inject('MangaRepository')
     private readonly mangaRepository: MangaRepository,
-    @Inject('UserMangaRepository')
-    private readonly userMangaRepository: UserMangaRepository,
   ) {}
 
   async execute(query: FindPaginatedChaptersQuery) {
@@ -31,21 +29,6 @@ export class FindPaginatedChaptersHandler
         pages,
         hasNextPage: page < pages,
         hasPreviousPage: page > 1,
-      }
-    }
-
-    if (userId) {
-      const [chapters, total] =
-        await this.userMangaRepository.findPaginatedChaptersReadingTrackingByMangaId(
-          mangaId,
-          page,
-          limit,
-          userId,
-        )
-
-      return {
-        chapters,
-        pagination: calculatePagination(total.count, page, limit),
       }
     }
 
