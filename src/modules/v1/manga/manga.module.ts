@@ -25,11 +25,6 @@ import { SaveGenreHandler } from './application/commands/handlers/save-genre.han
 import { GenreFactory } from './domain/factories/genre.factory'
 import { FindPaginatedChaptersHandler } from './application/queries/handlers/find-paginated-chapters.handler'
 import { SyncAllMangasChaptersHandler } from './application/commands/handlers/sync-all-mangas-chapters.handler'
-import { UpdateUserMangaReadingStatusHandler } from './application/commands/handlers/update-user-manga-reading-status.handler'
-import { UserMangaRepositoryImpl } from './infrastructure/repositories/user-manga.repository.impl'
-import { SetUserMangaReadingStatusHandler } from './application/commands/handlers/set-user-manga-reading-status.handler'
-import { UserMangaFactory } from './domain/factories/user-manga.factory'
-import { GetUserMangaReadingStatusHandler } from './application/queries/handlers/get-user-manga-reading-status.handler'
 import { SaveReadingMangaChapterCommand } from './application/commands/save-reading-manga-chapter.command'
 
 const CommandHandlers = [
@@ -38,9 +33,8 @@ const CommandHandlers = [
   SaveGenreHandler,
   SaveReadingMangaChapterCommand,
   SyncAllMangasChaptersHandler,
-  SetUserMangaReadingStatusHandler,
-  UpdateUserMangaReadingStatusHandler,
 ]
+
 const QueryHandlers = [
   FindPaginatedMangasHandler,
   FindPaginatedChaptersHandler,
@@ -48,15 +42,19 @@ const QueryHandlers = [
   FindGenresHandler,
   FindDemographicsHandler,
   FindMangaHandler,
-  GetUserMangaReadingStatusHandler,
 ]
-const Factories = [MangaFactory, AuthorFactory, GenreFactory, UserMangaFactory]
+
+const Factories = [
+  MangaFactory, 
+  AuthorFactory, 
+  GenreFactory
+]
+
 const Repositories = [
   { provide: 'MangaRepository', useClass: MangaRepositoryImpl },
   { provide: 'AuthorRepository', useClass: AuthorRepositoryImpl },
   { provide: 'GenreRepository', useClass: GenreRepositoryImpl },
-  { provide: 'DemographicRepository', useClass: DemographicRepositoryImpl },
-  { provide: 'UserMangaRepository', useClass: UserMangaRepositoryImpl },
+  { provide: 'DemographicRepository', useClass: DemographicRepositoryImpl }
 ]
 
 @Module({
@@ -76,4 +74,5 @@ const Repositories = [
     ...Repositories,
   ],
 })
+
 export class MangaModule {}

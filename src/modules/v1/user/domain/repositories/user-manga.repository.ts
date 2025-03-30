@@ -1,10 +1,10 @@
 import { UserManga } from '../entities/user-manga.entity'
-import ChapterRecord from '../types/chapter'
+import ChapterRecord from '../../../manga/domain/types/chapter'
 
 export interface UserMangaRepository {
   save(userManga: UserManga): Promise<void>
   find(mangaId: string, userId: string): Promise<UserManga | null>
-  findPaginatedChaptersReadingTrackingByMangaId(
+  findPaginatedChaptersReadByMangaId(
     mangaId: string,
     page: number,
     limit: number,

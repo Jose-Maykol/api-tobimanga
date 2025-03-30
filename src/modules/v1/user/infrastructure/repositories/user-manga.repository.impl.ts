@@ -1,13 +1,13 @@
 import { DrizzleService } from '@/modules/database/services/drizzle.service'
 import { Injectable } from '@nestjs/common'
-import { UserMangaRepository } from '../../domain/repositories/user-manga.repository'
 import { userMangas } from '@/modules/database/schemas/user-manga.schema'
 import { and, count, desc, eq } from 'drizzle-orm'
 import { userChapters } from '@/modules/database/schemas/user-chapter.schema'
 import { chapters } from '@/modules/database/schemas/chapter.schema'
-import { UserMangaMapper } from '../mappers/user-manga.mapper'
 import { UserManga } from '../../domain/entities/user-manga.entity'
-import ChapterRecord from '../../domain/types/chapter'
+import { UserMangaMapper } from '../mappers/user-manga.mapper'
+import { UserMangaRepository } from '../../domain/repositories/user-manga.repository'
+import ChapterRecord from '@/modules/v1/manga/domain/types/chapter'
 
 @Injectable()
 export class UserMangaRepositoryImpl implements UserMangaRepository {
@@ -35,7 +35,7 @@ export class UserMangaRepositoryImpl implements UserMangaRepository {
     return userManga.map((manga) => UserMangaMapper.toDomain(manga))[0]
   }
 
-  async findPaginatedChaptersReadingTrackingByMangaId(
+  async findPaginatedChaptersReadByMangaId(
     mangaId: string,
     page: number,
     limit: number,

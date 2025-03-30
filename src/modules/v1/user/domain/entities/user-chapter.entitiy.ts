@@ -1,4 +1,4 @@
-import UserChapterRecord from '../types/user-chapter'
+import UserChapterRecord from '../../../user/domain/types/user-chapter'
 
 export class UserChapter {
   private _userId: string
