@@ -15,6 +15,7 @@ import { ConfigModule } from '@nestjs/config'
 import { MangaModule } from './modules/v1/manga/manga.module'
 import { RouterModule } from '@nestjs/core'
 import { AuthModule } from './modules/v1/auth/auth.module'
+import { UserModule } from './modules/v1/user/user.module'
 
 @Module({
   imports: [
@@ -35,11 +36,16 @@ import { AuthModule } from './modules/v1/auth/auth.module'
             module: MangaModule,
             path: 'mangas',
           },
+          {
+            module: UserModule,
+            path: '',
+          }
         ],
       },
     ]),
     AuthModule,
     MangaModule,
+    UserModule,
   ],
   controllers: [AppController],
   providers: [AppService, JwtService],
