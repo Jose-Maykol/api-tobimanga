@@ -86,28 +86,4 @@ export class MangaController {
     return await this.commandBus.execute(command)
   }
 
-  @Get(':id/status')
-  @UseGuards(JwtAuthGuard)
-  async getUserMangaReadingStatus(@Param('id') id: string, @Request() req) {
-    const user = req.user
-    const query = new GetUserMangaReadingStatusQuery(id, user.id)
-    return await this.queryBus.execute(query)
-  }
-
-  @Put(':id/status')
-  @UseGuards(JwtAuthGuard)
-  async updateUserMangaReadingStatus(
-    @Param('id') id: string,
-    @Body(new ZodValidationPipe(updateUserMangaReadingStatusSchema))
-    body: UpdateUserMangaReadingStatusDto,
-    @Request() req,
-  ) {
-    const user = req.user
-    const command = new UpdateUserMangaReadingStatusCommand(
-      user.id,
-      id,
-      body.status,
-    )
-    return await this.commandBus.execute(command)
-  }
 }
