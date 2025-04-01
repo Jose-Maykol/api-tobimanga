@@ -31,4 +31,13 @@ export class UserChapterRepositoryImpl implements UserChapterRepository {
       )
       .execute()
   }
+
+  async delete(userId: string, chapterId: string): Promise<void> {
+    await this.drizzle.db
+      .delete(userChapters)
+      .where(
+        and(eq(userChapters.userId, userId), eq(userChapters.chapterId, chapterId)),
+      )
+      .execute()
+  }
 }
