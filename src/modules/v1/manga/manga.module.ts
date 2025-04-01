@@ -25,13 +25,12 @@ import { SaveGenreHandler } from './application/commands/handlers/save-genre.han
 import { GenreFactory } from './domain/factories/genre.factory'
 import { FindPaginatedChaptersHandler } from './application/queries/handlers/find-paginated-chapters.handler'
 import { SyncAllMangasChaptersHandler } from './application/commands/handlers/sync-all-mangas-chapters.handler'
-import { SaveReadingMangaChapterCommand } from './application/commands/save-reading-manga-chapter.command'
+import { SaveReadingMangaChapterCommand } from '../user/application/commands/save-reading-manga-chapter.command'
 
 const CommandHandlers = [
   SaveMangaHandler,
   SaveAuthorHandler,
   SaveGenreHandler,
-  SaveReadingMangaChapterCommand,
   SyncAllMangasChaptersHandler,
 ]
 

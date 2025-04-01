@@ -38,7 +38,7 @@ import { UserModule } from './modules/v1/user/user.module'
           },
           {
             module: UserModule,
-            path: '',
+            path: 'users',
           }
         ],
       },
