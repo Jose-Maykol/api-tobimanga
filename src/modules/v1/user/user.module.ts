@@ -13,12 +13,14 @@ import { MangaRepositoryImpl } from "../manga/infrastructure/repositories/manga.
 import { SaveReadingMangaChapterHandler } from "./application/commands/handlers/save-reading-manga-chapter.handler";
 import { UserChapterRepositoryImpl } from "./infrastructure/repositories/user-chapter.repository.impl";
 import { ChaptersController } from "./interface/controllers/chapter.controller";
+import { DeleteReadingMangaChapterHandler } from "./application/commands/handlers/delete-reading-manga-chapter.handler";
 
 
 const CommandHandlers = [
   SetUserMangaReadingStatusHandler,
   UpdateUserMangaReadingStatusHandler,
   SaveReadingMangaChapterHandler,
+  DeleteReadingMangaChapterHandler,
 ]
 
 const QueryHandlers = [

@@ -1,12 +1,14 @@
 import { ZodValidationPipe } from "@/common/pipes/zod-validation.pipe";
 import { JwtAuthGuard } from "@/modules/v1/auth/interface/guards/auth.guard";
-import { Body, Controller, Get, Param, Post, Put, Request, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, Param, Post, Put, Query, Request, UseGuards } from "@nestjs/common";
 import { CommandBus, QueryBus } from "@nestjs/cqrs";
 import { SetUserMangaReadingStatusDto, setUserMangaReadingStatusSchema } from "../dto/set-user-manga-reading-status.dto";
 import { SetUserMangaReadingStatusCommand } from "../../application/commands/set-user-manga-reading-status.command";
 import { UpdateUserMangaReadingStatusDto, updateUserMangaReadingStatusSchema } from "../dto/update-user-manga-reading-status.dto";
 import { UpdateUserMangaReadingStatusCommand } from "../../application/commands/update-user-manga-reading-status.command";
 import { GetUserMangaReadingStatusQuery } from "../../application/queries/get-user-manga-reading-status.query";
+import { PaginationDto } from "@/modules/v1/manga/interface/dto/pagination.dto";
+import { FindPaginatedChaptersReadQuery } from "../../application/queries/find-paginated-chapters-read.query";
 
 @Controller('me')
 export class MeController {
@@ -16,10 +18,20 @@ export class MeController {
   ) {}
 
   @Get('mangas/:id/chapters')
+  @UseGuards(JwtAuthGuard)
   async findPaginatedChaptersByMangaId(
     @Param('id') mangaId: string,
+    @Query() pagination: PaginationDto,
+    @Request() req,
   ) {
-
+    const user = req.user
+    const { page = 1, limit = 20 } = pagination
+    const query = new FindPaginatedChaptersReadQuery(
+      mangaId,
+      { page, limit },
+      user.id,
+    )
+    return await this.queryBus.execute(query)
   }
 
   @Post('mangas/:id/status')
