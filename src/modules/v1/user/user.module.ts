@@ -9,11 +9,16 @@ import { Module } from "@nestjs/common";
 import { MeController } from "./interface/controllers/me.controller";
 import { DrizzleService } from "@/modules/database/services/drizzle.service";
 import { GetUserMangaReadingStatusHandler } from "./application/queries/handlers/get-user-manga-reading-status.handler";
+import { MangaRepositoryImpl } from "../manga/infrastructure/repositories/manga.repository.impl";
+import { SaveReadingMangaChapterHandler } from "./application/commands/handlers/save-reading-manga-chapter.handler";
+import { UserChapterRepositoryImpl } from "./infrastructure/repositories/user-chapter.repository.impl";
+import { ChaptersController } from "./interface/controllers/chapter.controller";
 
 
 const CommandHandlers = [
   SetUserMangaReadingStatusHandler,
   UpdateUserMangaReadingStatusHandler,
+  SaveReadingMangaChapterHandler,
 ]
 
 const QueryHandlers = [
@@ -27,12 +32,15 @@ const Factories = [
 
 const Repositories = [
   { provide: 'UserMangaRepository', useClass: UserMangaRepositoryImpl },
+  { provide: 'UserChapterRepository', useClass: UserChapterRepositoryImpl },
+  { provide: 'MangaRepository', useClass: MangaRepositoryImpl },
 ]
 
 @Module({
   imports: [CqrsModule, DatabaseModule],
   controllers: [
     MeController,
+    ChaptersController,
   ],
   providers: [
     DrizzleService,
