@@ -1,7 +1,7 @@
 import { DrizzleService } from '@/modules/database/services/drizzle.service'
 import { Injectable } from '@nestjs/common'
 import { userMangas } from '@/modules/database/schemas/user-manga.schema'
-import { and, count, desc, eq } from 'drizzle-orm'
+import { and, count, desc, eq, sql } from 'drizzle-orm'
 import { userChapters } from '@/modules/database/schemas/user-chapter.schema'
 import { chapters } from '@/modules/database/schemas/chapter.schema'
 import { UserManga } from '../../domain/entities/user-manga.entity'
@@ -49,7 +49,19 @@ export class UserMangaRepositoryImpl implements UserMangaRepository {
     const offset = (page - 1) * limit
 
     const paginatedChapters = await this.drizzle.db
-      .select({
+    .select({
+      id: chapters.id,
+      chapterNumber: chapters.chapterNumber,
+      readAt: userChapters.readAt,
+      read: sql<boolean>`COALESCE(${userChapters.read}, false)` // Si no hay userChapter, read será false
+    })
+    .from(chapters)
+    .leftJoin(userChapters, and(eq(userChapters.chapterId, chapters.id), eq(userChapters.userId, userId)))
+    .where(eq(chapters.mangaId, mangaId)) // Filtramos por el manga específico
+    .offset(offset)
+    .limit(limit)
+    .orderBy(desc(chapters.chapterNumber));
+      /* .select({
         id: chapters.id,
         chapterNumber: chapters.chapterNumber,
         readAt: userChapters.readAt,
@@ -63,7 +75,7 @@ export class UserMangaRepositoryImpl implements UserMangaRepository {
       )
       .offset(offset)
       .limit(limit)
-      .orderBy(desc(chapters.chapterNumber))
+      .orderBy(desc(chapters.chapterNumber)) */
 
     const totalChapters = await this.drizzle.db
       .select({ count: count() })
