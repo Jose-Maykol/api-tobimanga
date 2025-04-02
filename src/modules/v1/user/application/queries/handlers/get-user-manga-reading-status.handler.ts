@@ -16,6 +16,10 @@ export class GetUserMangaReadingStatusHandler
     const { mangaId, userId } = query
     const userManga = await this.userMangaRepository.find(mangaId, userId)
 
+    // TODO: SE DEBE HACER UN EXCEPCION PERSONALIZADA PARA MANGA NO ENCONTRADO
+    // * SE PUEDE TENER EL RECUENTO DE CAPITULOS LEIDOS Y TOTAL DE CAPITULOS
+    // * SE PUEDE TENER CUANDO FUE LEIDO EL ULTIMO CAPITULO
+
     if (!userManga)
       throw new NotFoundException('El usuario no tiene este manga en su lista')
 
