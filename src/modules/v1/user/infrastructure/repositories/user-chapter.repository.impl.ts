@@ -36,7 +36,10 @@ export class UserChapterRepositoryImpl implements UserChapterRepository {
     await this.drizzle.db
       .delete(userChapters)
       .where(
-        and(eq(userChapters.userId, userId), eq(userChapters.chapterId, chapterId)),
+        and(
+          eq(userChapters.userId, userId),
+          eq(userChapters.chapterId, chapterId),
+        ),
       )
       .execute()
   }

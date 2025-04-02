@@ -1,5 +1,4 @@
-import { ICommand } from "@nestjs/cqrs";
-
+import { ICommand } from '@nestjs/cqrs'
 
 export class DeleteReadingMangaChapterCommnad implements ICommand {
   constructor(

@@ -1,14 +1,30 @@
-import { ZodValidationPipe } from "@/common/pipes/zod-validation.pipe";
-import { JwtAuthGuard } from "@/modules/v1/auth/interface/guards/auth.guard";
-import { Body, Controller, Get, Param, Post, Put, Query, Request, UseGuards } from "@nestjs/common";
-import { CommandBus, QueryBus } from "@nestjs/cqrs";
-import { SetUserMangaReadingStatusDto, setUserMangaReadingStatusSchema } from "../dto/set-user-manga-reading-status.dto";
-import { SetUserMangaReadingStatusCommand } from "../../application/commands/set-user-manga-reading-status.command";
-import { UpdateUserMangaReadingStatusDto, updateUserMangaReadingStatusSchema } from "../dto/update-user-manga-reading-status.dto";
-import { UpdateUserMangaReadingStatusCommand } from "../../application/commands/update-user-manga-reading-status.command";
-import { GetUserMangaReadingStatusQuery } from "../../application/queries/get-user-manga-reading-status.query";
-import { PaginationDto } from "@/modules/v1/manga/interface/dto/pagination.dto";
-import { FindPaginatedChaptersReadQuery } from "../../application/queries/find-paginated-chapters-read.query";
+import { ZodValidationPipe } from '@/common/pipes/zod-validation.pipe'
+import { JwtAuthGuard } from '@/modules/v1/auth/interface/guards/auth.guard'
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Put,
+  Query,
+  Request,
+  UseGuards,
+} from '@nestjs/common'
+import { CommandBus, QueryBus } from '@nestjs/cqrs'
+import {
+  SetUserMangaReadingStatusDto,
+  setUserMangaReadingStatusSchema,
+} from '../dto/set-user-manga-reading-status.dto'
+import { SetUserMangaReadingStatusCommand } from '../../application/commands/set-user-manga-reading-status.command'
+import {
+  UpdateUserMangaReadingStatusDto,
+  updateUserMangaReadingStatusSchema,
+} from '../dto/update-user-manga-reading-status.dto'
+import { UpdateUserMangaReadingStatusCommand } from '../../application/commands/update-user-manga-reading-status.command'
+import { GetUserMangaReadingStatusQuery } from '../../application/queries/get-user-manga-reading-status.query'
+import { PaginationDto } from '@/modules/v1/manga/interface/dto/pagination.dto'
+import { FindPaginatedChaptersReadQuery } from '../../application/queries/find-paginated-chapters-read.query'
 
 @Controller('me')
 export class MeController {
@@ -38,7 +54,8 @@ export class MeController {
   @UseGuards(JwtAuthGuard)
   async setUserMangaReadingStatus(
     @Param('id') id: string,
-    @Body(new ZodValidationPipe(setUserMangaReadingStatusSchema)) body: SetUserMangaReadingStatusDto,
+    @Body(new ZodValidationPipe(setUserMangaReadingStatusSchema))
+    body: SetUserMangaReadingStatusDto,
     @Request() req,
   ) {
     const user = req.user
@@ -59,7 +76,8 @@ export class MeController {
   @UseGuards(JwtAuthGuard)
   async updateUserMangaReadingStatus(
     @Param('id') id: string,
-    @Body(new ZodValidationPipe(updateUserMangaReadingStatusSchema)) body: UpdateUserMangaReadingStatusDto,
+    @Body(new ZodValidationPipe(updateUserMangaReadingStatusSchema))
+    body: UpdateUserMangaReadingStatusDto,
     @Request() req,
   ) {
     const user = req.user

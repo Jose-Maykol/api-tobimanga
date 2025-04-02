@@ -1,6 +1,4 @@
-import { NotFoundException } from "@nestjs/common";
-import { error } from "console";
-
+import { NotFoundException } from '@nestjs/common'
 
 export class MangaNotFoundException extends NotFoundException {
   constructor() {

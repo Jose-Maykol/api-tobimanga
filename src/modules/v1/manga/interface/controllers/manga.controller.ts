@@ -4,7 +4,6 @@ import {
   Get,
   Param,
   Post,
-  Put,
   Query,
   Request,
   UseGuards,
@@ -23,13 +22,6 @@ import { FindMangaQuery } from '../../application/queries/find-manga.query'
 import { FindPaginatedChaptersQuery } from '../../application/queries/find-paginated-chapters.query'
 import { JwtAuthGuard } from '@/modules/v1/auth/interface/guards/auth.guard'
 import { SyncAllMangasChaptersCommand } from '../../application/commands/sync-all-mangas-chapters.command'
-import {
-  UpdateUserMangaReadingStatusDto,
-  updateUserMangaReadingStatusSchema,
-} from '../../../user/interface/dto/update-user-manga-reading-status.dto'
-import { UpdateUserMangaReadingStatusCommand } from '../../../user/application/commands/update-user-manga-reading-status.command'
-import { SetUserMangaReadingStatusCommand } from '../../../user/application/commands/set-user-manga-reading-status.command'
-import { GetUserMangaReadingStatusQuery } from '../../../user/application/queries/get-user-manga-reading-status.query'
 import { OptionalJwtAuthGuard } from '@/modules/v1/auth/interface/guards/optional-auth.guard'
 
 @Controller()
@@ -85,5 +77,4 @@ export class MangaController {
     const command = new SyncAllMangasChaptersCommand()
     return await this.commandBus.execute(command)
   }
-
 }
