@@ -29,17 +29,16 @@ export class FindPaginatedChaptersReadHandler
       throw new Error("userId is required")
     }
 
-    const [chapters, total] =
-        await this.userMangaRepository.findPaginatedChaptersReadByMangaId(
-          mangaId,
-          page,
-          limit,
-          userId,
-        )
+    const [chapters, total] = await this.userMangaRepository.findPaginatedChaptersReadByMangaId(
+      mangaId,
+      page,
+      limit,
+      userId,
+    )
 
-      return {
-        chapters,
-        pagination: calculatePagination(total.count, page, limit),
-      }
+    return {
+      chapters,
+      pagination: calculatePagination(total.count, page, limit),
+    }
   }
 }

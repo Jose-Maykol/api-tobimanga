@@ -53,14 +53,14 @@ export class UserMangaRepositoryImpl implements UserMangaRepository {
       id: chapters.id,
       chapterNumber: chapters.chapterNumber,
       readAt: userChapters.readAt,
-      read: sql<boolean>`COALESCE(${userChapters.read}, false)` // Si no hay userChapter, read será false
+      read: sql<boolean>`COALESCE(${userChapters.read}, false)`
     })
     .from(chapters)
     .leftJoin(userChapters, and(eq(userChapters.chapterId, chapters.id), eq(userChapters.userId, userId)))
-    .where(eq(chapters.mangaId, mangaId)) // Filtramos por el manga específico
+    .where(eq(chapters.mangaId, mangaId))
     .offset(offset)
     .limit(limit)
-    .orderBy(desc(chapters.chapterNumber));
+    .orderBy(desc(chapters.chapterNumber))
       /* .select({
         id: chapters.id,
         chapterNumber: chapters.chapterNumber,
@@ -79,12 +79,15 @@ export class UserMangaRepositoryImpl implements UserMangaRepository {
 
     const totalChapters = await this.drizzle.db
       .select({ count: count() })
-      .from(userChapters)
+      .from(chapters)
+      .leftJoin(userChapters, and(eq(userChapters.chapterId, chapters.id), eq(userChapters.userId, userId)))
+      .where(eq(chapters.mangaId, mangaId))
+      /* .from(userChapters)
       .innerJoin(chapters, eq(userChapters.chapterId, chapters.id))
       .innerJoin(userMangas, eq(userMangas.mangaId, mangaId))
       .where(
         and(eq(userMangas.mangaId, mangaId), eq(userChapters.userId, userId)),
-      )
+      ) */
 
     return [
       paginatedChapters,
