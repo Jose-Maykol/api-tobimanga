@@ -1,5 +1,4 @@
-import { IQuery } from "@nestjs/cqrs";
-
+import { IQuery } from '@nestjs/cqrs'
 
 export class FindPaginatedChaptersReadQuery implements IQuery {
   readonly page: number

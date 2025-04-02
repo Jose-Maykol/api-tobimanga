@@ -49,19 +49,25 @@ export class UserMangaRepositoryImpl implements UserMangaRepository {
     const offset = (page - 1) * limit
 
     const paginatedChapters = await this.drizzle.db
-    .select({
-      id: chapters.id,
-      chapterNumber: chapters.chapterNumber,
-      readAt: userChapters.readAt,
-      read: sql<boolean>`COALESCE(${userChapters.read}, false)`
-    })
-    .from(chapters)
-    .leftJoin(userChapters, and(eq(userChapters.chapterId, chapters.id), eq(userChapters.userId, userId)))
-    .where(eq(chapters.mangaId, mangaId))
-    .offset(offset)
-    .limit(limit)
-    .orderBy(desc(chapters.chapterNumber))
-      /* .select({
+      .select({
+        id: chapters.id,
+        chapterNumber: chapters.chapterNumber,
+        readAt: userChapters.readAt,
+        read: sql<boolean>`COALESCE(${userChapters.read}, false)`,
+      })
+      .from(chapters)
+      .leftJoin(
+        userChapters,
+        and(
+          eq(userChapters.chapterId, chapters.id),
+          eq(userChapters.userId, userId),
+        ),
+      )
+      .where(eq(chapters.mangaId, mangaId))
+      .offset(offset)
+      .limit(limit)
+      .orderBy(desc(chapters.chapterNumber))
+    /* .select({
         id: chapters.id,
         chapterNumber: chapters.chapterNumber,
         readAt: userChapters.readAt,
@@ -80,9 +86,15 @@ export class UserMangaRepositoryImpl implements UserMangaRepository {
     const totalChapters = await this.drizzle.db
       .select({ count: count() })
       .from(chapters)
-      .leftJoin(userChapters, and(eq(userChapters.chapterId, chapters.id), eq(userChapters.userId, userId)))
+      .leftJoin(
+        userChapters,
+        and(
+          eq(userChapters.chapterId, chapters.id),
+          eq(userChapters.userId, userId),
+        ),
+      )
       .where(eq(chapters.mangaId, mangaId))
-      /* .from(userChapters)
+    /* .from(userChapters)
       .innerJoin(chapters, eq(userChapters.chapterId, chapters.id))
       .innerJoin(userMangas, eq(userMangas.mangaId, mangaId))
       .where(

@@ -1,5 +1,12 @@
 import { JwtAuthGuard } from '@/modules/v1/auth/interface/guards/auth.guard'
-import { Controller, Delete, Param, Post, Request, UseGuards } from '@nestjs/common'
+import {
+  Controller,
+  Delete,
+  Param,
+  Post,
+  Request,
+  UseGuards,
+} from '@nestjs/common'
 import { CommandBus, QueryBus } from '@nestjs/cqrs'
 import { SaveReadingMangaChapterCommand } from '../../application/commands/save-reading-manga-chapter.command'
 import { DeleteReadingMangaChapterCommnad } from '../../application/commands/delete-reading-manga-chapter.command'
