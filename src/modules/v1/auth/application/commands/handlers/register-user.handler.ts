@@ -17,8 +17,8 @@ export class RegisterUserHandler
 
   async execute(command: RegisterUserCommand) {
     const { user } = command
-    const userExists = await this.userRepository.exists(user.email)
 
+    const userExists = await this.userRepository.exists(user.email)
     if (userExists) {
       throw new Error('Este usuario ya existe')
     }
@@ -26,13 +26,15 @@ export class RegisterUserHandler
     const hashedPassword = await bcrypt.hash(user.password, 10)
 
     const userEntity = this.userFactory.create({
-      ...user,
-      password: hashedPassword,
+      username: user.username,
+      email: user.email,
+      hashedPassword,
     })
+
     await this.userRepository.save(userEntity)
 
     return {
-      message: 'Usuario creado con exito',
+      message: 'Usuario registrado con exito',
     }
   }
 }

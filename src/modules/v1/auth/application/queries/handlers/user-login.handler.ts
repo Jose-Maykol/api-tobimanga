@@ -1,5 +1,5 @@
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs'
-import { UserLoginQuery } from '../login-user.query'
+import { UserLoginQuery } from '../user-login.query'
 import { Inject, NotFoundException } from '@nestjs/common'
 import { UserRepository } from '../../../domain/repositories/user.repository'
 import { JwtService } from '@nestjs/jwt'

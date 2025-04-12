@@ -3,7 +3,7 @@ import { RegisterUserDto, registerUserSchema, RegisterUserSwaggerDto } from '../
 import { ZodValidationPipe } from '@/common/pipes/zod-validation.pipe'
 import { CommandBus, QueryBus } from '@nestjs/cqrs'
 import { RegisterUserCommand } from '../../application/commands/register-user.command'
-import { UserLoginQuery } from '../../application/queries/login-user.query'
+import { UserLoginQuery } from '../../application/queries/user-login.query'
 import { UserLoginDto, userLoginSchema, UserLoginSwaggerDto } from '../dto/login-user.dto'
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 
