@@ -1,15 +1,10 @@
 import { JwtAuthGuard } from '@/modules/v1/auth/interface/guards/auth.guard'
-import {
-  Controller,
-  Delete,
-  Param,
-  Post,
-  Request,
-  UseGuards,
-} from '@nestjs/common'
+import { Controller, Delete, Param, Post, UseGuards } from '@nestjs/common'
 import { CommandBus, QueryBus } from '@nestjs/cqrs'
 import { SaveReadingMangaChapterCommand } from '../../application/commands/save-reading-manga-chapter.command'
 import { DeleteReadingMangaChapterCommnad } from '../../application/commands/delete-reading-manga-chapter.command'
+import { CurrentUser } from '@/common/decorators/current-user.decorator'
+import { AuthenticatedUser } from '@/common/interfaces/authenticated-user.interface'
 @Controller('chapters')
 export class ChaptersController {
   constructor(
@@ -19,16 +14,20 @@ export class ChaptersController {
 
   @Post(':id/read')
   @UseGuards(JwtAuthGuard)
-  async saveReadingMangaChapter(@Param('id') id: string, @Request() req) {
-    const user = req.user
+  async saveReadingMangaChapter(
+    @Param('id') id: string,
+    @CurrentUser() user: AuthenticatedUser,
+  ) {
     const command = new SaveReadingMangaChapterCommand(user.id, id)
     return await this.commandBus.execute(command)
   }
 
   @Delete(':id/read')
   @UseGuards(JwtAuthGuard)
-  async deleteReadingMangaChapter(@Param('id') id: string, @Request() req) {
-    const user = req.user
+  async deleteReadingMangaChapter(
+    @Param('id') id: string,
+    @CurrentUser() user: AuthenticatedUser,
+  ) {
     const command = new DeleteReadingMangaChapterCommnad(user.id, id)
     return await this.commandBus.execute(command)
   }
