@@ -2,7 +2,6 @@ import { IQueryHandler, QueryHandler } from '@nestjs/cqrs'
 import { FindPaginatedChaptersQuery } from '../find-paginated-chapters.query'
 import { MangaRepository } from '../../../domain/repositories/manga.repository'
 import { Inject } from '@nestjs/common'
-import { UserMangaRepository } from '../../../../user/domain/repositories/user-manga.repository'
 
 @QueryHandler(FindPaginatedChaptersQuery)
 export class FindPaginatedChaptersHandler
@@ -14,7 +13,7 @@ export class FindPaginatedChaptersHandler
   ) {}
 
   async execute(query: FindPaginatedChaptersQuery) {
-    const { page, limit, mangaId, userId } = query
+    const { page, limit, mangaId } = query
 
     const calculatePagination = (
       total: number,

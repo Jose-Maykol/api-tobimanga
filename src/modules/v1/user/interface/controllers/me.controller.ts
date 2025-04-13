@@ -25,6 +25,8 @@ import { UpdateUserMangaReadingStatusCommand } from '../../application/commands/
 import { GetUserMangaReadingStatusQuery } from '../../application/queries/get-user-manga-reading-status.query'
 import { PaginationDto } from '@/modules/v1/manga/interface/dto/pagination.dto'
 import { FindPaginatedChaptersReadQuery } from '../../application/queries/find-paginated-chapters-read.query'
+import { AuthenticatedUser } from '@/common/interfaces/authenticated-user.interface'
+import { CurrentUser } from '@/common/decorators/current-user.decorator'
 
 @Controller('me')
 export class MeController {
@@ -38,9 +40,8 @@ export class MeController {
   async findPaginatedChaptersByMangaId(
     @Param('id') mangaId: string,
     @Query() pagination: PaginationDto,
-    @Request() req,
+    @CurrentUser() user: AuthenticatedUser,
   ) {
-    const user = req.user
     const { page = 1, limit = 20 } = pagination
     const query = new FindPaginatedChaptersReadQuery(
       mangaId,
@@ -56,9 +57,8 @@ export class MeController {
     @Param('id') id: string,
     @Body(new ZodValidationPipe(setUserMangaReadingStatusSchema))
     body: SetUserMangaReadingStatusDto,
-    @Request() req,
+    @CurrentUser() user: AuthenticatedUser,
   ) {
-    const user = req.user
     const { status } = body
     const command = new SetUserMangaReadingStatusCommand(user.id, id, status)
     return await this.commandBus.execute(command)
@@ -78,9 +78,8 @@ export class MeController {
     @Param('id') id: string,
     @Body(new ZodValidationPipe(updateUserMangaReadingStatusSchema))
     body: UpdateUserMangaReadingStatusDto,
-    @Request() req,
+    @CurrentUser() user: AuthenticatedUser,
   ) {
-    const user = req.user
     const command = new UpdateUserMangaReadingStatusCommand(
       user.id,
       id,

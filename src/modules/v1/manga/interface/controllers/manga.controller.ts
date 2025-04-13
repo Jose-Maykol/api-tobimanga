@@ -5,7 +5,6 @@ import {
   Param,
   Post,
   Query,
-  Request,
   UseGuards,
   UsePipes,
 } from '@nestjs/common'
@@ -22,7 +21,6 @@ import { FindMangaQuery } from '../../application/queries/find-manga.query'
 import { FindPaginatedChaptersQuery } from '../../application/queries/find-paginated-chapters.query'
 import { JwtAuthGuard } from '@/modules/v1/auth/interface/guards/auth.guard'
 import { SyncAllMangasChaptersCommand } from '../../application/commands/sync-all-mangas-chapters.command'
-import { OptionalJwtAuthGuard } from '@/modules/v1/auth/interface/guards/optional-auth.guard'
 
 @Controller()
 export class MangaController {
@@ -45,19 +43,12 @@ export class MangaController {
   }
 
   @Get(':id/chapters')
-  @UseGuards(OptionalJwtAuthGuard)
   async findPaginatedChapters(
     @Param('id') mangaId: string,
     @Query() pagination: PaginationDto,
-    @Request() req,
   ) {
-    const user = req.user
     const { page = 1, limit = 20 } = pagination
-    const query = new FindPaginatedChaptersQuery(
-      mangaId,
-      { page, limit },
-      user?.id,
-    )
+    const query = new FindPaginatedChaptersQuery(mangaId, { page, limit })
     return await this.queryBus.execute(query)
   }
 
