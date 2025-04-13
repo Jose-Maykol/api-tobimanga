@@ -5,7 +5,7 @@ import GenreRecord from './genre'
 type MangaRecord = {
   id: string
   originalName: string
-  alternativeNames: string[] | null
+  alternativeNames?: string[]
   slugName: string
   scrappingName: string
   sinopsis: string
@@ -20,7 +20,7 @@ type MangaRecord = {
   genres: GenreRecord[]
   demographic: DemographicRecord
   createdAt: Date
-  updatedAt: Date | null
+  updatedAt?: Date
 }
 
 export default MangaRecord

@@ -62,18 +62,20 @@ export class SaveMangaHandler implements ICommandHandler<SaveMangaCommand> {
 
     const newManga = this.mangaFactory.create({
       originalName: manga.originalName,
-      alternativeNames: manga.alternativesNames || null,
+      alternativeNames: manga.alternativesNames,
       sinopsis: manga.sinopsis,
       chapters: manga.chapters,
       releaseDate: new Date(manga.releaseDate),
       publicationStatus: manga.publicationStatus,
       coverImage: uploadedCoverImage.secure_url,
       bannerImage: uploadedBannerImage.secure_url,
+      authors: [],
+      genres: [],
+      demographic: demographicData,
     })
 
     newManga.authors = authorsData
     newManga.genres = genresData
-    newManga.demographic = demographicData
 
     const savedManga = await this.mangaRepository.save(newManga)
 

@@ -1,24 +1,26 @@
 import { Manga } from '../entities/manga.entity'
-import MangaRecord from '../types/manga'
 import { v4 as uuidv4 } from 'uuid'
 import slugify from 'slugify'
+import { Author } from '../entities/author.entity'
+import { Genre } from '../entities/genre.entity'
+import { Demographic } from '../entities/demographic.entity'
 
-type MangaProps = Omit<
-  MangaRecord,
-  | 'id'
-  | 'slugName'
-  | 'scrappingName'
-  | 'rating'
-  | 'active'
-  | 'authors'
-  | 'genres'
-  | 'demographic'
-  | 'createdAt'
-  | 'updatedAt'
->
+type MangaFactoryProps = {
+  originalName: string
+  alternativeNames?: string[]
+  sinopsis: string
+  chapters: number
+  releaseDate: Date
+  coverImage: string
+  bannerImage: string
+  publicationStatus: string
+  authors: Author[]
+  genres: Genre[]
+  demographic: Demographic
+}
 
 export class MangaFactory {
-  create(manga: MangaProps): Manga {
+  create(manga: MangaFactoryProps): Manga {
     const slugName = slugify(manga.originalName, {
       lower: true,
       strict: true,
@@ -40,7 +42,10 @@ export class MangaFactory {
       coverImage: manga.coverImage,
       bannerImage: manga.bannerImage,
       createdAt: new Date(),
-      updatedAt: null,
+      updatedAt: undefined,
+      authors: manga.authors,
+      genres: manga.genres,
+      demographic: manga.demographic,
     })
   }
 }

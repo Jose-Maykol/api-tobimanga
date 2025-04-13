@@ -16,31 +16,4 @@ export interface MangaRepository {
   existsByTitle(title: string): Promise<boolean>
   existsById(id: string): Promise<boolean>
   save(mangaEntity: Manga): Promise<{ id: string }>
-  /*   saveAuthors(
-    authors: string[],
-    manga: string,
-    transaction: PgTransaction<
-      NodePgQueryResultHKT,
-      typeof databaseSchema,
-      ExtractTablesWithRelations<typeof databaseSchema>
-    >,
-  ): Promise<void>
-  saveGenres(
-    genres: string[],
-    manga: string,
-    transaction: PgTransaction<
-      NodePgQueryResultHKT,
-      typeof databaseSchema,
-      ExtractTablesWithRelations<typeof databaseSchema>
-    >,
-  ): Promise<void>
-  saveChapters(
-    numberChapters: number,
-    manga: string,
-    transaction: PgTransaction<
-      NodePgQueryResultHKT,
-      typeof databaseSchema,
-      ExtractTablesWithRelations<typeof databaseSchema>
-    >,
-  ): Promise<void> */
 }

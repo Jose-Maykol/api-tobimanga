@@ -145,7 +145,7 @@ export class MangaRepositoryImpl implements MangaRepository {
       id: manga[0].id,
       originalName: manga[0].originalName,
       slugName: manga[0].slugName ?? undefined,
-      alternativeNames: manga[0].alternativeNames,
+      alternativeNames: manga[0].alternativeNames ?? undefined,
       sinopsis: manga[0].sinopsis,
       chapters: manga[0].chapters,
       releaseDate: manga[0].releaseDate

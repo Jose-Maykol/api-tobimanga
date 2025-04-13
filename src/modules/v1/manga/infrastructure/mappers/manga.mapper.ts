@@ -6,6 +6,7 @@ import { genres } from '@/modules/database/schemas/genres.schema'
 import { authors } from '@/modules/database/schemas/author.schema'
 import { Genre } from '../../domain/entities/genre.entity'
 import { Author } from '../../domain/entities/author.entity'
+import { Demographic } from '../../domain/entities/demographic.entity'
 
 export class MangaMapper {
   static toDomain(manga: MangaRecord): Manga {
@@ -25,6 +26,9 @@ export class MangaMapper {
       scrappingName: manga.scrappingName,
       createdAt: manga.createdAt,
       updatedAt: manga.updatedAt,
+      authors: [],
+      genres: [],
+      demographic: new Demographic(manga.demographic),
     })
 
     newManga.genres = manga.genres.map(
