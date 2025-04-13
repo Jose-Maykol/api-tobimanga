@@ -1,7 +1,10 @@
 import { ConflictException } from '@nestjs/common'
 
 export class AuthorAlreadyExistsException extends ConflictException {
-  constructor(authorName: string) {
-    super(`El autor ${authorName} ya existe`)
+  constructor() {
+    super({
+      code: 'AUTHOR_ALREADY_EXISTS',
+      message: `Este autor ya existe`,
+    })
   }
 }

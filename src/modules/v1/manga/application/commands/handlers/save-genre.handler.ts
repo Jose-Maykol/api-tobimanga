@@ -1,8 +1,9 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs'
 import { SaveGenreCommand } from '../save-genre.command'
-import { ConflictException, Inject } from '@nestjs/common'
+import { Inject } from '@nestjs/common'
 import { GenreRepository } from '../../../domain/repositories/genre.repository'
 import { GenreFactory } from '../../../domain/factories/genre.factory'
+import { GenreAlreadyExistsException } from '../../exceptions/genre-already-exist.exception'
 
 @CommandHandler(SaveGenreCommand)
 export class SaveGenreHandler implements ICommandHandler<SaveGenreCommand> {
@@ -14,12 +15,11 @@ export class SaveGenreHandler implements ICommandHandler<SaveGenreCommand> {
 
   async execute(command: SaveGenreCommand) {
     const { genre } = command
+    const { name } = genre
 
-    const genreExists = await this.genreRepository.findByName(genre.name)
+    const genreExists = await this.genreRepository.existsByName(name)
 
-    if (genreExists) {
-      throw new ConflictException('Este genero ya existe')
-    }
+    if (genreExists) throw new GenreAlreadyExistsException()
 
     const genreEntity = this.genreFactory.create(genre)
     const savedGenre = await this.genreRepository.save(genreEntity)

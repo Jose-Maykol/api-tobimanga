@@ -2,13 +2,33 @@ import { DrizzleService } from '@/modules/database/services/drizzle.service'
 import { Injectable } from '@nestjs/common'
 import { AuthorRepository } from '../../domain/repositories/author.repository'
 import { authors } from '@/modules/database/schemas/author.schema'
-import { eq, inArray } from 'drizzle-orm'
+import { eq, inArray, sql } from 'drizzle-orm'
 import { Author } from '../../domain/entities/author.entity'
 import { AuthorMapper } from '../mappers/author.mapper'
 
 @Injectable()
 export class AuthorRepositoryImpl implements AuthorRepository {
   constructor(private readonly drizzle: DrizzleService) {}
+
+  async existsById(id: string): Promise<boolean> {
+    const author = await this.drizzle.db
+      .select({
+        exists: sql`1`,
+      })
+      .from(authors)
+      .where(eq(authors.id, id))
+    return author.length > 0
+  }
+
+  async existsByName(name: string): Promise<boolean> {
+    const author = await this.drizzle.db
+      .select({
+        exists: sql`1`,
+      })
+      .from(authors)
+      .where(eq(authors.name, name))
+    return author.length > 0
+  }
 
   async findAll(): Promise<Author[] | null> {
     const allAuthors = await this.drizzle.db.select().from(authors)

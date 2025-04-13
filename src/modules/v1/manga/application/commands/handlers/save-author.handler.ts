@@ -17,11 +17,9 @@ export class SaveAuthorHandler implements ICommandHandler<SaveAuthorCommand> {
     const { author } = command
     const { name } = author
 
-    const authorExists = await this.authorRepository.findByName(name)
+    const authorExists = await this.authorRepository.existsByName(name)
 
-    if (authorExists) {
-      throw new AuthorAlreadyExistsException(authorExists.name)
-    }
+    if (authorExists) throw new AuthorAlreadyExistsException()
 
     const authorEntity = this.authorFactory.create(author)
     const savedAuthor = await this.authorRepository.save(authorEntity)

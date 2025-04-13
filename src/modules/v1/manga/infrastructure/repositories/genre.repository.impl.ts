@@ -2,13 +2,33 @@ import { Injectable } from '@nestjs/common'
 import { GenreRepository } from '../../domain/repositories/genre.repository'
 import { DrizzleService } from '@/modules/database/services/drizzle.service'
 import { genres } from '@/modules/database/schemas/genres.schema'
-import { eq, inArray } from 'drizzle-orm'
+import { eq, inArray, sql } from 'drizzle-orm'
 import { Genre } from '../../domain/entities/genre.entity'
 import { GenreMapper } from '../mappers/genre.mapper'
 
 @Injectable()
 export class GenreRepositoryImpl implements GenreRepository {
   constructor(private readonly drizzle: DrizzleService) {}
+
+  async existsById(id: string): Promise<boolean> {
+    const genre = await this.drizzle.db
+      .select({
+        exists: sql`1`,
+      })
+      .from(genres)
+      .where(eq(genres.id, id))
+    return genre.length > 0
+  }
+
+  async existsByName(name: string): Promise<boolean> {
+    const genre = await this.drizzle.db
+      .select({
+        exists: sql`1`,
+      })
+      .from(genres)
+      .where(eq(genres.name, name))
+    return genre.length > 0
+  }
 
   async find(): Promise<Genre[] | null> {
     const allGenres = await this.drizzle.db.select().from(genres)
