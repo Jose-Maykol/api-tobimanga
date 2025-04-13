@@ -10,7 +10,7 @@ export const saveMangaSchema = z.object(
       .min(3, {
         message: 'El nombre original debe tener al menos 3 caracteres',
       }),
-    alternativesNames: z
+    alternativeNames: z
       .array(
         z.string({
           required_error: 'El nombre alternativo es requerido',

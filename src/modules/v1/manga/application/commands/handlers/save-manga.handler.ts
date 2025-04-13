@@ -1,13 +1,16 @@
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs'
 import { SaveMangaCommand } from '../save-manga.command'
-import { ConflictException, Inject, NotFoundException } from '@nestjs/common'
+import { Inject } from '@nestjs/common'
 import { MangaRepository } from '../../../domain/repositories/manga.repository'
 import { CloudinaryService } from '@/cloudinary/cloudinary.service'
 import { MangaFactory } from '../../../domain/factories/manga.factory'
-import { DrizzleService } from '@/modules/database/services/drizzle.service'
 import { AuthorRepository } from '../../../domain/repositories/author.repository'
 import { GenreRepository } from '../../../domain/repositories/genre.repository'
 import { DemographicRepository } from '../../../domain/repositories/demographic.repository'
+import { MangaAlreadyExistsException } from '../../exceptions/manga-already-exists.exception'
+import { DemographicNotFoundException } from '../../exceptions/demographic-not-found.exception'
+import { AuthorNotFoundException } from '../../exceptions/author-not-found.exception'
+import { GenreNotFoundException } from '../../exceptions/genre-not-found.exceptions'
 
 @CommandHandler(SaveMangaCommand)
 export class SaveMangaHandler implements ICommandHandler<SaveMangaCommand> {
@@ -21,7 +24,6 @@ export class SaveMangaHandler implements ICommandHandler<SaveMangaCommand> {
     @Inject('DemographicRepository')
     private readonly demographicRepository: DemographicRepository,
     private readonly cloudinaryService: CloudinaryService,
-    private readonly drizzleService: DrizzleService,
     private readonly mangaFactory: MangaFactory,
   ) {}
 
@@ -39,21 +41,11 @@ export class SaveMangaHandler implements ICommandHandler<SaveMangaCommand> {
         this.genreRepository.findByIds(genreIds),
       ])
 
-    if (mangaExists) {
-      throw new ConflictException('Este manga ya existe')
-    }
-
-    if (!demographicData) {
-      throw new NotFoundException('La demografia del manga no existe')
-    }
-
-    if (authorsData?.length !== authors.length) {
-      throw new NotFoundException('Uno o mas autores no existen')
-    }
-
-    if (genresData?.length !== genres.length) {
-      throw new NotFoundException('Uno o mas generos no existen')
-    }
+    if (mangaExists) throw new MangaAlreadyExistsException()
+    if (!demographicData) throw new DemographicNotFoundException()
+    if (authorsData?.length !== authors.length)
+      throw new AuthorNotFoundException()
+    if (genresData?.length !== genres.length) throw new GenreNotFoundException()
 
     const [uploadedCoverImage, uploadedBannerImage] = await Promise.all([
       this.cloudinaryService.uploadFileFromJson(manga.coverImage),
@@ -62,7 +54,7 @@ export class SaveMangaHandler implements ICommandHandler<SaveMangaCommand> {
 
     const newManga = this.mangaFactory.create({
       originalName: manga.originalName,
-      alternativeNames: manga.alternativesNames,
+      alternativeNames: manga.alternativeNames,
       sinopsis: manga.sinopsis,
       chapters: manga.chapters,
       releaseDate: new Date(manga.releaseDate),
@@ -78,16 +70,6 @@ export class SaveMangaHandler implements ICommandHandler<SaveMangaCommand> {
     newManga.genres = genresData
 
     const savedManga = await this.mangaRepository.save(newManga)
-
-    /* const savedManga = await this.drizzleService.db.transaction(async (tx) => {
-      const savedManga = await this.mangaRepository.save(newManga, tx)
-      const { id: mangaId } = savedManga
-      await this.mangaRepository.saveAuthors(authorIds, mangaId, tx)
-      await this.mangaRepository.saveGenres(genreIds, mangaId, tx)
-      await this.mangaRepository.saveChapters(manga.chapters, mangaId, tx)
-
-      return savedManga
-    }) */
 
     return {
       message: 'Manga creado exitosamente',
