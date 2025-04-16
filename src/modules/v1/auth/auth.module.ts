@@ -14,8 +14,13 @@ import { AuthMiddleware } from './interface/middlewares/auth.middleware'
 import { AuthController } from './interface/controllers/auth.controller'
 import { JwtStrategy } from './application/strategies/jwt.strategy'
 import { CheckUserExistsHandler } from './application/queries/handlers/check-user-exists.handler'
+import { RefreshTokenHandler } from './application/commands/handlers/refresh-token.handler'
 
-const CommandHandlers = [RegisterUserHandler, CheckUserExistsHandler]
+const CommandHandlers = [
+  RegisterUserHandler,
+  CheckUserExistsHandler,
+  RefreshTokenHandler,
+]
 const QueryHandlers = [UserLoginHandler, CheckUserExistsQuery]
 const Factories = [UserFactory]
 const Repositories = [
@@ -32,7 +37,7 @@ const Repositories = [
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) => ({
         secret: configService.get('SECRET_KEY'),
-        signOptions: { expiresIn: '1d' },
+        signOptions: { expiresIn: '1h' },
       }),
     }),
   ],

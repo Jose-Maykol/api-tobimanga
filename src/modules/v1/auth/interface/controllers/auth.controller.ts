@@ -1,11 +1,21 @@
 import { Body, Controller, HttpStatus, Post, UsePipes } from '@nestjs/common'
-import { RegisterUserDto, registerUserSchema, RegisterUserSwaggerDto } from '../dto/register-user.dto'
+import {
+  RegisterUserDto,
+  registerUserSchema,
+  RegisterUserSwaggerDto,
+} from '../dto/register-user.dto'
 import { ZodValidationPipe } from '@/common/pipes/zod-validation.pipe'
 import { CommandBus, QueryBus } from '@nestjs/cqrs'
 import { RegisterUserCommand } from '../../application/commands/register-user.command'
 import { UserLoginQuery } from '../../application/queries/user-login.query'
-import { UserLoginDto, userLoginSchema, UserLoginSwaggerDto } from '../dto/login-user.dto'
+import {
+  UserLoginDto,
+  userLoginSchema,
+  UserLoginSwaggerDto,
+} from '../dto/login-user.dto'
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
+import { RefreshTokenDto, refreshTokenSchema } from '../dto/refresh-token.dto'
+import { RefreshTokenCommand } from '../../application/commands/refresh-token.command'
 
 @ApiTags('Autenticación')
 @Controller()
@@ -84,6 +94,19 @@ export class AuthController {
   @UsePipes(new ZodValidationPipe(registerUserSchema))
   async register(@Body() registerUserDto: RegisterUserDto) {
     const command = new RegisterUserCommand(registerUserDto)
+    return await this.commandBus.execute(command)
+  }
+
+  @Post('refresh')
+  @ApiOperation({ summary: 'Refrescar token de acceso' })
+  @ApiBody({
+    description: 'Token de refresco para obtener un nuevo token de acceso',
+    type: String,
+  })
+  @UsePipes(new ZodValidationPipe(refreshTokenSchema))
+  async refresh(@Body() body: RefreshTokenDto) {
+    const { refreshToken } = body
+    const command = new RefreshTokenCommand(refreshToken)
     return await this.commandBus.execute(command)
   }
 }
