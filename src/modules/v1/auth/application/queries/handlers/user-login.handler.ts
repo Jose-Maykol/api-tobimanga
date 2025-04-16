@@ -4,6 +4,8 @@ import { Inject, NotFoundException } from '@nestjs/common'
 import { UserRepository } from '../../../domain/repositories/user.repository'
 import { JwtService } from '@nestjs/jwt'
 import * as bcrypt from 'bcrypt'
+import { ConfigService } from '@nestjs/config'
+import * as jwt from 'jsonwebtoken'
 
 @QueryHandler(UserLoginQuery)
 export class UserLoginHandler implements IQueryHandler<UserLoginQuery> {
@@ -11,6 +13,7 @@ export class UserLoginHandler implements IQueryHandler<UserLoginQuery> {
     @Inject('UserRepository')
     private readonly userRepository: UserRepository,
     private readonly jwtService: JwtService,
+    private readonly configService: ConfigService,
   ) {}
 
   async execute(query: UserLoginQuery) {
@@ -35,10 +38,18 @@ export class UserLoginHandler implements IQueryHandler<UserLoginQuery> {
     }
 
     const accessToken = this.jwtService.sign(payload)
+    const refreshToken = jwt.sign(
+      payload,
+      this.configService.get('REFRESH_SECRET_KEY') as string,
+      {
+        expiresIn: '7d',
+      },
+    )
 
     return {
       message: 'Login exitoso',
       accessToken,
+      refreshToken,
       user: {
         id: user.getId(),
         email: user.getEmail(),

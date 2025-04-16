@@ -21,7 +21,7 @@ export class UserRepositoryImpl implements UserRepository {
       .from(users)
       .where(eq(users.id, id))
 
-    return user[0]
+    return UserMapper.toDomain(user[0])
   }
 
   async findByEmail(email: string): Promise<User> {

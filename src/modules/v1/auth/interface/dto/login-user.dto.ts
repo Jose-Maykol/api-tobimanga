@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger'
 import { z } from 'zod'
 
 export const userLoginSchema = z.object({
@@ -14,12 +14,12 @@ export class UserLoginSwaggerDto {
     example: 'usuario@correo.com',
     format: 'email',
   })
-  email: string;
+  email: string
 
   @ApiProperty({
     description: 'Contraseña del usuario',
     example: 'strongpassword123',
     minLength: 6,
   })
-  password: string;
+  password: string
 }
