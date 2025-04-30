@@ -19,7 +19,12 @@ export class FindAuthorsHandler implements IQueryHandler<FindAuthorsQuery> {
     }
 
     return {
-      authors,
+      authors: authors.map((author) => ({
+        id: author.id,
+        name: author.name,
+        createdAt: author.createdAt,
+        updatedAt: author.updatedAt,
+      })),
     }
   }
 }

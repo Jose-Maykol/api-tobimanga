@@ -18,7 +18,12 @@ export class FindGenresHandler implements IQueryHandler<FindGenresQuery> {
     }
 
     return {
-      genres,
+      genres: genres.map((genre) => ({
+        id: genre.id,
+        name: genre.name,
+        createdAt: genre.createdAt,
+        updatedAt: genre.updatedAt,
+      })),
     }
   }
 }

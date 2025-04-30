@@ -21,7 +21,12 @@ export class FindDemographicsHandler
     }
 
     return {
-      demographics,
+      demographics: demographics.map((demographic) => ({
+        id: demographic.id,
+        name: demographic.name,
+        createdAt: demographic.createdAt,
+        updatedAt: demographic.updatedAt,
+      })),
     }
   }
 }
