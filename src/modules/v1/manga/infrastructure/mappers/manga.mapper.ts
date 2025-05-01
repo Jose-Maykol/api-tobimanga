@@ -76,7 +76,7 @@ export class MangaMapper {
         scrappingName: manga.scrappingName,
         createdAt: manga.createdAt,
         updatedAt: manga.updatedAt,
-        demographicId: manga.demographic.id,
+        demographicId: manga.demographic.getId(),
       },
       authors: manga.authors.map((author) => ({
         id: author.getId(),
@@ -85,10 +85,10 @@ export class MangaMapper {
         updatedAt: author.getUpdatedAt(),
       })),
       genres: manga.genres.map((genre) => ({
-        id: genre.id,
-        name: genre.name,
-        createdAt: genre.createdAt,
-        updatedAt: genre.updatedAt,
+        id: genre.getId(),
+        name: genre.getName(),
+        createdAt: genre.getCreatedAt(),
+        updatedAt: genre.getUpdatedAt(),
       })),
     }
   }

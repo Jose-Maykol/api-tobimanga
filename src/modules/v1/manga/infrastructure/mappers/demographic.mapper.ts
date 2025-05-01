@@ -13,10 +13,10 @@ export class DemographicMapper {
 
   static toPersistence(demographic: Demographic): DemographicRecord {
     return {
-      id: demographic.id,
-      name: demographic.name,
-      createdAt: demographic.createdAt,
-      updatedAt: demographic.updatedAt,
+      id: demographic.getId(),
+      name: demographic.getName(),
+      createdAt: demographic.getCreatedAt(),
+      updatedAt: demographic.getUpdatedAt(),
     }
   }
 }
