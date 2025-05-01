@@ -1,15 +1,11 @@
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs'
 import { FindAuthorsQuery } from '../find-authors.query'
-import { AuthorRepository } from '../../../domain/repositories/author.repository'
-import { Inject } from '@nestjs/common'
 import { AuthorNotFoundException } from '../../exceptions/author-not-found.exception'
+import { AuthorReadRepository } from '../../../infrastructure/repositories/read/author-read.repository'
 
 @QueryHandler(FindAuthorsQuery)
 export class FindAuthorsHandler implements IQueryHandler<FindAuthorsQuery> {
-  constructor(
-    @Inject('AuthorRepository')
-    private readonly authorRepository: AuthorRepository,
-  ) {}
+  constructor(private readonly authorRepository: AuthorReadRepository) {}
 
   async execute() {
     const authors = await this.authorRepository.findAll()
@@ -19,12 +15,7 @@ export class FindAuthorsHandler implements IQueryHandler<FindAuthorsQuery> {
     }
 
     return {
-      authors: authors.map((author) => ({
-        id: author.id,
-        name: author.name,
-        createdAt: author.createdAt,
-        updatedAt: author.updatedAt,
-      })),
+      authors,
     }
   }
 }
