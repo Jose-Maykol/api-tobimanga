@@ -5,7 +5,7 @@ import { Genre } from './genre.entity'
 export type MangaProps = {
   id: string
   originalName: string
-  alternativeNames?: string[]
+  alternativeNames: string[] | null
   slugName: string
   scrappingName: string
   sinopsis: string
@@ -20,191 +20,191 @@ export type MangaProps = {
   genres: Genre[]
   demographic: Demographic
   createdAt: Date
-  updatedAt?: Date
+  updatedAt: Date | null
 }
 
 export class Manga {
-  private _id: string
-  private _originalName: string
-  private _alternativeNames?: string[]
-  private _slugName: string
-  private _scrappingName: string
-  private _sinopsis: string
-  private _chapters: number
-  private _releaseDate: Date
-  private _coverImage: string
-  private _bannerImage: string
-  private _publicationStatus: string
-  private _rating: number
-  private _active: boolean
-  private _authors: Author[] = []
-  private _genres: Genre[] = []
-  private _demographic: Demographic
-  private _createdAt: Date
-  private _updatedAt?: Date
+  private id: string
+  private originalName: string
+  private alternativeNames: string[] | null
+  private slugName: string
+  private scrappingName: string
+  private sinopsis: string
+  private chapters: number
+  private releaseDate: Date
+  private coverImage: string
+  private bannerImage: string
+  private publicationStatus: string
+  private rating: number
+  private active: boolean
+  private authors: Author[] = []
+  private genres: Genre[] = []
+  private demographic: Demographic
+  private createdAt: Date
+  private updatedAt: Date | null
 
   constructor(props: MangaProps) {
-    this._id = props.id
-    this._originalName = props.originalName
-    this._alternativeNames = props.alternativeNames
-    this._slugName = props.slugName
-    this._scrappingName = props.scrappingName
-    this._sinopsis = props.sinopsis
-    this._chapters = props.chapters
-    this._releaseDate = props.releaseDate
-    this._coverImage = props.coverImage
-    this._bannerImage = props.bannerImage
-    this._publicationStatus = props.publicationStatus
-    this._rating = props.rating
-    this._active = props.active
-    this._authors = props.authors
-    this._genres = props.genres
-    this._demographic = props.demographic
-    this._createdAt = props.createdAt
-    this._updatedAt = props.updatedAt
+    this.setId(props.id)
+    this.setOriginalName(props.originalName)
+    this.setAlternativeNames(props.alternativeNames)
+    this.setSlugName(props.slugName)
+    this.setScrappingName(props.scrappingName)
+    this.setSinopsis(props.sinopsis)
+    this.setChapters(props.chapters)
+    this.setReleaseDate(props.releaseDate)
+    this.setCoverImage(props.coverImage)
+    this.setBannerImage(props.bannerImage)
+    this.setPublicationStatus(props.publicationStatus)
+    this.setRating(props.rating)
+    this.setActive(props.active)
+    this.setAuthors(props.authors)
+    this.setGenres(props.genres)
+    this.setDemographic(props.demographic)
+    this.setCreatedAt(props.createdAt)
+    this.setUpdatedAt(props.updatedAt)
   }
 
-  get id(): string {
-    return this._id
+  public getId(): string {
+    return this.id
   }
 
-  set id(value: string) {
-    this._id = value
+  public setId(value: string): void {
+    this.id = value
   }
 
-  get originalName(): string {
-    return this._originalName
+  public getOriginalName(): string {
+    return this.originalName
   }
 
-  set originalName(value: string) {
-    this._originalName = value
+  public setOriginalName(value: string): void {
+    this.originalName = value
   }
 
-  get alternativeNames(): string[] | undefined {
-    return this._alternativeNames
+  public getAlternativeNames(): string[] | null {
+    return this.alternativeNames
   }
 
-  set alternativeNames(value: string[] | undefined) {
-    this._alternativeNames = value
+  public setAlternativeNames(value: string[] | null): void {
+    this.alternativeNames = value
   }
 
-  get slugName(): string {
-    return this._slugName
+  public getSlugName(): string {
+    return this.slugName
   }
 
-  set slugName(value: string) {
-    this._slugName = value
+  public setSlugName(value: string): void {
+    this.slugName = value
   }
 
-  get scrappingName(): string {
-    return this._scrappingName
+  public getScrappingName(): string {
+    return this.scrappingName
   }
 
-  set scrappingName(value: string) {
-    this._scrappingName = value
+  public setScrappingName(value: string): void {
+    this.scrappingName = value
   }
 
-  get sinopsis(): string {
-    return this._sinopsis
+  public getSinopsis(): string {
+    return this.sinopsis
   }
 
-  set sinopsis(value: string) {
-    this._sinopsis = value
+  public setSinopsis(value: string): void {
+    this.sinopsis = value
   }
 
-  get chapters(): number {
-    return this._chapters
+  public getChapters(): number {
+    return this.chapters
   }
 
-  set chapters(value: number) {
-    this._chapters = value
+  public setChapters(value: number): void {
+    this.chapters = value
   }
 
-  get releaseDate(): Date {
-    return this._releaseDate
+  public getReleaseDate(): Date {
+    return this.releaseDate
   }
 
-  set releaseDate(value: Date) {
-    this._releaseDate = value
+  public setReleaseDate(value: Date): void {
+    this.releaseDate = value
   }
 
-  get coverImage(): string {
-    return this._coverImage
+  public getCoverImage(): string {
+    return this.coverImage
   }
 
-  set coverImage(value: string) {
-    this._coverImage = value
+  public setCoverImage(value: string): void {
+    this.coverImage = value
   }
 
-  get bannerImage(): string {
-    return this._bannerImage
+  public getBannerImage(): string {
+    return this.bannerImage
   }
 
-  set bannerImage(value: string) {
-    this._bannerImage = value
+  public setBannerImage(value: string): void {
+    this.bannerImage = value
   }
 
-  get publicationStatus(): string {
-    return this._publicationStatus
+  public getPublicationStatus(): string {
+    return this.publicationStatus
   }
 
-  set publicationStatus(value: string) {
-    this._publicationStatus = value
+  public setPublicationStatus(value: string): void {
+    this.publicationStatus = value
   }
 
-  get rating(): number {
-    return this._rating
+  public getRating(): number {
+    return this.rating
   }
 
-  set rating(value: number) {
-    this._rating = value
+  public setRating(value: number): void {
+    this.rating = value
   }
 
-  get active(): boolean {
-    return this._active
+  public getActive(): boolean {
+    return this.active
   }
 
-  set active(value: boolean) {
-    this._active = value
+  public setActive(value: boolean): void {
+    this.active = value
   }
 
-  get authors(): Author[] {
-    return this._authors
+  public getAuthors(): Author[] {
+    return this.authors
   }
 
-  set authors(value: Author[]) {
-    this._authors = value
+  public setAuthors(value: Author[]): void {
+    this.authors = value
   }
 
-  get genres(): Genre[] {
-    return this._genres
+  public getGenres(): Genre[] {
+    return this.genres
   }
 
-  set genres(value: Genre[]) {
-    this._genres = value
+  public setGenres(value: Genre[]): void {
+    this.genres = value
   }
 
-  get demographic(): Demographic {
-    return this._demographic
+  public getDemographic(): Demographic {
+    return this.demographic
   }
 
-  set demographic(value: Demographic) {
-    this._demographic = value
+  public setDemographic(value: Demographic): void {
+    this.demographic = value
   }
 
-  get createdAt(): Date {
-    return this._createdAt
+  public getCreatedAt(): Date {
+    return this.createdAt
   }
 
-  set createdAt(value: Date) {
-    this._createdAt = value
+  public setCreatedAt(value: Date): void {
+    this.createdAt = value
   }
 
-  get updatedAt(): Date | undefined {
-    return this._updatedAt
+  public getUpdatedAt(): Date | null {
+    return this.updatedAt
   }
 
-  set updatedAt(value: Date | undefined) {
-    this._updatedAt = value
+  public setUpdatedAt(value: Date | null): void {
+    this.updatedAt = value
   }
 }

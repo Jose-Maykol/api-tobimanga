@@ -31,24 +31,28 @@ export class MangaMapper {
       demographic: new Demographic(manga.demographic),
     })
 
-    newManga.genres = manga.genres.map(
-      (genre) =>
-        new Genre({
-          id: genre.id,
-          name: genre.name,
-          createdAt: genre.createdAt,
-          updatedAt: genre.updatedAt,
-        }),
+    newManga.setGenres(
+      manga.genres.map(
+        (genre) =>
+          new Genre({
+            id: genre.id,
+            name: genre.name,
+            createdAt: genre.createdAt,
+            updatedAt: genre.updatedAt,
+          }),
+      ),
     )
 
-    newManga.authors = manga.authors.map(
-      (author) =>
-        new Author({
-          id: author.id,
-          name: author.name,
-          createdAt: author.createdAt,
-          updatedAt: author.updatedAt,
-        }),
+    newManga.setAuthors(
+      manga.authors.map(
+        (author) =>
+          new Author({
+            id: author.id,
+            name: author.name,
+            createdAt: author.createdAt,
+            updatedAt: author.updatedAt,
+          }),
+      ),
     )
 
     return newManga
@@ -61,30 +65,30 @@ export class MangaMapper {
   } {
     return {
       manga: {
-        id: manga.id,
-        originalName: manga.originalName,
-        alternativeNames: manga.alternativeNames,
-        sinopsis: manga.sinopsis,
-        chapters: manga.chapters,
-        releaseDate: manga.releaseDate.toISOString(),
-        coverImage: manga.coverImage,
-        bannerImage: manga.bannerImage,
-        publicationStatus: manga.publicationStatus as any,
-        rating: manga.rating,
-        active: manga.active,
-        slugName: manga.slugName,
-        scrappingName: manga.scrappingName,
-        createdAt: manga.createdAt,
-        updatedAt: manga.updatedAt,
-        demographicId: manga.demographic.getId(),
+        id: manga.getId(),
+        originalName: manga.getOriginalName(),
+        alternativeNames: manga.getAlternativeNames(),
+        sinopsis: manga.getSinopsis(),
+        chapters: manga.getChapters(),
+        releaseDate: manga.getReleaseDate().toISOString(),
+        coverImage: manga.getCoverImage(),
+        bannerImage: manga.getBannerImage(),
+        publicationStatus: manga.getPublicationStatus() as any,
+        rating: manga.getRating(),
+        active: manga.getActive(),
+        slugName: manga.getSlugName(),
+        scrappingName: manga.getScrappingName(),
+        createdAt: manga.getCreatedAt(),
+        updatedAt: manga.getUpdatedAt(),
+        demographicId: manga.getDemographic().getId(),
       },
-      authors: manga.authors.map((author) => ({
+      authors: manga.getAuthors().map((author) => ({
         id: author.getId(),
         name: author.getName(),
         createdAt: author.getCreatedAt(),
         updatedAt: author.getUpdatedAt(),
       })),
-      genres: manga.genres.map((genre) => ({
+      genres: manga.getGenres().map((genre) => ({
         id: genre.getId(),
         name: genre.getName(),
         createdAt: genre.getCreatedAt(),

@@ -109,6 +109,8 @@ export class MangaRepositoryImpl implements MangaRepository {
         demographic: {
           id: demographics.id,
           name: demographics.name,
+          createdAt: demographics.createdAt,
+          updatedAt: demographics.updatedAt,
         },
       })
       .from(mangas)
@@ -141,6 +143,7 @@ export class MangaRepositoryImpl implements MangaRepository {
       .from(mangaGenres)
       .innerJoin(genres, eq(mangaGenres.genreId, genres.id))
       .where(eq(mangaGenres.mangaId, manga[0].id))
+
     return {
       id: manga[0].id,
       originalName: manga[0].originalName,
@@ -157,6 +160,8 @@ export class MangaRepositoryImpl implements MangaRepository {
       demographic: {
         id: manga[0].demographic.id,
         name: manga[0].demographic.name,
+        createdAt: manga[0].demographic.createdAt,
+        updatedAt: manga[0].demographic.updatedAt,
       },
       authors: allAnimeAuthors,
       genres: allAnimeGenres,
@@ -185,10 +190,10 @@ export class MangaRepositoryImpl implements MangaRepository {
     return manga.length > 0
   }
 
-  async save(mangaEntity: Manga): Promise<Manga> {
+  async save(mangaEntity: Manga): Promise<void> {
     const mangaPersistence = MangaMapper.toPersistence(mangaEntity)
     const { authors, genres, manga } = mangaPersistence
-    const newManga = await this.drizzle.db.transaction(async (tx) => {
+    await this.drizzle.db.transaction(async (tx) => {
       const insertedManga = await this.saveManga(manga, tx)
       const { id: mangaId, chapters } = insertedManga
       await this.saveAuthors(authors, mangaId, tx)
@@ -200,8 +205,6 @@ export class MangaRepositoryImpl implements MangaRepository {
         genres: genres.map((genre) => ({ id: genre })),
       }
     })
-
-    return MangaMapper.toDomain(newManga)
   }
 
   async saveManga(
