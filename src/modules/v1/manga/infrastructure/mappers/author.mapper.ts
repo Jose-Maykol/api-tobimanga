@@ -13,10 +13,10 @@ export class AuthorMapper {
 
   static toPersistence(author: Author): AuthorRecord {
     return {
-      id: author.id,
-      name: author.name,
-      createdAt: author.createdAt,
-      updatedAt: author.updatedAt,
+      id: author.getId(),
+      name: author.getName(),
+      createdAt: author.getCreatedAt(),
+      updatedAt: author.getUpdatedAt(),
     }
   }
 }

@@ -2,55 +2,56 @@ import { InvalidAuthorException } from '../exceptions/invalid-author.exception'
 import AuthorRecord from '../types/author'
 
 export class Author {
-  private _id: string
-  private _name: string
-  private _createdAt: Date
-  private _updatedAt: Date | null
+  private id: string
+  private name: string
+  private createdAt: Date
+  private updatedAt: Date | null
 
   constructor(props: AuthorRecord) {
-    this.id = props.id
-    this.name = props.name
-    this.createdAt = props.createdAt
-    this.updatedAt = props.updatedAt
+    this.setId(props.id)
+    this.setName(props.name)
+    this.setCreatedAt(props.createdAt)
+    this.setUpdatedAt(props.updatedAt)
   }
 
-  public get id(): string {
-    return this._id
+  public getId(): string {
+    return this.id
   }
 
-  public set id(value: string) {
-    this._id = value
+  public setId(value: string): void {
+    this.id = value
   }
 
-  public get name(): string {
-    return this._name
+  public getName(): string {
+    return this.name
   }
 
-  public set name(value: string) {
-    this._name = value
+  public setName(value: string): void {
+    this.validateName(value)
+    this.name = value
   }
 
-  public get createdAt(): Date {
-    return this._createdAt
+  public getCreatedAt(): Date {
+    return this.createdAt
   }
 
-  public set createdAt(value: Date) {
-    this._createdAt = value
+  public setCreatedAt(value: Date): void {
+    this.createdAt = value
   }
 
-  public get updatedAt(): Date | null {
-    return this._updatedAt
+  public getUpdatedAt(): Date | null {
+    return this.updatedAt
   }
 
-  public set updatedAt(value: Date | null) {
-    this._updatedAt = value
+  public setUpdatedAt(value: Date | null): void {
+    this.updatedAt = value
   }
 
-  validate(): void {
+  public validate(): void {
     this.validateName(this.name)
   }
 
-  validateName(name: string): void {
+  private validateName(name: string): void {
     if (name?.trim().length === 0) {
       throw new InvalidAuthorException('El nombre del autor es requerido')
     }

@@ -27,7 +27,7 @@ export class SaveAuthorHandler implements ICommandHandler<SaveAuthorCommand> {
     return {
       message: 'Autor creado con exito',
       author: {
-        id: savedAuthor.id,
+        id: savedAuthor.getId(),
       },
     }
   }
