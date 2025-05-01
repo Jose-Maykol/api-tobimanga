@@ -15,5 +15,5 @@ export interface MangaRepository {
   findOneByTitle(title: string): Promise<DeepPartial<MangaRecord> | null>
   existsByTitle(title: string): Promise<boolean>
   existsById(id: string): Promise<boolean>
-  save(mangaEntity: Manga): Promise<{ id: string }>
+  save(mangaEntity: Manga): Promise<void>
 }

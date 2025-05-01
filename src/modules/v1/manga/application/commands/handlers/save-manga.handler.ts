@@ -66,15 +66,15 @@ export class SaveMangaHandler implements ICommandHandler<SaveMangaCommand> {
       demographic: demographicData,
     })
 
-    newManga.authors = authorsData
-    newManga.genres = genresData
+    newManga.setAuthors(authorsData)
+    newManga.setGenres(genresData)
 
-    const savedManga = await this.mangaRepository.save(newManga)
+    await this.mangaRepository.save(newManga)
 
     return {
       message: 'Manga creado exitosamente',
       manga: {
-        id: savedManga.id,
+        id: newManga.getId(),
       },
     }
   }
