@@ -25,6 +25,9 @@ import { SaveGenreHandler } from './application/commands/handlers/save-genre.han
 import { GenreFactory } from './domain/factories/genre.factory'
 import { FindPaginatedChaptersHandler } from './application/queries/handlers/find-paginated-chapters.handler'
 import { SyncAllMangasChaptersHandler } from './application/commands/handlers/sync-all-mangas-chapters.handler'
+import { AuthorReadRepository } from './infrastructure/repositories/read/author-read.repository'
+import { DemographicReadRepository } from './infrastructure/repositories/read/demographic-read.repository'
+import { GenreReadRepository } from './infrastructure/repositories/read/genre-read.repository'
 
 const CommandHandlers = [
   SaveMangaHandler,
@@ -44,11 +47,17 @@ const QueryHandlers = [
 
 const Factories = [MangaFactory, AuthorFactory, GenreFactory]
 
-const Repositories = [
+const WriteRepositories = [
   { provide: 'MangaRepository', useClass: MangaRepositoryImpl },
   { provide: 'AuthorRepository', useClass: AuthorRepositoryImpl },
   { provide: 'GenreRepository', useClass: GenreRepositoryImpl },
   { provide: 'DemographicRepository', useClass: DemographicRepositoryImpl },
+]
+
+const ReadRepositories = [
+  AuthorReadRepository,
+  DemographicReadRepository,
+  GenreReadRepository,
 ]
 
 @Module({
@@ -65,7 +74,8 @@ const Repositories = [
     ...CommandHandlers,
     ...QueryHandlers,
     ...Factories,
-    ...Repositories,
+    ...WriteRepositories,
+    ...ReadRepositories,
   ],
 })
 export class MangaModule {}

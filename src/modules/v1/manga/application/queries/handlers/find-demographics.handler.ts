@@ -1,32 +1,19 @@
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs'
 import { FindDemographicsQuery } from '../find-demographics.query'
-import { Inject } from '@nestjs/common'
-import { DemographicRepository } from '../../../domain/repositories/demographic.repository'
-import { DemographicNotFoundException } from '../../exceptions/demographic-not-found.exception'
-
+import { DemographicReadRepository } from '../../../infrastructure/repositories/read/demographic-read.repository'
 @QueryHandler(FindDemographicsQuery)
 export class FindDemographicsHandler
   implements IQueryHandler<FindDemographicsQuery>
 {
   constructor(
-    @Inject('DemographicRepository')
-    private readonly demographicRepository: DemographicRepository,
+    private readonly demographicRepository: DemographicReadRepository,
   ) {}
 
   async execute() {
     const demographics = await this.demographicRepository.findAll()
 
-    if (!demographics) {
-      throw new DemographicNotFoundException()
-    }
-
     return {
-      demographics: demographics.map((demographic) => ({
-        id: demographic.id,
-        name: demographic.name,
-        createdAt: demographic.createdAt,
-        updatedAt: demographic.updatedAt,
-      })),
+      demographics,
     }
   }
 }

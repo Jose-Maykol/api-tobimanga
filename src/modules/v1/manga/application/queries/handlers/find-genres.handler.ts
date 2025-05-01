@@ -1,29 +1,16 @@
 import { IQueryHandler, QueryHandler } from '@nestjs/cqrs'
 import { FindGenresQuery } from '../find-genres.query'
-import { Inject, NotFoundException } from '@nestjs/common'
-import { GenreRepository } from '../../../domain/repositories/genre.repository'
+import { GenreReadRepository } from '../../../infrastructure/repositories/read/genre-read.repository'
 
 @QueryHandler(FindGenresQuery)
 export class FindGenresHandler implements IQueryHandler<FindGenresQuery> {
-  constructor(
-    @Inject('GenreRepository')
-    private readonly genreRepository: GenreRepository,
-  ) {}
+  constructor(private readonly genreRepository: GenreReadRepository) {}
 
   async execute() {
-    const genres = await this.genreRepository.find()
-
-    if (!genres) {
-      throw new NotFoundException('No se encontraron géneros')
-    }
+    const genres = await this.genreRepository.findAll()
 
     return {
-      genres: genres.map((genre) => ({
-        id: genre.id,
-        name: genre.name,
-        createdAt: genre.createdAt,
-        updatedAt: genre.updatedAt,
-      })),
+      genres,
     }
   }
 }
