@@ -28,6 +28,8 @@ import { SyncAllMangasChaptersHandler } from './application/commands/handlers/sy
 import { AuthorReadRepository } from './infrastructure/repositories/read/author-read.repository'
 import { DemographicReadRepository } from './infrastructure/repositories/read/demographic-read.repository'
 import { GenreReadRepository } from './infrastructure/repositories/read/genre-read.repository'
+import { FindPaginatedAdminMangasHandler } from './application/queries/handlers/find-paginated-admin-mangas.handler'
+import { MangaReadRepository } from './infrastructure/repositories/read/manga-read.repository'
 
 const CommandHandlers = [
   SaveMangaHandler,
@@ -43,6 +45,7 @@ const QueryHandlers = [
   FindGenresHandler,
   FindDemographicsHandler,
   FindMangaHandler,
+  FindPaginatedAdminMangasHandler,
 ]
 
 const Factories = [MangaFactory, AuthorFactory, GenreFactory]
@@ -58,6 +61,7 @@ const ReadRepositories = [
   AuthorReadRepository,
   DemographicReadRepository,
   GenreReadRepository,
+  MangaReadRepository,
 ]
 
 @Module({
@@ -66,7 +70,7 @@ const ReadRepositories = [
     AuthorController,
     GenreController,
     DemographicController,
-    MangaController, //* Debe estar al final para evitar conflictos con las ruta manga/:slug
+    MangaController, //*! Debe estar al final para evitar conflictos con las ruta manga/:slug
   ],
   providers: [
     DrizzleService,

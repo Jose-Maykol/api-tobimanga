@@ -1,4 +1,4 @@
-import { Pagination } from "../interfaces/pagination.interface"
+import { Pagination } from '../interfaces/pagination.interface'
 
 export const calculatePagination = (
   total: number,
