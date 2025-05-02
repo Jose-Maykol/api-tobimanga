@@ -16,6 +16,7 @@ import { MangaModule } from './modules/v1/manga/manga.module'
 import { RouterModule } from '@nestjs/core'
 import { AuthModule } from './modules/v1/auth/auth.module'
 import { UserModule } from './modules/v1/user/user.module'
+import { AdminModule } from './modules/v1/admin/admin.module'
 
 @Module({
   imports: [
@@ -29,6 +30,10 @@ import { UserModule } from './modules/v1/user/user.module'
         path: '/v1',
         children: [
           {
+            module: AdminModule,
+            path: 'admin',
+          },
+          {
             module: AuthModule,
             path: 'auth',
           },
@@ -39,10 +44,11 @@ import { UserModule } from './modules/v1/user/user.module'
           {
             module: UserModule,
             path: 'users',
-          }
+          },
         ],
       },
     ]),
+    AdminModule,
     AuthModule,
     MangaModule,
     UserModule,
