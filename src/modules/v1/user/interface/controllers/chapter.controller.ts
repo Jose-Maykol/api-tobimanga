@@ -5,6 +5,9 @@ import { SaveReadingMangaChapterCommand } from '../../application/commands/save-
 import { DeleteReadingMangaChapterCommnad } from '../../application/commands/delete-reading-manga-chapter.command'
 import { CurrentUser } from '@/common/decorators/current-user.decorator'
 import { AuthenticatedUser } from '@/common/interfaces/authenticated-user.interface'
+import { ApiOperation, ApiTags } from '@nestjs/swagger'
+
+@ApiTags('Capítulos')
 @Controller('chapters')
 export class ChaptersController {
   constructor(
@@ -13,6 +16,9 @@ export class ChaptersController {
   ) {}
 
   @Post(':id/read')
+  @ApiOperation({
+    summary: 'Guardar capítulo leído',
+  })
   @UseGuards(JwtAuthGuard)
   async saveReadingMangaChapter(
     @Param('id') id: string,
@@ -23,6 +29,9 @@ export class ChaptersController {
   }
 
   @Delete(':id/read')
+  @ApiOperation({
+    summary: 'Eliminar capítulo leído',
+  })
   @UseGuards(JwtAuthGuard)
   async deleteReadingMangaChapter(
     @Param('id') id: string,

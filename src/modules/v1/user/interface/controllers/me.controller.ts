@@ -27,7 +27,9 @@ import { PaginationDto } from '@/modules/v1/manga/interface/dto/pagination.dto'
 import { FindPaginatedChaptersReadQuery } from '../../application/queries/find-paginated-chapters-read.query'
 import { AuthenticatedUser } from '@/common/interfaces/authenticated-user.interface'
 import { CurrentUser } from '@/common/decorators/current-user.decorator'
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 
+@ApiTags('Usuario')
 @Controller('me')
 export class MeController {
   constructor(
@@ -36,6 +38,31 @@ export class MeController {
   ) {}
 
   @Get('mangas/:id/chapters')
+  @ApiOperation({
+    summary: 'Obtener capítulos leídos de un manga paginados',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Capítulos leídos obtenidos exitosamente',
+    schema: {
+      example: {
+        chapters: [
+          {
+            id: 'cbdcff6c-d413-4f2a-bb14-eb079e89eba6',
+            chapter_number: 170,
+            read_at: '2025-04-02T01:47:38.336Z',
+            read: true,
+          },
+          {
+            id: '5e51539d-e2d4-44f6-b9d3-2c59e251a476',
+            chapter_number: 169,
+            read_at: '2025-04-02T01:52:44.396Z',
+            read: true,
+          },
+        ],
+      },
+    },
+  })
   @UseGuards(JwtAuthGuard)
   async findPaginatedChaptersByMangaId(
     @Param('id') mangaId: string,
@@ -52,6 +79,9 @@ export class MeController {
   }
 
   @Post('mangas/:id/status')
+  @ApiOperation({
+    summary: 'Establecer el estado de lectura de un manga para el usuario',
+  })
   @UseGuards(JwtAuthGuard)
   async setUserMangaReadingStatus(
     @Param('id') id: string,
@@ -65,6 +95,9 @@ export class MeController {
   }
 
   @Get('mangas/:id/status')
+  @ApiOperation({
+    summary: 'Obtener el estado de lectura de un manga para el usuario',
+  })
   @UseGuards(JwtAuthGuard)
   async getUserMangaReadingStatus(@Param('id') id: string, @Request() req) {
     const user = req.user
@@ -73,6 +106,9 @@ export class MeController {
   }
 
   @Put('mangas/:id/status')
+  @ApiOperation({
+    summary: 'Actualizar el estado de lectura de un manga para el usuario',
+  })
   @UseGuards(JwtAuthGuard)
   async updateUserMangaReadingStatus(
     @Param('id') id: string,

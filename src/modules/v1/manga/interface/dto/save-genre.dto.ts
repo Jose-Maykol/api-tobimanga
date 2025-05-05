@@ -1,3 +1,4 @@
+import { ApiProperty } from '@nestjs/swagger'
 import { z } from 'zod'
 
 export const saveGenreSchema = z.object({
@@ -11,3 +12,12 @@ export const saveGenreSchema = z.object({
 })
 
 export type SaveGenreDto = z.infer<typeof saveGenreSchema>
+
+export class SaveGenreSwaggerDto {
+  @ApiProperty({
+    description: 'Nombre del género',
+    example: 'Acción',
+    minLength: 3,
+  })
+  name: string
+}

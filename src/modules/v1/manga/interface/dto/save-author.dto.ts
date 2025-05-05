@@ -1,3 +1,4 @@
+import { ApiProperty } from '@nestjs/swagger'
 import { z } from 'zod'
 
 export const saveAuthorSchema = z.object({
@@ -11,3 +12,12 @@ export const saveAuthorSchema = z.object({
 })
 
 export type SaveAuthorDto = z.infer<typeof saveAuthorSchema>
+
+export class SaveAuthorSwaggerDto {
+  @ApiProperty({
+    description: 'Nombre del autor',
+    example: 'J.K. Rowling',
+    minLength: 3,
+  })
+  name: string
+}
