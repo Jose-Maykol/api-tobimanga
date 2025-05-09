@@ -15,6 +15,13 @@
       "when": 1739932703006,
       "tag": "0001_tobimanga_scrapping",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1746765705016,
+      "tag": "0002_real_zeigeist",
+      "breakpoints": true
     }
   ]
 }
