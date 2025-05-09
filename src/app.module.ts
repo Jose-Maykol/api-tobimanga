@@ -17,6 +17,7 @@ import { RouterModule } from '@nestjs/core'
 import { AuthModule } from './modules/v1/auth/auth.module'
 import { UserModule } from './modules/v1/user/user.module'
 import { AdminModule } from './modules/v1/admin/admin.module'
+import { CronJobModule } from './modules/v1/cron-jobs/cron-job.module'
 
 @Module({
   imports: [
@@ -45,6 +46,10 @@ import { AdminModule } from './modules/v1/admin/admin.module'
             module: UserModule,
             path: 'users',
           },
+          {
+            module: CronJobModule,
+            path: 'cron-jobs',
+          },
         ],
       },
     ]),
@@ -52,6 +57,7 @@ import { AdminModule } from './modules/v1/admin/admin.module'
     AuthModule,
     MangaModule,
     UserModule,
+    CronJobModule,
   ],
   controllers: [AppController],
   providers: [AppService, JwtService],
