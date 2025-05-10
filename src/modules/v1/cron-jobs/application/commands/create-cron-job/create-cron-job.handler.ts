@@ -37,7 +37,7 @@ export class CreateCronJobHandler
     await this.scheduler.scheduleJob(cronJob)
 
     return {
-      message: 'Cron job created successfully',
+      message: 'Cron job creado exitosamente',
       cronJob: {
         id: cronJob.getId(),
       },

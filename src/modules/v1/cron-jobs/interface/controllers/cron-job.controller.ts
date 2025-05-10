@@ -1,6 +1,10 @@
-import { Body, Controller, Post } from '@nestjs/common'
+import { Controller, Post, Body, HttpStatus } from '@nestjs/common'
+import { ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger'
 import { CommandBus, QueryBus } from '@nestjs/cqrs'
-import { CreateCronJobDto } from '../dto/create-cron-job.dto'
+import {
+  CreateCronJobDto,
+  CreateCronJobSwaggerDto,
+} from '../dto/create-cron-job.dto'
 import { CreateCronJobCommand } from '../../application/commands/create-cron-job/create-cron-job.command'
 
 @Controller()
@@ -10,6 +14,33 @@ export class CronJobController {
     private queryBus: QueryBus,
   ) {}
 
+  @ApiOperation({
+    summary: 'Crear un nuevo cron job',
+    description:
+      'Permite crear un nuevo trabajo programado con los parámetros especificados',
+  })
+  @ApiResponse({
+    status: HttpStatus.CREATED,
+    description: 'El trabajo programado ha sido creado exitosamente',
+  })
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description: 'Datos de entrada inválidos',
+  })
+  @ApiBody({
+    type: () => CreateCronJobSwaggerDto,
+    description: 'Datos para crear un nuevo trabajo programado',
+    examples: {
+      ejemplo: {
+        value: {
+          name: 'Mi trabajo programado',
+          schedule: '0 0 * * *',
+          task: 'mi-tarea',
+          isActive: true,
+        },
+      },
+    },
+  })
   @Post()
   async create(@Body() dto: CreateCronJobDto) {
     const command = new CreateCronJobCommand({
