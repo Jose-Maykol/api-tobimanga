@@ -1,4 +1,4 @@
-import { Controller, Post, Body, HttpStatus } from '@nestjs/common'
+import { Controller, Post, Body, HttpStatus, Get } from '@nestjs/common'
 import { ApiOperation, ApiResponse, ApiBody } from '@nestjs/swagger'
 import { CommandBus, QueryBus } from '@nestjs/cqrs'
 import {
@@ -6,6 +6,7 @@ import {
   CreateCronJobSwaggerDto,
 } from '../dto/create-cron-job.dto'
 import { CreateCronJobCommand } from '../../application/commands/create-cron-job/create-cron-job.command'
+import { GetCronJobsQuery } from '../../application/queries/get-cron-jobs/get-cron-jobs.query'
 
 @Controller()
 export class CronJobController {
@@ -51,6 +52,11 @@ export class CronJobController {
     })
 
     return await this.commandBus.execute(command)
+  }
+
+  @Get()
+  async getCronJobs() {
+    return this.queryBus.execute(new GetCronJobsQuery())
   }
 
   /* @Get(':id')

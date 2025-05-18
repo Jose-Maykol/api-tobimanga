@@ -9,7 +9,7 @@ import {
 } from 'drizzle-orm/pg-core'
 
 export const cronJobs = pgTable('cron_jobs', {
-  id: uuid('manga_id')
+  id: uuid('cron_job_id')
     .default(sql`uuid_generate_v4()`)
     .primaryKey(),
   name: varchar('name').notNull(),

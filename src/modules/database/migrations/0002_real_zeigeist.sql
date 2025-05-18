@@ -1,5 +1,5 @@
 CREATE TABLE "cron_jobs" (
-	"manga_id" uuid PRIMARY KEY DEFAULT uuid_generate_v4() NOT NULL,
+	"cron_job_id" uuid PRIMARY KEY DEFAULT uuid_generate_v4() NOT NULL,
 	"name" varchar NOT NULL,
 	"schedule" varchar NOT NULL,
 	"task" text NOT NULL,

@@ -8,12 +8,14 @@ import { SyncAllMangasChaptersCommand } from '../manga/application/commands/sync
 import { CronJobRepositoryImpl } from './infraestructure/repositories/cron-job.repository.impl'
 import { ScheduleModule } from '@nestjs/schedule'
 import { CreateCronJobHandler } from './application/commands/create-cron-job/create-cron-job.handler'
+import { CronJobReadRepository } from './infraestructure/repositories/read/cron-job-read.repository'
+import { GetCronJobsHandler } from './application/queries/get-cron-jobs/create-cron-job.handler'
 
 const commandHandlers = [CreateCronJobHandler, SyncAllMangasChaptersCommand]
 
-const queryHandlers = []
+const queryHandlers = [GetCronJobsHandler]
 
-const readRepositories = []
+const readRepositories = [CronJobReadRepository]
 const writeRepositories = [
   {
     provide: 'CronJobRepository',
