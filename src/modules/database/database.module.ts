@@ -1,13 +1,16 @@
 import { Global, Module } from '@nestjs/common'
 import { ConfigModule, ConfigService } from '@nestjs/config'
 import { Pool } from 'pg'
-import { DATABASE_CONNECTION } from './constants/constants'
-import { DrizzleService } from './services/drizzle.service'
+import {
+  DATABASE_CONNECTION,
+  DATABASE_SERVICE,
+} from './constants/database.constants'
+import { DatabaseService } from './services/database.service'
 
 @Global()
 @Module({
   imports: [ConfigModule],
-  exports: [DrizzleService, DATABASE_CONNECTION],
+  exports: [DATABASE_SERVICE, DATABASE_CONNECTION],
   providers: [
     {
       provide: DATABASE_CONNECTION,
@@ -22,7 +25,10 @@ import { DrizzleService } from './services/drizzle.service'
       },
       inject: [ConfigService],
     },
-    DrizzleService,
+    {
+      provide: DATABASE_SERVICE,
+      useClass: DatabaseService,
+    },
   ],
 })
 export class DatabaseModule {}
