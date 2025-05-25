@@ -1,12 +1,15 @@
 import { sql } from 'drizzle-orm'
 import {
-  boolean,
+  pgEnum,
   pgTable,
   text,
   timestamp,
   uuid,
   varchar,
+  boolean,
 } from 'drizzle-orm/pg-core'
+
+export const userRoleEnum = pgEnum('user_role', ['USER', 'ADMIN'])
 
 export const users = pgTable('users', {
   id: uuid('user_id')
@@ -18,7 +21,8 @@ export const users = pgTable('users', {
   email: varchar('email', { length: 100 }).notNull().unique(),
   profileImage: text('profile_image'),
   coverImage: text('cover_image'),
-  isAdministrator: boolean('is_administrator').default(false).notNull(),
+  role: userRoleEnum('role').default('USER').notNull(),
+  isActive: boolean('is_active').default(true).notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at'),
 })
