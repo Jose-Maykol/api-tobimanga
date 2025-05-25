@@ -12,12 +12,14 @@ import { SnakeCaseMiddleware } from './common/middleware/snake-case.middleware'
 import { CloudinaryModule } from './cloudinary/cloudinary.module'
 import { DatabaseModule } from './modules/database/database.module'
 import { ConfigModule } from '@nestjs/config'
-import { MangaModule } from './modules/v1/manga/manga.module'
 import { RouterModule } from '@nestjs/core'
+import { UserModule } from './modules/v2/user/user.module'
+import { AuthModule } from './modules/v2/auth/auth.module'
+/* import { MangaModule } from './modules/v1/manga/manga.module'
 import { AuthModule } from './modules/v1/auth/auth.module'
 import { UserModule } from './modules/v1/user/user.module'
 import { AdminModule } from './modules/v1/admin/admin.module'
-import { CronJobModule } from './modules/v1/cron-jobs/cron-job.module'
+import { CronJobModule } from './modules/v1/cron-jobs/cron-job.module' */
 
 @Module({
   imports: [
@@ -27,7 +29,7 @@ import { CronJobModule } from './modules/v1/cron-jobs/cron-job.module'
     CloudinaryModule,
     DatabaseModule,
     RouterModule.register([
-      {
+      /* {
         path: '/v1',
         children: [
           {
@@ -51,13 +53,26 @@ import { CronJobModule } from './modules/v1/cron-jobs/cron-job.module'
             path: 'cron-jobs',
           },
         ],
+      }, */
+      {
+        path: '/v2',
+        children: [
+          {
+            module: AuthModule,
+            path: 'auth',
+          },
+          {
+            module: UserModule,
+            path: 'users',
+          },
+        ],
       },
     ]),
-    AdminModule,
+    /*     AdminModule,
     AuthModule,
     MangaModule,
     UserModule,
-    CronJobModule,
+    CronJobModule, */
   ],
   controllers: [AppController],
   providers: [AppService, JwtService],
