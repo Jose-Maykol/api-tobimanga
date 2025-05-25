@@ -1,8 +1,0 @@
-export enum PublicationStatus {
-  ONGOING = 'ONGOING',
-  FINISHED = 'FINISHED',
-  HIATUS = 'HIATUS',
-  CANCELLED = 'CANCELLED',
-  NOT_YET_RELEASED = 'NOT_YET_RELEASED',
-  UNKNOWN = 'UNKNOWN',
-}
