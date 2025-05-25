@@ -2,9 +2,10 @@ import { Injectable } from '@nestjs/common'
 
 @Injectable()
 export class AppService {
-  get(): object {
+  getAppInfo() {
     return {
-      message: 'Tobimanga API',
+      name: 'Tobimanga API',
+      version: '2.0',
     }
   }
 }
