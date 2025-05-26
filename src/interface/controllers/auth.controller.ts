@@ -1,12 +1,17 @@
 import { Body, Controller, HttpStatus, Post } from '@nestjs/common'
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { UserLoginDto } from '../dtos/login-user.dto'
-import { LoginUserUseCase } from '../../application/use-cases/user-login.use-case'
+import { LoginUserUseCase } from '../../application/use-cases/auth/user-login.use-case'
+import { RegisterUserDto } from '../dtos/register-user.dto'
+import { RegisterUserUseCase } from '@/application/use-cases/auth/register-user.use-case'
 
 @ApiTags('Autenticación')
 @Controller()
 export class AuthController {
-  constructor(private readonly loginUserUseCase: LoginUserUseCase) {}
+  constructor(
+    private readonly loginUserUseCase: LoginUserUseCase,
+    private readonly registerUserUseCase: RegisterUserUseCase,
+  ) {}
 
   @Post('login')
   @ApiOperation({ summary: 'Iniciar sesión' })
@@ -46,6 +51,15 @@ export class AuthController {
     return this.loginUserUseCase.execute(email, password)
     /* const command = new UserLoginQuery(email, password)
     return await this.queryBus.execute(command) */
+  }
+
+  @Post('register')
+  async register(@Body() registerUserDto: RegisterUserDto) {
+    await this.registerUserUseCase.execute({
+      email: registerUserDto.email,
+      password: registerUserDto.password,
+      username: registerUserDto.username,
+    })
   }
 
   /* @Post('register')

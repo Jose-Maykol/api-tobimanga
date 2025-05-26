@@ -1,36 +1,36 @@
 import { Inject, Injectable } from '@nestjs/common'
-import { IUserRepository } from '../../domain/repositories/user.repository'
-import { DatabaseService } from '@/modules/database/services/database.service'
-import { DATABASE_SERVICE } from '@/modules/database/constants/database.constants'
-import { User } from '../../domain/entities/user'
-import { users } from '@/modules/database/schemas/user.schema'
 import { eq } from 'drizzle-orm'
+import { DATABASE_SERVICE } from '../database/constants/database.constants'
+import { DatabaseService } from '../database/services/database.service'
+import { users } from '../database/schemas/user.schema'
+import { User } from '@/domain/entities/user'
+import { UserRepository } from '@/domain/repositories/user.repository'
 
 @Injectable()
-export class UserRepository implements IUserRepository {
+export class UserRepositoryImpl implements UserRepository {
   constructor(
     @Inject(DATABASE_SERVICE)
     private readonly db: DatabaseService,
   ) {}
 
-  async findById(id: string): Promise<User> {
+  async findById(id: string): Promise<User | null> {
     const user = await this.db.query
       .select()
       .from(users)
       .where(eq(users.id, id))
       .limit(1)
 
-    return user[0] as User
+    return user ? (user[0] as User) : null
   }
 
-  async findByEmail(email: string): Promise<User> {
+  async findByEmail(email: string): Promise<User | null> {
     const user = await this.db.query
       .select()
       .from(users)
       .where(eq(users.email, email))
       .limit(1)
 
-    return user[0] as User
+    return user ? (user[0] as User) : null
   }
 
   async exists(email: string): Promise<boolean> {
