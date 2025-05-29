@@ -1,4 +1,4 @@
-import { JwtPayload } from '@/auth/domain/interfaces/auth.interface'
+import { JwtPayload } from '@/domain/interfaces/auth.interface'
 import { UserRepository } from '@/domain/repositories/user.repository'
 import {
   Inject,
@@ -11,7 +11,7 @@ import * as bcrypt from 'bcrypt'
 
 export class LoginUserUseCase {
   constructor(
-    @Inject('IUserRepository')
+    @Inject('UserRepository')
     private readonly userRepository: UserRepository,
     private jwtService: JwtService,
     private configService: ConfigService,
@@ -98,17 +98,11 @@ export class LoginUserUseCase {
     const [accessToken, refreshToken] = await Promise.all([
       this.jwtService.signAsync(accessPayload, {
         secret: this.configService.get<string>('JWT_ACCESS_SECRET'),
-        expiresIn: this.configService.get<string>(
-          'JWT_ACCESS_EXPIRES_IN',
-          '60m',
-        ),
+        expiresIn: this.configService.get<string>('JWT_ACCESS_EXPIRES_IN'),
       }),
       this.jwtService.signAsync(refreshPayload, {
         secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
-        expiresIn: this.configService.get<string>(
-          'JWT_REFRESH_EXPIRES_IN',
-          '7d',
-        ),
+        expiresIn: this.configService.get<string>('JWT_REFRESH_EXPIRES_IN'),
       }),
     ])
 

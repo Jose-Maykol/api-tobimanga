@@ -1,12 +1,12 @@
 import { Body, Controller, HttpStatus, Post } from '@nestjs/common'
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { UserLoginDto } from '../dtos/login-user.dto'
-import { LoginUserUseCase } from '../../application/use-cases/auth/user-login.use-case'
+import { LoginUserUseCase } from '../../application/use-cases/auth/login-user.use-case'
 import { RegisterUserDto } from '../dtos/register-user.dto'
 import { RegisterUserUseCase } from '@/application/use-cases/auth/register-user.use-case'
 
 @ApiTags('Autenticación')
-@Controller()
+@Controller('auth')
 export class AuthController {
   constructor(
     private readonly loginUserUseCase: LoginUserUseCase,

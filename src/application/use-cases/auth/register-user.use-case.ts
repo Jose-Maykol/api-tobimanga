@@ -1,8 +1,8 @@
 import { User } from '@/domain/entities/user'
+import { createUserFactory } from '@/domain/factories/create-user.factory'
 import { UserRepository } from '@/domain/repositories/user.repository'
 import { Inject } from '@nestjs/common'
 import * as bcrypt from 'bcrypt'
-import { createUserFactory } from '@/auth/domain/factories/create-user.factory'
 
 interface RegisterUserUseCaseParams {
   email: string
