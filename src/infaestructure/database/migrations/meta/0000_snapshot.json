@@ -1,5 +1,5 @@
 {
-  "id": "096bc839-6ce5-4dad-b29b-0cce48645716",
+  "id": "bdfd0c5b-bbc0-4425-8ab5-ad139ec6eaed",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -47,7 +47,9 @@
           ]
         }
       },
-      "checkConstraints": {}
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
     },
     "public.chapters": {
       "name": "chapters",
@@ -110,7 +112,134 @@
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
-      "checkConstraints": {}
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.cron_job_executions": {
+      "name": "cron_job_executions",
+      "schema": "",
+      "columns": {
+        "cron_job_execution_id": {
+          "name": "cron_job_execution_id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "uuid_generate_v4()"
+        },
+        "cron_job_id": {
+          "name": "cron_job_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "started_at": {
+          "name": "started_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "finished_at": {
+          "name": "finished_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "duration": {
+          "name": "duration",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "status": {
+          "name": "status",
+          "type": "cron_job_execution_status",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "cron_job_executions_cron_job_id_cron_jobs_cron_job_id_fk": {
+          "name": "cron_job_executions_cron_job_id_cron_jobs_cron_job_id_fk",
+          "tableFrom": "cron_job_executions",
+          "tableTo": "cron_jobs",
+          "columnsFrom": [
+            "cron_job_id"
+          ],
+          "columnsTo": [
+            "cron_job_id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.cron_jobs": {
+      "name": "cron_jobs",
+      "schema": "",
+      "columns": {
+        "cron_job_id": {
+          "name": "cron_job_id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "uuid_generate_v4()"
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "schedule": {
+          "name": "schedule",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "task": {
+          "name": "task",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "is_active": {
+          "name": "is_active",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
     },
     "public.demographics": {
       "name": "demographics",
@@ -155,7 +284,9 @@
           ]
         }
       },
-      "checkConstraints": {}
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
     },
     "public.genres": {
       "name": "genres",
@@ -200,7 +331,9 @@
           ]
         }
       },
-      "checkConstraints": {}
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
     },
     "public.manga_authors": {
       "name": "manga_authors",
@@ -250,7 +383,9 @@
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
-      "checkConstraints": {}
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
     },
     "public.manga_genres": {
       "name": "manga_genres",
@@ -302,7 +437,9 @@
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
-      "checkConstraints": {}
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
     },
     "public.mangas": {
       "name": "mangas",
@@ -326,6 +463,18 @@
           "type": "text",
           "primaryKey": false,
           "notNull": true
+        },
+        "slug_name": {
+          "name": "slug_name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "scrapping_name": {
+          "name": "scrapping_name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
         },
         "alternative_names": {
           "name": "alternative_names",
@@ -422,9 +571,25 @@
           "columns": [
             "original_name"
           ]
+        },
+        "mangas_slug_name_unique": {
+          "name": "mangas_slug_name_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "slug_name"
+          ]
+        },
+        "mangas_scrapping_name_unique": {
+          "name": "mangas_scrapping_name_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "scrapping_name"
+          ]
         }
       },
-      "checkConstraints": {}
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
     },
     "public.user_chapters": {
       "name": "user_chapters",
@@ -507,7 +672,9 @@
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
-      "checkConstraints": {}
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
     },
     "public.user_favorite_mangas": {
       "name": "user_favorite_mangas",
@@ -564,7 +731,9 @@
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
-      "checkConstraints": {}
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
     },
     "public.user_mangas": {
       "name": "user_mangas",
@@ -655,7 +824,9 @@
           ]
         }
       },
-      "checkConstraints": {}
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
     },
     "public.users": {
       "name": "users",
@@ -698,12 +869,26 @@
           "primaryKey": false,
           "notNull": false
         },
-        "is_administrator": {
-          "name": "is_administrator",
+        "role": {
+          "name": "role",
+          "type": "user_role",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'USER'"
+        },
+        "is_active": {
+          "name": "is_active",
           "type": "boolean",
           "primaryKey": false,
           "notNull": true,
-          "default": false
+          "default": true
+        },
+        "refresh_token": {
+          "name": "refresh_token",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
         },
         "created_at": {
           "name": "created_at",
@@ -745,10 +930,23 @@
           ]
         }
       },
-      "checkConstraints": {}
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
     }
   },
   "enums": {
+    "public.cron_job_execution_status": {
+      "name": "cron_job_execution_status",
+      "schema": "public",
+      "values": [
+        "PENDING",
+        "RUNNING",
+        "COMPLETED",
+        "FAILED",
+        "CANCELLED"
+      ]
+    },
     "public.publication_status": {
       "name": "publication_status",
       "schema": "public",
@@ -772,10 +970,20 @@
         "PAUSED",
         "UNKNOWN"
       ]
+    },
+    "public.user_role": {
+      "name": "user_role",
+      "schema": "public",
+      "values": [
+        "USER",
+        "ADMIN"
+      ]
     }
   },
   "schemas": {},
   "sequences": {},
+  "roles": {},
+  "policies": {},
   "views": {},
   "_meta": {
     "columns": {},

@@ -5,22 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1730006941426,
-      "tag": "0000_tobimanga_db",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1739932703006,
-      "tag": "0001_tobimanga_scrapping",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1746765705016,
-      "tag": "0002_real_zeigeist",
+      "when": 1748489034989,
+      "tag": "0000_tobimanga",
       "breakpoints": true
     }
   ]

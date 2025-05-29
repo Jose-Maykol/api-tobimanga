@@ -6,8 +6,8 @@ const configService = new ConfigService()
 
 export default defineConfig({
   dialect: 'postgresql',
-  schema: './src/modules/database/schemas',
-  out: './src/modules/database/migrations',
+  schema: './src/infaestructure/database/schemas',
+  out: './src/infaestructure/database/migrations',
   dbCredentials: {
     host: configService.get('POSTGRES_HOST') || '',
     port: configService.get('POSTGRES_PORT') || 5432,
