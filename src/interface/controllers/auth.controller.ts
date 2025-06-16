@@ -1,9 +1,24 @@
-import { Body, Controller, HttpStatus, Post } from '@nestjs/common'
+import {
+  Body,
+  Controller,
+  HttpStatus,
+  Post,
+  HttpCode,
+  HttpException,
+} from '@nestjs/common'
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { UserLoginDto } from '../dtos/login-user.dto'
-import { LoginUserUseCase } from '../../application/use-cases/auth/login-user.use-case'
 import { RegisterUserDto } from '../dtos/register-user.dto'
-import { RegisterUserUseCase } from '@/application/use-cases/auth/register-user.use-case'
+import { LoginSwaggerExamples } from '../swagger/auth/login.swagger'
+import { RegisterSwaggerExamples } from '../swagger/auth/register.swagger'
+import {
+  RegisterUserUseCase,
+  RegisterUserUseCaseResult,
+} from '@/application/use-cases/auth/register-user.use-case'
+import { LoginUserUseCase } from '@/application/use-cases/auth/login-user.use-case'
+import { UserAlreadyExistsException } from '@/domain/exceptions/user-already-exists.exception'
+import { ResponseBuilder } from '@/common/utils/response.util'
+import { SuccessResponse } from '@/common/interfaces/api-response'
 
 @ApiTags('Autenticación')
 @Controller('auth')
@@ -12,39 +27,37 @@ export class AuthController {
     private readonly loginUserUseCase: LoginUserUseCase,
     private readonly registerUserUseCase: RegisterUserUseCase,
   ) {}
-
   @Post('login')
-  @ApiOperation({ summary: 'Iniciar sesión' })
+  @ApiOperation({
+    summary: 'Iniciar sesión',
+    description:
+      'Permite a un usuario autenticarse en el sistema utilizando su email y contraseña.',
+  })
   @ApiBody({
-    description: 'Datos necesarios para iniciar sesión',
+    description: 'Credenciales del usuario',
     type: UserLoginDto,
+    examples: {
+      correctCredentials: {
+        summary: 'Credenciales correctas',
+        value: { email: 'user@example.com', password: 'password123' },
+      },
+    },
   })
   @ApiResponse({
     status: HttpStatus.OK,
-    description: 'Login exitoso',
-    schema: {
-      example: {
-        message: 'Login exitoso',
-        accessToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.e30',
-        user: {
-          id: '12345',
-          email: 'user@example.com',
-          username: 'usuario123',
-          profileImage: 'https://url-to-profile-image.com/img.png',
-        },
-      },
-    },
+    description:
+      'Login exitoso. Retorna tokens de acceso y refresh junto con la información del usuario',
+    schema: { example: LoginSwaggerExamples.success },
   })
   @ApiResponse({
     status: HttpStatus.NOT_FOUND,
-    description: 'Usuario no encontrado o contraseña incorrecta',
-    schema: {
-      example: {
-        statusCode: 404,
-        message: 'Usuario no encontrado',
-        error: 'Not Found',
-      },
-    },
+    description: 'El usuario no existe en el sistema',
+    schema: { example: LoginSwaggerExamples.notFound },
+  })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'Las credenciales proporcionadas son incorrectas',
+    schema: { example: LoginSwaggerExamples.unauthorized },
   })
   async login(@Body() userLoginDto: UserLoginDto) {
     const { email, password } = userLoginDto
@@ -52,47 +65,74 @@ export class AuthController {
     /* const command = new UserLoginQuery(email, password)
     return await this.queryBus.execute(command) */
   }
-
   @Post('register')
-  async register(@Body() registerUserDto: RegisterUserDto) {
-    await this.registerUserUseCase.execute({
-      email: registerUserDto.email,
-      password: registerUserDto.password,
-      username: registerUserDto.username,
-    })
-  }
-
-  /* @Post('register')
-  @ApiOperation({ summary: 'Registrar un nuevo usuario' })
+  @ApiOperation({
+    summary: 'Registrar un nuevo usuario',
+    description:
+      'Crea una nueva cuenta de usuario en el sistema. Valida que el email no esté en uso y que los datos cumplan con los requisitos mínimos.',
+  })
   @ApiBody({
-    description: 'Datos necesarios para registrar un usuario',
-    type: RegisterUserSwaggerDto,
+    description: 'Información del nuevo usuario',
+    type: RegisterUserDto,
+    examples: {
+      validUser: {
+        summary: 'Usuario válido',
+        value: {
+          email: 'nuevo@example.com',
+          password: 'Password123!',
+          username: 'nuevoUsuario',
+        },
+      },
+    },
   })
   @ApiResponse({
     status: HttpStatus.CREATED,
-    description: 'Usuario registrado exitosamente',
-    schema: {
-      example: {
-        message: 'Usuario creado con exito',
-      },
-    },
+    description:
+      'Usuario creado exitosamente. Retorna los datos básicos del usuario registrado.',
+    schema: { example: RegisterSwaggerExamples.success },
   })
   @ApiResponse({
     status: HttpStatus.BAD_REQUEST,
-    description: 'El usuario ya existe o datos inválidos',
-    schema: {
-      example: {
-        statusCode: 400,
-        message: 'Este usuario ya existe',
-        error: 'Bad Request',
-      },
-    },
+    description:
+      'El email ya está registrado o los datos proporcionados no son válidos',
+    schema: { example: RegisterSwaggerExamples.badRequest },
   })
-  @UsePipes(new ZodValidationPipe(registerUserSchema))
-  async register(@Body() registerUserDto: RegisterUserDto) {
-    const command = new RegisterUserCommand(registerUserDto)
-    return await this.commandBus.execute(command)
-  } */
+  @ApiResponse({
+    status: HttpStatus.UNPROCESSABLE_ENTITY,
+    description:
+      'Los datos proporcionados no cumplen con las validaciones requeridas',
+    schema: { example: RegisterSwaggerExamples.validationError },
+  })
+  @HttpCode(HttpStatus.CREATED)
+  async register(
+    @Body() registerUserDto: RegisterUserDto,
+  ): Promise<SuccessResponse<{ user: RegisterUserUseCaseResult }>> {
+    try {
+      const result = await this.registerUserUseCase.execute({
+        email: registerUserDto.email,
+        password: registerUserDto.password,
+        username: registerUserDto.username,
+      })
+      return ResponseBuilder.success({
+        data: {
+          user: result,
+        },
+        message: 'Usuario registrado exitosamente',
+      })
+    } catch (error) {
+      if (error instanceof UserAlreadyExistsException) {
+        throw new HttpException(
+          ResponseBuilder.error(
+            error.message,
+            error.key,
+            HttpStatus.BAD_REQUEST,
+          ),
+          HttpStatus.BAD_REQUEST,
+        )
+      }
+      throw error
+    }
+  }
 
   /* @Post('refresh')
   @ApiOperation({ summary: 'Refrescar token de acceso' })

@@ -1,16 +1,17 @@
 import { User } from '@/domain/entities/user'
 import { createUserFactory } from '@/domain/factories/create-user.factory'
 import { UserRepository } from '@/domain/repositories/user.repository'
+import { UserAlreadyExistsException } from '@/domain/exceptions/user-already-exists.exception'
 import { Inject } from '@nestjs/common'
 import * as bcrypt from 'bcrypt'
 
-interface RegisterUserUseCaseParams {
+export interface RegisterUserUseCaseParams {
   email: string
   password: string
   username: string
 }
 
-interface RegisterUserUseCaseResult {
+export interface RegisterUserUseCaseResult {
   id: string
   email: string
   username: string
@@ -30,7 +31,7 @@ export class RegisterUserUseCase {
   }: RegisterUserUseCaseParams): Promise<RegisterUserUseCaseResult> {
     const user = await this.userRepository.exists(email)
 
-    if (user) throw new Error('El usuario ya existe')
+    if (user) throw new UserAlreadyExistsException()
 
     const hashedPassword = await this.hashPassword(password)
 
