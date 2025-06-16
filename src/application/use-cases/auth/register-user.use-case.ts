@@ -1,7 +1,7 @@
 import { User } from '@/domain/entities/user'
+import { UserAlreadyExistsException } from '@/domain/exceptions/user-already-exists.exception'
 import { createUserFactory } from '@/domain/factories/create-user.factory'
 import { UserRepository } from '@/domain/repositories/user.repository'
-import { UserAlreadyExistsException } from '@/domain/exceptions/user-already-exists.exception'
 import { Inject } from '@nestjs/common'
 import * as bcrypt from 'bcrypt'
 

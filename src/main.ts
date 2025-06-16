@@ -3,6 +3,7 @@ import { AppModule } from './app.module'
 import * as bodyParser from 'body-parser'
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 import { ValidationPipe } from '@nestjs/common'
+import { apiReference } from '@scalar/nestjs-api-reference'
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule)
@@ -15,6 +16,8 @@ async function bootstrap() {
     /* .addBearerAuth() */
     .build()
 
+  const document = SwaggerModule.createDocument(app, config)
+
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
@@ -25,11 +28,17 @@ async function bootstrap() {
 
   app.use(bodyParser.json({ limit: '5mb' }))
   app.setGlobalPrefix('api')
-  app.enableCors()
 
-  const documentFactory = () => SwaggerModule.createDocument(app, config)
-  SwaggerModule.setup('api/docs', app, documentFactory())
+  app.use(
+    '/api/docs',
+    apiReference({
+      content: document,
+    }),
+  )
+
+  app.enableCors()
 
   await app.listen(8000)
 }
+
 bootstrap()
