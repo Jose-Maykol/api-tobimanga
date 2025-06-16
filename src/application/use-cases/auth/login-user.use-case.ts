@@ -1,10 +1,8 @@
 import { JwtPayload } from '@/domain/interfaces/auth.interface'
 import { UserRepository } from '@/domain/repositories/user.repository'
-import {
-  Inject,
-  NotFoundException,
-  UnauthorizedException,
-} from '@nestjs/common'
+import { UserNotFoundException } from '@/domain/exceptions/user-not-found.exception'
+import { InvalidCredentialsException } from '@/domain/exceptions/invalid-credentials.exception'
+import { Inject } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { JwtService } from '@nestjs/jwt'
 import * as bcrypt from 'bcrypt'
@@ -19,12 +17,11 @@ export class LoginUserUseCase {
 
   async execute(email: string, password: string) {
     const user = await this.userRepository.findByEmail(email)
-    if (!user) throw new NotFoundException('Usuario no encontrado')
+    if (!user) throw new UserNotFoundException()
 
     const isPasswordValid = await this.comparePasswords(password, user.password)
 
-    if (!isPasswordValid)
-      throw new UnauthorizedException('Credenciales incorrectas')
+    if (!isPasswordValid) throw new InvalidCredentialsException()
 
     const tokens = await this.generateTokens(user.id, user.email)
 

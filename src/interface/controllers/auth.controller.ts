@@ -19,6 +19,7 @@ import { LoginUserUseCase } from '@/application/use-cases/auth/login-user.use-ca
 import { UserAlreadyExistsException } from '@/domain/exceptions/user-already-exists.exception'
 import { ResponseBuilder } from '@/common/utils/response.util'
 import { SuccessResponse } from '@/common/interfaces/api-response'
+import { InvalidCredentialsException } from '@/domain/exceptions/invalid-credentials.exception'
 
 @ApiTags('Autenticación')
 @Controller('auth')
@@ -60,10 +61,27 @@ export class AuthController {
     schema: { example: LoginSwaggerExamples.unauthorized },
   })
   async login(@Body() userLoginDto: UserLoginDto) {
-    const { email, password } = userLoginDto
-    return this.loginUserUseCase.execute(email, password)
-    /* const command = new UserLoginQuery(email, password)
-    return await this.queryBus.execute(command) */
+    try {
+      const { email, password } = userLoginDto
+      return this.loginUserUseCase.execute(email, password)
+    } catch (error) {
+      if (error instanceof UserAlreadyExistsException) {
+        throw new HttpException(
+          ResponseBuilder.error(error.message, error.key, HttpStatus.NOT_FOUND),
+          HttpStatus.NOT_FOUND,
+        )
+      } else if (error instanceof InvalidCredentialsException) {
+        throw new HttpException(
+          ResponseBuilder.error(
+            error.message,
+            error.key,
+            HttpStatus.UNAUTHORIZED,
+          ),
+          HttpStatus.UNAUTHORIZED,
+        )
+      }
+      throw error
+    }
   }
   @Post('register')
   @ApiOperation({
