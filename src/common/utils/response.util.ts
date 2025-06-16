@@ -1,17 +1,10 @@
-interface ApiResponseOptions<T> {
-  data: T
-  message?: string
-  /* statusCode?: number
-  meta?: any
-  pagination?: {
-    total: number
-    page: number
-    limit: number
-  } */
-}
+import { ErrorResponse, SuccessResponse } from '../interfaces/api-response'
 
-export class ApiResponse {
-  static success<T>(options: ApiResponseOptions<T>) {
+export class ResponseBuilder {
+  static success<T>(options: {
+    data: T
+    message?: string
+  }): SuccessResponse<T> {
     return {
       success: true,
       message: options.message || 'Operación exitosa',
@@ -19,11 +12,16 @@ export class ApiResponse {
     }
   }
 
-  /*  static error(message: string, statusCode = 400) {
+  static error(
+    message: string,
+    error: string,
+    statusCode: number,
+  ): ErrorResponse {
     return {
       success: false,
       message,
+      error,
       statusCode,
-    };
-  } */
+    }
+  }
 }
