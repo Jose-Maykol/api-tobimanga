@@ -1,9 +1,11 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common'
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { PassportStrategy } from '@nestjs/passport'
 import { ExtractJwt, Strategy } from 'passport-jwt'
 import { AuthenticatedUser } from '@/common/interfaces/authenticated-user.interface'
 import { DecodedJwtPayload } from '../../domain/interfaces/auth.interface'
+import { ResponseBuilder } from '@/common/utils/response.util'
+import { ErrorKeys } from '@/domain/exceptions/error-keys.enum'
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
@@ -11,31 +13,30 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
-      secretOrKey: configService.get<string>('JWT_REFRESH_SECRET'),
+      secretOrKey: configService.get<string>('JWT_ACCESS_SECRET'),
     })
   }
 
   async validate(payload: DecodedJwtPayload): Promise<AuthenticatedUser> {
     const { email, sub } = payload
 
-    if (payload.type !== 'access') {
-      throw new UnauthorizedException('Token inválido')
+    if (payload.type !== 'access' || !email || !sub) {
+      throw new HttpException(
+        ResponseBuilder.error(
+          'Token inválido',
+          ErrorKeys.INVALID_ACCESS_TOKEN,
+          HttpStatus.UNAUTHORIZED,
+        ),
+        HttpStatus.UNAUTHORIZED,
+      )
     }
 
-    if (!email || !sub) {
-      throw new UnauthorizedException('Token inválido')
-    }
-
-    /* const query = new CheckUserExistsQuery(sub)
-    const user = await this.queryBus.execute(query)
-
-    if (!user) {
-      throw new UnauthorizedException('Usuario no encontrado')
-    } */
+    //TODO: Verity token expiration
 
     return {
       email: payload.email,
       id: payload.sub,
+      // role: payload.role, //TODO: Pending to implement roles
     }
   }
 }
