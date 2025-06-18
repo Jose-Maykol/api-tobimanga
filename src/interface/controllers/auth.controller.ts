@@ -5,6 +5,7 @@ import {
   Post,
   HttpCode,
   HttpException,
+  UseGuards,
 } from '@nestjs/common'
 import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { UserLoginDto } from '../dtos/login-user.dto'
@@ -20,6 +21,14 @@ import { UserAlreadyExistsException } from '@/domain/exceptions/user-already-exi
 import { ResponseBuilder } from '@/common/utils/response.util'
 import { SuccessResponse } from '@/common/interfaces/api-response'
 import { InvalidCredentialsException } from '@/domain/exceptions/invalid-credentials.exception'
+import { LogoutUserDto } from '../dtos/logout-user.dto'
+import { User } from '../decorators/user.decorator'
+import { AuthenticatedUser } from '@/common/interfaces/authenticated-user.interface'
+import { LogoutUserUseCase } from '@/application/use-cases/auth/logout-user.use-case'
+import { UserNotFoundException } from '@/domain/exceptions/user-not-found.exception'
+import { RefreshTokenNotFoundException } from '@/domain/exceptions/refresh-token-not-found.exception'
+import { InvalidRefreshTokenException } from '@/domain/exceptions/invalid-refresh-token.exception'
+import { JwtAuthGuard } from '../guards/jwt-auth.guard'
 
 @ApiTags('Autenticación')
 @Controller('auth')
@@ -27,6 +36,7 @@ export class AuthController {
   constructor(
     private readonly loginUserUseCase: LoginUserUseCase,
     private readonly registerUserUseCase: RegisterUserUseCase,
+    private readonly logoutUserUseCase: LogoutUserUseCase,
   ) {}
   @Post('login')
   @ApiOperation({
@@ -149,6 +159,44 @@ export class AuthController {
         )
       }
       throw error
+    }
+  }
+
+  @Post('logout')
+  @UseGuards(JwtAuthGuard)
+  async logout(
+    @User() user: AuthenticatedUser,
+    @Body() logoutUserDto: LogoutUserDto,
+  ) {
+    try {
+      const { id } = user
+      const { refreshToken } = logoutUserDto
+      await this.logoutUserUseCase.execute(id, refreshToken)
+      return ResponseBuilder.success({
+        message: 'Sesión cerrada exitosamente',
+        data: null,
+      })
+    } catch (error) {
+      if (error instanceof UserNotFoundException) {
+        throw new HttpException(
+          ResponseBuilder.error(error.message, error.key, HttpStatus.NOT_FOUND),
+          HttpStatus.NOT_FOUND,
+        )
+      } else if (error instanceof RefreshTokenNotFoundException) {
+        throw new HttpException(
+          ResponseBuilder.error(error.message, error.key, HttpStatus.NOT_FOUND),
+          HttpStatus.NOT_FOUND,
+        )
+      } else if (error instanceof InvalidRefreshTokenException) {
+        throw new HttpException(
+          ResponseBuilder.error(
+            error.message,
+            error.key,
+            HttpStatus.UNAUTHORIZED,
+          ),
+          HttpStatus.UNAUTHORIZED,
+        )
+      }
     }
   }
 

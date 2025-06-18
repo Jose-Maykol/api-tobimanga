@@ -71,9 +71,7 @@ export class LoginUserUseCase {
     password: string,
     hashedPassword: string,
   ): Promise<boolean> {
-    const isPasswordValid = await bcrypt.compare(password, hashedPassword)
-    if (!isPasswordValid) return false
-    return true
+    return bcrypt.compare(password, hashedPassword)
   }
 
   async generateTokens(
