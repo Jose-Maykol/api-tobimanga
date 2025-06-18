@@ -16,13 +16,15 @@ import { AuthController } from './interface/controllers/auth.controller'
 import { LoginUserUseCase } from './application/use-cases/auth/login-user.use-case'
 import { UserRepositoryImpl } from './infaestructure/repositories/user.repository.impl'
 import { RegisterUserUseCase } from './application/use-cases/auth/register-user.use-case'
+import { LogoutUserUseCase } from './application/use-cases/auth/logout-user.use-case'
+import { JwtStrategy } from './application/strategies/jwt.strategy'
 /* import { MangaModule } from './modules/v1/manga/manga.module'
 import { AuthModule } from './modules/v1/auth/auth.module'
 import { UserModule } from './modules/v1/user/user.module'
 import { AdminModule } from './modules/v1/admin/admin.module'
 import { CronJobModule } from './modules/v1/cron-jobs/cron-job.module' */
 
-const UseCases = [LoginUserUseCase, RegisterUserUseCase]
+const UseCases = [LoginUserUseCase, RegisterUserUseCase, LogoutUserUseCase]
 const Repositories = [
   {
     provide: 'UserRepository',
@@ -44,7 +46,13 @@ const Repositories = [
     CronJobModule, */
   ],
   controllers: [AppController, AuthController],
-  providers: [AppService, JwtService, ...UseCases, ...Repositories],
+  providers: [
+    AppService,
+    JwtService,
+    ...UseCases,
+    ...Repositories,
+    JwtStrategy,
+  ],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
