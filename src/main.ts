@@ -10,9 +10,11 @@ async function bootstrap() {
 
   const config = new DocumentBuilder()
     .setTitle('Tobimanga API')
-    .setDescription('The Tobimanga API description')
-    .setVersion('1.0')
-    .addTag('tobimanga')
+    .setDescription(
+      'Una plataforma de lectura y gestión de manga. Esta API proporciona endpoints para listado de mangas, gestión de capítulos, interacciones de usuarios y entrega de contenido.',
+    )
+    .setVersion('2.0')
+    .addTag('Tobimanga')
     /* .addBearerAuth() */
     .build()
 

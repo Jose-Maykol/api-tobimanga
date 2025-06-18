@@ -7,11 +7,18 @@ import {
   HttpException,
   UseGuards,
 } from '@nestjs/common'
-import { ApiBody, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
+import {
+  ApiBody,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+  ApiBearerAuth,
+} from '@nestjs/swagger'
 import { UserLoginDto } from '../dtos/login-user.dto'
 import { RegisterUserDto } from '../dtos/register-user.dto'
 import { LoginSwaggerExamples } from '../swagger/auth/login.swagger'
 import { RegisterSwaggerExamples } from '../swagger/auth/register.swagger'
+import { LogoutSwaggerExamples } from '../swagger/auth/logout.swagger'
 import {
   RegisterUserUseCase,
   RegisterUserUseCaseResult,
@@ -164,6 +171,39 @@ export class AuthController {
 
   @Post('logout')
   @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({
+    summary: 'Cerrar sesión',
+    description:
+      'Cierra la sesión del usuario actual y revoca su refresh token.',
+  })
+  @ApiBody({
+    description: 'refresh token a revocar',
+    type: LogoutUserDto,
+    examples: {
+      validLogout: {
+        summary: 'refresh token válido',
+        value: {
+          refreshToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
+        },
+      },
+    },
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'Sesión cerrada exitosamente',
+    schema: { example: LogoutSwaggerExamples.success },
+  })
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description: 'Usuario no encontrado o refresh token no encontrado',
+    schema: { example: LogoutSwaggerExamples.notFound },
+  })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'Refresh token inválido',
+    schema: { example: LogoutSwaggerExamples.invalidToken },
+  })
   async logout(
     @User() user: AuthenticatedUser,
     @Body() logoutUserDto: LogoutUserDto,
@@ -197,13 +237,14 @@ export class AuthController {
           HttpStatus.UNAUTHORIZED,
         )
       }
+      throw error
     }
   }
 
   /* @Post('refresh')
   @ApiOperation({ summary: 'Refrescar token de acceso' })
   @ApiBody({
-    description: 'Token de refresco para obtener un nuevo token de acceso',
+    description: 'refresh token para obtener un nuevo token de acceso',
     type: String,
   })
   @UsePipes(new ZodValidationPipe(refreshTokenSchema))
