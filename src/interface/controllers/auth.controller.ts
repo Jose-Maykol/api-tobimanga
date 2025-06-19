@@ -36,6 +36,8 @@ import { UserNotFoundException } from '@/domain/exceptions/user-not-found.except
 import { RefreshTokenNotFoundException } from '@/domain/exceptions/refresh-token-not-found.exception'
 import { InvalidRefreshTokenException } from '@/domain/exceptions/invalid-refresh-token.exception'
 import { JwtAuthGuard } from '../guards/jwt-auth.guard'
+import { RefreshTokenDto } from '../dtos/refresh-token.dto'
+import { RefreshTokenUseCase } from '@/application/use-cases/auth/refresh-token.use-case'
 
 @ApiTags('Autenticación')
 @Controller('auth')
@@ -44,6 +46,7 @@ export class AuthController {
     private readonly loginUserUseCase: LoginUserUseCase,
     private readonly registerUserUseCase: RegisterUserUseCase,
     private readonly logoutUserUseCase: LogoutUserUseCase,
+    private readonly refreshTokenUseCase: RefreshTokenUseCase,
   ) {}
   @Post('login')
   @ApiOperation({
@@ -241,16 +244,45 @@ export class AuthController {
     }
   }
 
-  /* @Post('refresh')
-  @ApiOperation({ summary: 'Refrescar token de acceso' })
-  @ApiBody({
-    description: 'refresh token para obtener un nuevo token de acceso',
-    type: String,
-  })
-  @UsePipes(new ZodValidationPipe(refreshTokenSchema))
-  async refresh(@Body() body: RefreshTokenDto) {
-    const { refreshToken } = body
-    const command = new RefreshTokenCommand(refreshToken)
-    return await this.commandBus.execute(command)
-  } */
+  @Post('refresh')
+  @UseGuards(JwtAuthGuard)
+  async refresh(
+    @User() user: AuthenticatedUser,
+    @Body() refreshTokenDto: RefreshTokenDto,
+  ) {
+    try {
+      const { refreshToken } = refreshTokenDto
+      const { id } = user
+      const result = await this.refreshTokenUseCase.execute(id, refreshToken)
+      return ResponseBuilder.success({
+        message: 'Tokens actualizados exitosamente',
+        data: {
+          accessToken: result.accessToken,
+          refreshToken: result.refreshToken,
+        },
+      })
+    } catch (error) {
+      if (error instanceof UserNotFoundException) {
+        throw new HttpException(
+          ResponseBuilder.error(error.message, error.key, HttpStatus.NOT_FOUND),
+          HttpStatus.NOT_FOUND,
+        )
+      } else if (error instanceof RefreshTokenNotFoundException) {
+        throw new HttpException(
+          ResponseBuilder.error(error.message, error.key, HttpStatus.NOT_FOUND),
+          HttpStatus.NOT_FOUND,
+        )
+      } else if (error instanceof InvalidRefreshTokenException) {
+        throw new HttpException(
+          ResponseBuilder.error(
+            error.message,
+            error.key,
+            HttpStatus.UNAUTHORIZED,
+          ),
+          HttpStatus.UNAUTHORIZED,
+        )
+      }
+      throw error
+    }
+  }
 }
