@@ -6,6 +6,7 @@ import {
   HttpCode,
   HttpException,
   UseGuards,
+  Res,
 } from '@nestjs/common'
 import {
   ApiBody,
@@ -38,6 +39,7 @@ import { InvalidRefreshTokenException } from '@/domain/exceptions/invalid-refres
 import { JwtAuthGuard } from '../guards/jwt-auth.guard'
 import { RefreshTokenDto } from '../dtos/refresh-token.dto'
 import { RefreshTokenUseCase } from '@/application/use-cases/auth/refresh-token.use-case'
+import { ConfigService } from '@nestjs/config'
 
 @ApiTags('Autenticación')
 @Controller('auth')
@@ -47,6 +49,7 @@ export class AuthController {
     private readonly registerUserUseCase: RegisterUserUseCase,
     private readonly logoutUserUseCase: LogoutUserUseCase,
     private readonly refreshTokenUseCase: RefreshTokenUseCase,
+    private configService: ConfigService,
   ) {}
   @Post('login')
   @ApiOperation({
@@ -80,10 +83,35 @@ export class AuthController {
     description: 'Las credenciales proporcionadas son incorrectas',
     schema: { example: LoginSwaggerExamples.unauthorized },
   })
-  async login(@Body() userLoginDto: UserLoginDto) {
+  async login(
+    @Res({ passthrough: true }) res,
+    @Body() userLoginDto: UserLoginDto,
+  ) {
     try {
       const { email, password } = userLoginDto
-      return this.loginUserUseCase.execute(email, password)
+      const result = await this.loginUserUseCase.execute(email, password)
+      const secure = this.configService.get<string>('NODE_ENV') === 'production'
+
+      res.cookie('refreshToken', result.refreshToken, {
+        httpOnly: true,
+        secure: secure,
+        sameSite: 'Lax',
+        path: '/auth/refresh',
+        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 días
+      })
+
+      return ResponseBuilder.success({
+        message: 'Login exitoso',
+        data: {
+          accessToken: result.accessToken,
+          user: {
+            id: result.user.id,
+            email: result.user.email,
+            username: result.user.username,
+            profileImage: result.user.profileImage,
+          },
+        },
+      })
     } catch (error) {
       if (error instanceof UserAlreadyExistsException) {
         throw new HttpException(
