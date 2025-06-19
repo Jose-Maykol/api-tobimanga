@@ -2,6 +2,7 @@ import { JwtPayload } from '@/domain/interfaces/auth.interface'
 import { UserRepository } from '@/domain/repositories/user.repository'
 import { UserNotFoundException } from '@/domain/exceptions/user-not-found.exception'
 import { InvalidCredentialsException } from '@/domain/exceptions/invalid-credentials.exception'
+import { TokenGenerator } from '@/common/utils/token.util'
 import { Inject } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { JwtService } from '@nestjs/jwt'
@@ -45,15 +46,9 @@ export class LoginUserUseCase {
     })
   }
 
-  async verifyRefreshToken(token: string): Promise<JwtPayload> {
-    return this.jwtService.verifyAsync(token, {
-      secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
-    })
-  }
-
   async updateRefreshToken(id: string, refreshToken: string | null) {
     const hashedToken = refreshToken
-      ? await bcrypt.hash(refreshToken, 10)
+      ? TokenGenerator.hashToken(refreshToken)
       : null
     await this.userRepository.update(id, {
       refreshToken: hashedToken,
@@ -63,8 +58,7 @@ export class LoginUserUseCase {
   async validateRefreshToken(id: string, refreshToken: string) {
     const user = await this.userRepository.findById(id)
     if (!user || !user.refreshToken) return false
-    const isValid = await bcrypt.compare(refreshToken, user.refreshToken)
-    return isValid
+    return TokenGenerator.compareToken(refreshToken, user.refreshToken)
   }
 
   async comparePasswords(
@@ -84,24 +78,12 @@ export class LoginUserUseCase {
       type: 'access',
     }
 
-    const refreshPayload: JwtPayload = {
-      sub: userId,
-      email,
-      type: 'refresh',
-    }
+    const accessToken = await this.jwtService.signAsync(accessPayload, {
+      secret: this.configService.get<string>('JWT_ACCESS_SECRET'),
+      expiresIn: this.configService.get<string>('JWT_ACCESS_EXPIRATION_TIME'),
+    })
 
-    const [accessToken, refreshToken] = await Promise.all([
-      this.jwtService.signAsync(accessPayload, {
-        secret: this.configService.get<string>('JWT_ACCESS_SECRET'),
-        expiresIn: this.configService.get<string>('JWT_ACCESS_EXPIRATION_TIME'),
-      }),
-      this.jwtService.signAsync(refreshPayload, {
-        secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
-        expiresIn: this.configService.get<string>(
-          'JWT_REFRESH_EXPIRATION_TIME',
-        ),
-      }),
-    ])
+    const refreshToken = TokenGenerator.generateOpaqueToken()
 
     return {
       accessToken,
