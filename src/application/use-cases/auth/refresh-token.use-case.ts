@@ -1,3 +1,4 @@
+import { TokenGenerator } from '@/common/utils/token.util'
 import { InvalidRefreshTokenException } from '@/domain/exceptions/invalid-refresh-token.exception'
 import { RefreshTokenNotFoundException } from '@/domain/exceptions/refresh-token-not-found.exception'
 import { UserNotFoundException } from '@/domain/exceptions/user-not-found.exception'
@@ -5,7 +6,7 @@ import { UserRepository } from '@/domain/repositories/user.repository'
 import { Inject } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { JwtService } from '@nestjs/jwt'
-import * as bcrypt from 'bcrypt'
+import { JwtPayload } from 'jsonwebtoken'
 
 export class RefreshTokenUseCase {
   constructor(
@@ -28,7 +29,10 @@ export class RefreshTokenUseCase {
       throw new RefreshTokenNotFoundException()
     }
 
-    const isValidToken = await bcrypt.compare(refreshToken, hashedRefreshToken)
+    const isValidToken = TokenGenerator.compareToken(
+      refreshToken,
+      hashedRefreshToken,
+    )
 
     if (!isValidToken) {
       throw new InvalidRefreshTokenException()
@@ -47,7 +51,7 @@ export class RefreshTokenUseCase {
 
   async updateRefreshToken(id: string, refreshToken: string | null) {
     const hashedToken = refreshToken
-      ? await bcrypt.hash(refreshToken, 10)
+      ? await TokenGenerator.hashToken(refreshToken)
       : null
 
     await this.userRepository.update(id, {
@@ -56,33 +60,18 @@ export class RefreshTokenUseCase {
   }
 
   async generateTokens(userId: string, email: string) {
-    const payload = {
+    const accessPayload: JwtPayload = {
       sub: userId,
-      email: email,
-    }
-
-    const accessPayload = {
-      ...payload,
+      email,
       type: 'access',
     }
 
-    const refreshPayload = {
-      ...payload,
-      type: 'refresh',
-    }
+    const accessToken = await this.jwtService.signAsync(accessPayload, {
+      secret: this.configService.get<string>('JWT_ACCESS_SECRET'),
+      expiresIn: this.configService.get<string>('JWT_ACCESS_EXPIRATION_TIME'),
+    })
 
-    const [accessToken, refreshToken] = await Promise.all([
-      this.jwtService.signAsync(accessPayload, {
-        secret: this.configService.get<string>('JWT_ACCESS_SECRET'),
-        expiresIn: this.configService.get<string>('JWT_ACCESS_EXPIRATION_TIME'),
-      }),
-      this.jwtService.signAsync(refreshPayload, {
-        secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
-        expiresIn: this.configService.get<string>(
-          'JWT_REFRESH_EXPIRATION_TIME',
-        ),
-      }),
-    ])
+    const refreshToken = TokenGenerator.generateOpaqueToken()
 
     return {
       accessToken,

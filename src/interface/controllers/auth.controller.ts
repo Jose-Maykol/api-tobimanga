@@ -7,6 +7,7 @@ import {
   HttpException,
   UseGuards,
   Res,
+  Req,
 } from '@nestjs/common'
 import {
   ApiBody,
@@ -37,9 +38,9 @@ import { UserNotFoundException } from '@/domain/exceptions/user-not-found.except
 import { RefreshTokenNotFoundException } from '@/domain/exceptions/refresh-token-not-found.exception'
 import { InvalidRefreshTokenException } from '@/domain/exceptions/invalid-refresh-token.exception'
 import { JwtAuthGuard } from '../guards/jwt-auth.guard'
-import { RefreshTokenDto } from '../dtos/refresh-token.dto'
 import { RefreshTokenUseCase } from '@/application/use-cases/auth/refresh-token.use-case'
 import { ConfigService } from '@nestjs/config'
+import { Request, Response } from 'express'
 
 @ApiTags('Autenticación')
 @Controller('auth')
@@ -95,8 +96,8 @@ export class AuthController {
       res.cookie('refreshToken', result.refreshToken, {
         httpOnly: true,
         secure: secure,
-        sameSite: 'Lax',
-        path: '/auth/refresh',
+        sameSite: 'lax',
+        path: '/api/auth/refresh',
         maxAge: 7 * 24 * 60 * 60 * 1000, // 7 días
       })
 
@@ -276,18 +277,22 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   async refresh(
     @User() user: AuthenticatedUser,
-    @Body() refreshTokenDto: RefreshTokenDto,
+    @Req() req: Request,
+    @Res({ passthrough: true }) res: Response,
   ) {
     try {
-      const { refreshToken } = refreshTokenDto
       const { id } = user
+      const refreshToken = req.cookies['refresh_token']
+      console.log('Refresh Token:', refreshToken)
       const result = await this.refreshTokenUseCase.execute(id, refreshToken)
-      return ResponseBuilder.success({
-        message: 'Tokens actualizados exitosamente',
-        data: {
-          accessToken: result.accessToken,
-          refreshToken: result.refreshToken,
-        },
+      const secure = this.configService.get<string>('NODE_ENV') === 'production'
+
+      res.cookie('refreshToken', result.refreshToken, {
+        httpOnly: true,
+        secure: secure,
+        sameSite: 'lax',
+        path: '/auth/refresh',
+        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 días
       })
     } catch (error) {
       if (error instanceof UserNotFoundException) {
