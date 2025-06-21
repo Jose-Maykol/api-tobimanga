@@ -20,6 +20,14 @@ export class RefreshTokenUseCase {
     userId: string,
     refreshToken: string,
   ): Promise<{ accessToken: string; refreshToken: string }> {
+    if (
+      !refreshToken ||
+      typeof refreshToken !== 'string' ||
+      refreshToken.trim() === ''
+    ) {
+      throw new InvalidRefreshTokenException()
+    }
+
     const user = await this.userRepository.findById(userId)
     if (!user) throw new UserNotFoundException()
 

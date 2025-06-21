@@ -282,8 +282,7 @@ export class AuthController {
   ) {
     try {
       const { id } = user
-      const refreshToken = req.cookies['refresh_token']
-      console.log('Refresh Token:', refreshToken)
+      const refreshToken = req.cookies['refreshToken']
       const result = await this.refreshTokenUseCase.execute(id, refreshToken)
       const secure = this.configService.get<string>('NODE_ENV') === 'production'
 
