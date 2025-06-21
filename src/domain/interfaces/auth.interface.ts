@@ -1,7 +1,7 @@
 export interface JwtPayload {
   sub: string
   email: string
-  type: 'access' | 'refresh'
+  role: 'USER' | 'ADMIN'
 }
 
 export interface DecodedJwtPayload extends JwtPayload {

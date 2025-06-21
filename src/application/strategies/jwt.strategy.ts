@@ -20,7 +20,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
   async validate(payload: DecodedJwtPayload): Promise<AuthenticatedUser> {
     const { email, sub } = payload
 
-    if (payload.type !== 'access' || !email || !sub) {
+    if (!email || !sub) {
       throw new HttpException(
         ResponseBuilder.error(
           'Token inválido',
@@ -36,7 +36,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
     return {
       email: payload.email,
       id: payload.sub,
-      // role: payload.role, //TODO: Pending to implement roles
+      role: payload.role,
     }
   }
 }

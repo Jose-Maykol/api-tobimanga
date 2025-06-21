@@ -24,7 +24,7 @@ export class LoginUserUseCase {
 
     if (!isPasswordValid) throw new InvalidCredentialsException()
 
-    const tokens = await this.generateTokens(user.id, user.email)
+    const tokens = await this.generateTokens(user.id, user.email, user.role)
 
     await this.updateRefreshToken(user.id, tokens.refreshToken)
 
@@ -71,11 +71,12 @@ export class LoginUserUseCase {
   async generateTokens(
     userId: string,
     email: string,
+    role: 'USER' | 'ADMIN',
   ): Promise<{ accessToken: string; refreshToken: string }> {
     const accessPayload: JwtPayload = {
       sub: userId,
       email,
-      type: 'access',
+      role: role,
     }
 
     const accessToken = await this.jwtService.signAsync(accessPayload, {
