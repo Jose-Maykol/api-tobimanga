@@ -2,18 +2,19 @@ import { JwtPayload } from '@/domain/interfaces/auth.interface'
 import { UserRepository } from '@/domain/repositories/user.repository'
 import { UserNotFoundException } from '@/domain/exceptions/user-not-found.exception'
 import { InvalidCredentialsException } from '@/domain/exceptions/invalid-credentials.exception'
-import { TokenGenerator } from '@/common/utils/token.util'
+import { RefreshTokenService } from '@/domain/services/refresh-token.service'
+import { AccessTokenService } from '@/domain/services/access-token.service'
 import { Inject } from '@nestjs/common'
-import { ConfigService } from '@nestjs/config'
-import { JwtService } from '@nestjs/jwt'
 import * as bcrypt from 'bcrypt'
 
 export class LoginUserUseCase {
   constructor(
     @Inject('UserRepository')
     private readonly userRepository: UserRepository,
-    private jwtService: JwtService,
-    private configService: ConfigService,
+    @Inject('RefreshTokenService')
+    private readonly refreshTokenService: RefreshTokenService,
+    @Inject('AccessTokenService')
+    private readonly accessTokenService: AccessTokenService,
   ) {}
 
   async execute(email: string, password: string) {
@@ -21,11 +22,9 @@ export class LoginUserUseCase {
     if (!user) throw new UserNotFoundException()
 
     const isPasswordValid = await this.comparePasswords(password, user.password)
-
     if (!isPasswordValid) throw new InvalidCredentialsException()
 
     const tokens = await this.generateTokens(user.id, user.email, user.role)
-
     await this.updateRefreshToken(user.id, tokens.refreshToken)
 
     return {
@@ -41,14 +40,12 @@ export class LoginUserUseCase {
   }
 
   async verifyAccessToken(token: string): Promise<JwtPayload> {
-    return this.jwtService.verifyAsync(token, {
-      secret: this.configService.get<string>('JWT_ACCESS_SECRET'),
-    })
+    return this.accessTokenService.verifyToken(token)
   }
 
   async updateRefreshToken(id: string, refreshToken: string | null) {
     const hashedToken = refreshToken
-      ? TokenGenerator.hashToken(refreshToken)
+      ? this.refreshTokenService.hashToken(refreshToken)
       : null
     await this.userRepository.update(id, {
       refreshToken: hashedToken,
@@ -58,33 +55,28 @@ export class LoginUserUseCase {
   async validateRefreshToken(id: string, refreshToken: string) {
     const user = await this.userRepository.findById(id)
     if (!user || !user.refreshToken) return false
-    return TokenGenerator.compareToken(refreshToken, user.refreshToken)
+    return this.refreshTokenService.compareTokens(
+      refreshToken,
+      user.refreshToken,
+    )
   }
 
-  async comparePasswords(
+  private async comparePasswords(
     password: string,
     hashedPassword: string,
   ): Promise<boolean> {
     return bcrypt.compare(password, hashedPassword)
   }
 
-  async generateTokens(
+  private async generateTokens(
     userId: string,
     email: string,
     role: 'USER' | 'ADMIN',
   ): Promise<{ accessToken: string; refreshToken: string }> {
-    const accessPayload: JwtPayload = {
-      sub: userId,
-      email,
-      role: role,
-    }
-
-    const accessToken = await this.jwtService.signAsync(accessPayload, {
-      secret: this.configService.get<string>('JWT_ACCESS_SECRET'),
-      expiresIn: this.configService.get<string>('JWT_ACCESS_EXPIRATION_TIME'),
-    })
-
-    const refreshToken = TokenGenerator.generateOpaqueToken()
+    const [accessToken, refreshToken] = await Promise.all([
+      this.accessTokenService.generateToken({ sub: userId, email, role }),
+      Promise.resolve(this.refreshTokenService.generateToken()),
+    ])
 
     return {
       accessToken,

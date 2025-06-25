@@ -19,19 +19,33 @@ import { RegisterUserUseCase } from './application/use-cases/auth/register-user.
 import { LogoutUserUseCase } from './application/use-cases/auth/logout-user.use-case'
 import { JwtStrategy } from './application/strategies/jwt.strategy'
 import { RefreshTokenUseCase } from './application/use-cases/auth/refresh-token.use-case'
+import { AccessTokenServiceImpl } from './infrastructure/services/access-token.service.impl'
+import { RefreshTokenServiceImpl } from './infrastructure/services/refresh-token.service.impl'
 /* import { MangaModule } from './modules/v1/manga/manga.module'
 import { AuthModule } from './modules/v1/auth/auth.module'
 import { UserModule } from './modules/v1/user/user.module'
 import { AdminModule } from './modules/v1/admin/admin.module'
 import { CronJobModule } from './modules/v1/cron-jobs/cron-job.module' */
 
-const UseCases = [
+const useCases = [
   LoginUserUseCase,
   RegisterUserUseCase,
   LogoutUserUseCase,
   RefreshTokenUseCase,
 ]
-const Repositories = [
+
+const services = [
+  {
+    provide: 'AccessTokenService',
+    useClass: AccessTokenServiceImpl,
+  },
+  {
+    provide: 'RefreshTokenService',
+    useClass: RefreshTokenServiceImpl,
+  },
+]
+
+const repositories = [
   {
     provide: 'UserRepository',
     useClass: UserRepositoryImpl,
@@ -55,8 +69,9 @@ const Repositories = [
   providers: [
     AppService,
     JwtService,
-    ...UseCases,
-    ...Repositories,
+    ...services,
+    ...useCases,
+    ...repositories,
     JwtStrategy,
   ],
 })
