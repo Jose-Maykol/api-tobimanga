@@ -30,7 +30,6 @@ import { UserAlreadyExistsException } from '@/domain/exceptions/user-already-exi
 import { ResponseBuilder } from '@/common/utils/response.util'
 import { SuccessResponse } from '@/common/interfaces/api-response'
 import { InvalidCredentialsException } from '@/domain/exceptions/invalid-credentials.exception'
-import { LogoutUserDto } from '../dtos/logout-user.dto'
 import { User } from '../decorators/user.decorator'
 import { AuthenticatedUser } from '@/common/interfaces/authenticated-user.interface'
 import { LogoutUserUseCase } from '@/application/use-cases/auth/logout-user.use-case'
@@ -97,7 +96,7 @@ export class AuthController {
         httpOnly: true,
         secure: secure,
         sameSite: 'lax',
-        path: '/api/auth/refresh',
+        path: '/api/auth',
         maxAge: 7 * 24 * 60 * 60 * 1000, // 7 días
       })
 
@@ -211,7 +210,6 @@ export class AuthController {
   })
   @ApiBody({
     description: 'refresh token a revocar',
-    type: LogoutUserDto,
     examples: {
       validLogout: {
         summary: 'refresh token válido',
@@ -236,13 +234,10 @@ export class AuthController {
     description: 'Refresh token inválido',
     schema: { example: LogoutSwaggerExamples.invalidToken },
   })
-  async logout(
-    @User() user: AuthenticatedUser,
-    @Body() logoutUserDto: LogoutUserDto,
-  ) {
+  async logout(@User() user: AuthenticatedUser, @Req() req: Request) {
     try {
       const { id } = user
-      const { refreshToken } = logoutUserDto
+      const refreshToken = req.cookies['refreshToken']
       await this.logoutUserUseCase.execute(id, refreshToken)
       return ResponseBuilder.success({
         message: 'Sesión cerrada exitosamente',
@@ -290,7 +285,7 @@ export class AuthController {
         httpOnly: true,
         secure: secure,
         sameSite: 'lax',
-        path: '/auth/refresh',
+        path: '/api/auth',
         maxAge: 7 * 24 * 60 * 60 * 1000, // 7 días
       })
     } catch (error) {
