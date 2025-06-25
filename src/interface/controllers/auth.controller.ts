@@ -15,12 +15,14 @@ import {
   ApiResponse,
   ApiTags,
   ApiBearerAuth,
+  ApiCookieAuth,
 } from '@nestjs/swagger'
 import { UserLoginDto } from '../dtos/login-user.dto'
 import { RegisterUserDto } from '../dtos/register-user.dto'
 import { LoginSwaggerExamples } from '../swagger/auth/login.swagger'
 import { RegisterSwaggerExamples } from '../swagger/auth/register.swagger'
 import { LogoutSwaggerExamples } from '../swagger/auth/logout.swagger'
+import { RefreshSwaggerExamples } from '../swagger/auth/refresh.swagger'
 import {
   RegisterUserUseCase,
   RegisterUserUseCaseResult,
@@ -55,7 +57,7 @@ export class AuthController {
   @ApiOperation({
     summary: 'Iniciar sesión',
     description:
-      'Permite a un usuario autenticarse en el sistema utilizando su email y contraseña.',
+      'Permite a un usuario autenticarse en el sistema utilizando su email y contraseña. Devuelve un access token JWT y establece una cookie httpOnly con el refresh token.',
   })
   @ApiBody({
     description: 'Credenciales del usuario',
@@ -70,7 +72,7 @@ export class AuthController {
   @ApiResponse({
     status: HttpStatus.OK,
     description:
-      'Login exitoso. Retorna tokens de acceso y refresh junto con la información del usuario',
+      'Login exitoso. Retorna access token y datos del usuario. El refresh token se establece como cookie httpOnly.',
     schema: { example: LoginSwaggerExamples.success },
   })
   @ApiResponse({
@@ -84,7 +86,7 @@ export class AuthController {
     schema: { example: LoginSwaggerExamples.unauthorized },
   })
   async login(
-    @Res({ passthrough: true }) res,
+    @Res({ passthrough: true }) res: Response,
     @Body() userLoginDto: UserLoginDto,
   ) {
     try {
@@ -203,21 +205,11 @@ export class AuthController {
   @Post('logout')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
+  @ApiCookieAuth('refreshToken')
   @ApiOperation({
     summary: 'Cerrar sesión',
     description:
-      'Cierra la sesión del usuario actual y revoca su refresh token.',
-  })
-  @ApiBody({
-    description: 'refresh token a revocar',
-    examples: {
-      validLogout: {
-        summary: 'refresh token válido',
-        value: {
-          refreshToken: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...',
-        },
-      },
-    },
+      'Cierra la sesión del usuario actual, invalida el refresh token y limpia la cookie.',
   })
   @ApiResponse({
     status: HttpStatus.OK,
@@ -231,14 +223,23 @@ export class AuthController {
   })
   @ApiResponse({
     status: HttpStatus.UNAUTHORIZED,
-    description: 'Refresh token inválido',
+    description: 'Refresh token inválido o expirado',
     schema: { example: LogoutSwaggerExamples.invalidToken },
   })
-  async logout(@User() user: AuthenticatedUser, @Req() req: Request) {
+  async logout(
+    @User() user: AuthenticatedUser,
+    @Req() req: Request,
+    @Res({ passthrough: true }) res: Response,
+  ) {
     try {
       const { id } = user
       const refreshToken = req.cookies['refreshToken']
       await this.logoutUserUseCase.execute(id, refreshToken)
+
+      res.clearCookie('refreshToken', {
+        path: '/api/auth',
+      })
+
       return ResponseBuilder.success({
         message: 'Sesión cerrada exitosamente',
         data: null,
@@ -270,6 +271,29 @@ export class AuthController {
 
   @Post('refresh')
   @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiCookieAuth('refreshToken')
+  @ApiOperation({
+    summary: 'Renovar tokens',
+    description:
+      'Genera un nuevo access token y refresh token usando el refresh token actual. El nuevo refresh token se establece como cookie httpOnly.',
+  })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description:
+      'Tokens renovados exitosamente. Retorna nuevo access token y actualiza la cookie del refresh token.',
+    schema: { example: RefreshSwaggerExamples.success },
+  })
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    description: 'Usuario no encontrado o refresh token no encontrado',
+    schema: { example: RefreshSwaggerExamples.notFound },
+  })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'Refresh token inválido o expirado',
+    schema: { example: RefreshSwaggerExamples.invalidToken },
+  })
   async refresh(
     @User() user: AuthenticatedUser,
     @Req() req: Request,
@@ -287,6 +311,13 @@ export class AuthController {
         sameSite: 'lax',
         path: '/api/auth',
         maxAge: 7 * 24 * 60 * 60 * 1000, // 7 días
+      })
+
+      return ResponseBuilder.success({
+        message: 'Sesión renovada exitosamente',
+        data: {
+          accessToken: result.accessToken,
+        },
       })
     } catch (error) {
       if (error instanceof UserNotFoundException) {
