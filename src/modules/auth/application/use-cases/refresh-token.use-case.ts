@@ -1,19 +1,19 @@
-import { InvalidRefreshTokenException } from '@/domain/exceptions/invalid-refresh-token.exception'
-import { RefreshTokenNotFoundException } from '@/domain/exceptions/refresh-token-not-found.exception'
-import { UserNotFoundException } from '@/modules/user/domain/exceptions/user-not-found.exception'
+import { TokenGenerator } from '@/common/utils/token.util'
+import { InvalidRefreshTokenException } from '@/modules/auth/domain/exceptions/invalid-refresh-token.exception'
+import { RefreshTokenNotFoundException } from '@/modules/auth/domain/exceptions/refresh-token-not-found.exception'
+import { UserNotFoundException } from '@/domain/exceptions/user-not-found.exception'
 import { UserRepository } from '@/domain/repositories/user.repository'
-import { RefreshTokenService } from '@/domain/services/refresh-token.service'
-import { AccessTokenService } from '@/domain/services/access-token.service'
 import { Inject } from '@nestjs/common'
+import { ConfigService } from '@nestjs/config'
+import { JwtService } from '@nestjs/jwt'
+import { JwtPayload } from 'jsonwebtoken'
 
 export class RefreshTokenUseCase {
   constructor(
     @Inject('UserRepository')
     private readonly userRepository: UserRepository,
-    @Inject('RefreshTokenService')
-    private readonly refreshTokenService: RefreshTokenService,
-    @Inject('AccessTokenService')
-    private readonly accessTokenService: AccessTokenService,
+    private jwtService: JwtService,
+    private configService: ConfigService,
   ) {}
 
   async execute(
@@ -37,7 +37,7 @@ export class RefreshTokenUseCase {
       throw new RefreshTokenNotFoundException()
     }
 
-    const isValidToken = this.refreshTokenService.compareTokens(
+    const isValidToken = TokenGenerator.compareToken(
       refreshToken,
       hashedRefreshToken,
     )
@@ -46,8 +46,8 @@ export class RefreshTokenUseCase {
       throw new InvalidRefreshTokenException()
     }
 
-    const { id, email, role } = user
-    const tokens = await this.generateTokens(id, email, role)
+    const { id, email } = user
+    const tokens = await this.generateTokens(id, email)
 
     await this.updateRefreshToken(userId, tokens.refreshToken)
 
@@ -57,9 +57,9 @@ export class RefreshTokenUseCase {
     }
   }
 
-  private async updateRefreshToken(id: string, refreshToken: string | null) {
+  async updateRefreshToken(id: string, refreshToken: string | null) {
     const hashedToken = refreshToken
-      ? this.refreshTokenService.hashToken(refreshToken)
+      ? await TokenGenerator.hashToken(refreshToken)
       : null
 
     await this.userRepository.update(id, {
@@ -67,15 +67,19 @@ export class RefreshTokenUseCase {
     })
   }
 
-  private async generateTokens(
-    userId: string,
-    email: string,
-    role: 'USER' | 'ADMIN',
-  ) {
-    const [accessToken, refreshToken] = await Promise.all([
-      this.accessTokenService.generateToken({ sub: userId, email, role }),
-      Promise.resolve(this.refreshTokenService.generateToken()),
-    ])
+  async generateTokens(userId: string, email: string) {
+    const accessPayload: JwtPayload = {
+      sub: userId,
+      email,
+      type: 'access',
+    }
+
+    const accessToken = await this.jwtService.signAsync(accessPayload, {
+      secret: this.configService.get<string>('JWT_ACCESS_SECRET'),
+      expiresIn: this.configService.get<string>('JWT_ACCESS_EXPIRATION_TIME'),
+    })
+
+    const refreshToken = TokenGenerator.generateOpaqueToken()
 
     return {
       accessToken,

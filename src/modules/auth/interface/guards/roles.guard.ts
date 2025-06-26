@@ -1,4 +1,4 @@
-import { ROLES_KEY } from '@/interface/decorators/roles.decorator'
+import { ROLES_KEY } from '@/modules/auth/interface/decorators/roles.decorator'
 import { AuthenticatedUser } from '@/common/interfaces/authenticated-user.interface'
 import { CanActivate, ExecutionContext } from '@nestjs/common'
 import { Reflector } from '@nestjs/core'

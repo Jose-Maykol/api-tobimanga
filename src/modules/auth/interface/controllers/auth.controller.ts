@@ -19,29 +19,29 @@ import {
 } from '@nestjs/swagger'
 import { UserLoginDto } from '../dtos/login-user.dto'
 import { RegisterUserDto } from '../dtos/register-user.dto'
-import { LoginSwaggerExamples } from '../swagger/auth/login.swagger'
-import { RegisterSwaggerExamples } from '../swagger/auth/register.swagger'
-import { LogoutSwaggerExamples } from '../swagger/auth/logout.swagger'
-import { RefreshSwaggerExamples } from '../swagger/auth/refresh.swagger'
-import {
-  RegisterUserUseCase,
-  RegisterUserUseCaseResult,
-} from '@/application/use-cases/auth/register-user.use-case'
-import { LoginUserUseCase } from '@/application/use-cases/auth/login-user.use-case'
 import { UserAlreadyExistsException } from '@/modules/user/domain/exceptions/user-already-exists.exception'
 import { ResponseBuilder } from '@/common/utils/response.util'
 import { SuccessResponse } from '@/common/interfaces/api-response'
-import { InvalidCredentialsException } from '@/domain/exceptions/invalid-credentials.exception'
 import { User } from '../decorators/user.decorator'
 import { AuthenticatedUser } from '@/common/interfaces/authenticated-user.interface'
-import { LogoutUserUseCase } from '@/application/use-cases/auth/logout-user.use-case'
 import { UserNotFoundException } from '@/modules/user/domain/exceptions/user-not-found.exception'
-import { RefreshTokenNotFoundException } from '@/domain/exceptions/refresh-token-not-found.exception'
-import { InvalidRefreshTokenException } from '@/domain/exceptions/invalid-refresh-token.exception'
 import { JwtAuthGuard } from '../guards/jwt-auth.guard'
-import { RefreshTokenUseCase } from '@/application/use-cases/auth/refresh-token.use-case'
 import { ConfigService } from '@nestjs/config'
 import { Request, Response } from 'express'
+import { LoginUserUseCase } from '../../application/use-cases/login-user.use-case'
+import {
+  RegisterUserUseCase,
+  RegisterUserUseCaseResult,
+} from '@/modules/user/application/use-cases/register-user.use-case'
+import { LogoutUserUseCase } from '../../application/use-cases/logout-user.use-case'
+import { RefreshTokenUseCase } from '../../application/use-cases/refresh-token.use-case'
+import { LoginSwaggerExamples } from '../swagger/login.swagger'
+import { InvalidCredentialsException } from '../../domain/exceptions/invalid-credentials.exception'
+import { RegisterSwaggerExamples } from '../swagger/register.swagger'
+import { LogoutSwaggerExamples } from '../swagger/logout.swagger'
+import { RefreshTokenNotFoundException } from '../../domain/exceptions/refresh-token-not-found.exception'
+import { InvalidRefreshTokenException } from '../../domain/exceptions/invalid-refresh-token.exception'
+import { RefreshSwaggerExamples } from '../swagger/refresh.swagger'
 
 @ApiTags('Autenticación')
 @Controller('auth')
