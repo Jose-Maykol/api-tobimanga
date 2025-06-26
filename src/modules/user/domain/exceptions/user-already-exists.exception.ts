@@ -1,5 +1,5 @@
-import { BaseException } from './base.exception'
-import { ErrorKeys } from './error-keys.enum'
+import { BaseException } from '../../../../domain/exceptions/base.exception'
+import { ErrorKeys } from '../../../../domain/exceptions/error-keys.enum'
 
 export class UserAlreadyExistsException extends BaseException {
   constructor() {

@@ -1,6 +1,6 @@
 import { JwtPayload } from '@/domain/interfaces/auth.interface'
 import { UserRepository } from '@/domain/repositories/user.repository'
-import { UserNotFoundException } from '@/domain/exceptions/user-not-found.exception'
+import { UserNotFoundException } from '@/modules/user/domain/exceptions/user-not-found.exception'
 import { InvalidCredentialsException } from '@/domain/exceptions/invalid-credentials.exception'
 import { RefreshTokenService } from '@/domain/services/refresh-token.service'
 import { AccessTokenService } from '@/domain/services/access-token.service'

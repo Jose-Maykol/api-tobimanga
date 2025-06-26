@@ -1,10 +1,10 @@
 import { Inject, Injectable } from '@nestjs/common'
 import { eq } from 'drizzle-orm'
-import { DATABASE_SERVICE } from '../database/constants/database.constants'
-import { DatabaseService } from '../database/services/database.service'
-import { users } from '../database/schemas/user.schema'
-import { User } from '@/domain/entities/user'
-import { UserRepository } from '@/domain/repositories/user.repository'
+import { User } from '@/modules/user/domain/entities/user'
+import { DATABASE_SERVICE } from '@/core/database/constants/database.constants'
+import { DatabaseService } from '@/core/database/services/database.service'
+import { users } from '@/core/database/schemas/user.schema'
+import { UserRepository } from '../../domain/repositories/user.repository'
 
 @Injectable()
 export class UserRepositoryImpl implements UserRepository {

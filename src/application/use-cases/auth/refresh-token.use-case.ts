@@ -1,6 +1,6 @@
 import { InvalidRefreshTokenException } from '@/domain/exceptions/invalid-refresh-token.exception'
 import { RefreshTokenNotFoundException } from '@/domain/exceptions/refresh-token-not-found.exception'
-import { UserNotFoundException } from '@/domain/exceptions/user-not-found.exception'
+import { UserNotFoundException } from '@/modules/user/domain/exceptions/user-not-found.exception'
 import { UserRepository } from '@/domain/repositories/user.repository'
 import { RefreshTokenService } from '@/domain/services/refresh-token.service'
 import { AccessTokenService } from '@/domain/services/access-token.service'

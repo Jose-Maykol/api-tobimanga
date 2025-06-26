@@ -1,7 +1,6 @@
 import { User } from '../entities/user'
 
 export interface UserRepository {
-  /* find(): Promise<User[]> */
   findById(id: string): Promise<User | null>
   findByEmail(email: string): Promise<User | null>
   exists(email: string): Promise<boolean>

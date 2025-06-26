@@ -1,5 +1,5 @@
-import { User } from '@/domain/entities/user'
-import { UserAlreadyExistsException } from '@/domain/exceptions/user-already-exists.exception'
+import { User } from '@/modules/user/domain/entities/user'
+import { UserAlreadyExistsException } from '@/modules/user/domain/exceptions/user-already-exists.exception'
 import { createUserFactory } from '@/domain/factories/create-user.factory'
 import { UserRepository } from '@/domain/repositories/user.repository'
 import { Inject } from '@nestjs/common'

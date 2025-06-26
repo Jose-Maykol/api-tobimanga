@@ -5,7 +5,6 @@ import * as humps from 'humps'
 @Injectable()
 export class SnakeCaseMiddleware implements NestMiddleware {
   use(req: Request, res: Response, next: NextFunction) {
-    
     if (req.body && typeof req.body === 'object') {
       req.body = humps.camelizeKeys(req.body)
     }

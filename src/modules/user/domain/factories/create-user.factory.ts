@@ -1,4 +1,4 @@
-import { User } from '@/domain/entities/user'
+import { User } from '@/modules/user/domain/entities/user'
 
 interface CreateUserFactoryProps {
   email: string
