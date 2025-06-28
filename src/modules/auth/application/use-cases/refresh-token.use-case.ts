@@ -1,89 +1,64 @@
-import { TokenGenerator } from '@/common/utils/token.util'
 import { InvalidRefreshTokenException } from '@/modules/auth/domain/exceptions/invalid-refresh-token.exception'
 import { RefreshTokenNotFoundException } from '@/modules/auth/domain/exceptions/refresh-token-not-found.exception'
-import { UserNotFoundException } from '@/domain/exceptions/user-not-found.exception'
-import { UserRepository } from '@/domain/repositories/user.repository'
 import { Inject } from '@nestjs/common'
-import { ConfigService } from '@nestjs/config'
-import { JwtService } from '@nestjs/jwt'
-import { JwtPayload } from 'jsonwebtoken'
+import { GetUserByIdUseCase } from '@/modules/user/application/use-cases/get-user-by-id.use-case'
+import { UpdateUserUseCase } from '@/modules/user/application/use-cases/update-user.use-case'
+import { AccessTokenService } from '../../domain/services/access-token.service'
+import { RefreshTokenService } from '../../domain/services/refresh-token.service'
 
 export class RefreshTokenUseCase {
   constructor(
-    @Inject('UserRepository')
-    private readonly userRepository: UserRepository,
-    private jwtService: JwtService,
-    private configService: ConfigService,
+    private readonly getUserByIdUseCase: GetUserByIdUseCase,
+    private readonly updateUserUseCase: UpdateUserUseCase,
+    @Inject('AccessTokenService')
+    private readonly accessTokenService: AccessTokenService,
+    @Inject('RefreshTokenService')
+    private readonly refreshTokenService: RefreshTokenService,
   ) {}
 
   async execute(
     userId: string,
     refreshToken: string,
   ): Promise<{ accessToken: string; refreshToken: string }> {
-    if (
-      !refreshToken ||
-      typeof refreshToken !== 'string' ||
-      refreshToken.trim() === ''
-    ) {
+    // 1. Validar el refresh token
+    if (!refreshToken?.trim()) {
       throw new InvalidRefreshTokenException()
     }
 
-    const user = await this.userRepository.findById(userId)
-    if (!user) throw new UserNotFoundException()
-
-    const { refreshToken: hashedRefreshToken } = user
-
-    if (!hashedRefreshToken) {
+    // 2. Obtener usuario y validar token
+    const user = await this.getUserByIdUseCase.execute(userId)
+    if (!user.refreshToken) {
       throw new RefreshTokenNotFoundException()
     }
 
-    const isValidToken = TokenGenerator.compareToken(
+    const isValidToken = this.refreshTokenService.compareTokens(
       refreshToken,
-      hashedRefreshToken,
+      user.refreshToken,
     )
-
     if (!isValidToken) {
       throw new InvalidRefreshTokenException()
     }
 
-    const { id, email } = user
-    const tokens = await this.generateTokens(id, email)
+    // 3. Generar nuevos tokens
+    const [accessToken, newRefreshToken] = await Promise.all([
+      this.accessTokenService.generateToken({
+        sub: user.id,
+        email: user.email,
+        role: user.role,
+      }),
+      Promise.resolve(this.refreshTokenService.generateToken()),
+    ])
 
-    await this.updateRefreshToken(userId, tokens.refreshToken)
-
-    return {
-      accessToken: tokens.accessToken,
-      refreshToken: tokens.refreshToken,
-    }
-  }
-
-  async updateRefreshToken(id: string, refreshToken: string | null) {
-    const hashedToken = refreshToken
-      ? await TokenGenerator.hashToken(refreshToken)
-      : null
-
-    await this.userRepository.update(id, {
-      refreshToken: hashedToken,
+    // 4. Actualizar refresh token en base de datos
+    const hashedRefreshToken =
+      this.refreshTokenService.hashToken(newRefreshToken)
+    await this.updateUserUseCase.execute(user.id, {
+      refreshToken: hashedRefreshToken,
     })
-  }
-
-  async generateTokens(userId: string, email: string) {
-    const accessPayload: JwtPayload = {
-      sub: userId,
-      email,
-      type: 'access',
-    }
-
-    const accessToken = await this.jwtService.signAsync(accessPayload, {
-      secret: this.configService.get<string>('JWT_ACCESS_SECRET'),
-      expiresIn: this.configService.get<string>('JWT_ACCESS_EXPIRATION_TIME'),
-    })
-
-    const refreshToken = TokenGenerator.generateOpaqueToken()
 
     return {
       accessToken,
-      refreshToken,
+      refreshToken: newRefreshToken,
     }
   }
 }

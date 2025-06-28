@@ -1,114 +1,54 @@
-import { JwtPayload } from '@/modules/auth/domain/interfaces/auth.interface'
-import { UserRepository } from '@/domain/repositories/user.repository'
-import {
-  Inject,
-  NotFoundException,
-  UnauthorizedException,
-} from '@nestjs/common'
-import { ConfigService } from '@nestjs/config'
-import { JwtService } from '@nestjs/jwt'
+import { Inject } from '@nestjs/common'
+import { GetUserByEmailUseCase } from '@/modules/user/application/use-cases/get-user-by-email.use-case'
+import { UpdateUserUseCase } from '@/modules/user/application/use-cases/update-user.use-case'
+import { InvalidCredentialsException } from '../../domain/exceptions/invalid-credentials.exception'
+import { AccessTokenService } from '../../domain/services/access-token.service'
+import { RefreshTokenService } from '../../domain/services/refresh-token.service'
 import * as bcrypt from 'bcrypt'
 
 export class LoginUserUseCase {
   constructor(
-    @Inject('UserRepository')
-    private readonly userRepository: UserRepository,
-    private jwtService: JwtService,
-    private configService: ConfigService,
+    private readonly getUserByEmailUseCase: GetUserByEmailUseCase,
+    private readonly updateUserUseCase: UpdateUserUseCase,
+    @Inject('AccessTokenService')
+    private readonly accessTokenService: AccessTokenService,
+    @Inject('RefreshTokenService')
+    private readonly refreshTokenService: RefreshTokenService,
   ) {}
 
   async execute(email: string, password: string) {
-    const user = await this.userRepository.findByEmail(email)
-    if (!user) throw new NotFoundException('Usuario no encontrado')
+    // 1. Obtener usuario y validar credenciales
+    const user = await this.getUserByEmailUseCase.execute(email)
+    const isPasswordValid = await bcrypt.compare(password, user.password)
+    if (!isPasswordValid) {
+      throw new InvalidCredentialsException()
+    }
 
-    const isPasswordValid = await this.comparePasswords(password, user.password)
+    // 2. Generar tokens
+    const [accessToken, refreshToken] = await Promise.all([
+      this.accessTokenService.generateToken({
+        sub: user.id,
+        email: user.email,
+        role: user.role,
+      }),
+      Promise.resolve(this.refreshTokenService.generateToken()),
+    ])
 
-    if (!isPasswordValid)
-      throw new UnauthorizedException('Credenciales incorrectas')
-
-    const tokens = await this.generateTokens(user.id, user.email)
-
-    await this.updateRefreshToken(user.id, tokens.refreshToken)
+    // 3. Actualizar refresh token en base de datos
+    const hashedRefreshToken = this.refreshTokenService.hashToken(refreshToken)
+    await this.updateUserUseCase.execute(user.id, {
+      refreshToken: hashedRefreshToken,
+    })
 
     return {
-      accessToken: tokens.accessToken,
-      refreshToken: tokens.refreshToken,
+      accessToken,
+      refreshToken,
       user: {
         id: user.id,
         email: user.email,
         username: user.username,
         profileImage: user.profileImage,
       },
-    }
-  }
-
-  async verifyAccessToken(token: string): Promise<JwtPayload> {
-    return this.jwtService.verifyAsync(token, {
-      secret: this.configService.get<string>('JWT_ACCESS_SECRET'),
-    })
-  }
-
-  async verifyRefreshToken(token: string): Promise<JwtPayload> {
-    return this.jwtService.verifyAsync(token, {
-      secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
-    })
-  }
-
-  async updateRefreshToken(id: string, refreshToken: string | null) {
-    const hashedToken = refreshToken
-      ? await bcrypt.hash(refreshToken, 10)
-      : null
-    await this.userRepository.update(id, {
-      refreshToken: hashedToken,
-    })
-  }
-
-  async validateRefreshToken(id: string, refreshToken: string) {
-    const user = await this.userRepository.findById(id)
-    if (!user || !user.refreshToken) return false
-    const isValid = await bcrypt.compare(refreshToken, user.refreshToken)
-    return isValid
-  }
-
-  async comparePasswords(
-    password: string,
-    hashedPassword: string,
-  ): Promise<boolean> {
-    const isPasswordValid = await bcrypt.compare(password, hashedPassword)
-    if (!isPasswordValid) return false
-    return true
-  }
-
-  async generateTokens(
-    userId: string,
-    email: string,
-  ): Promise<{ accessToken: string; refreshToken: string }> {
-    const accessPayload: JwtPayload = {
-      sub: userId,
-      email,
-      type: 'access',
-    }
-
-    const refreshPayload: JwtPayload = {
-      sub: userId,
-      email,
-      type: 'refresh',
-    }
-
-    const [accessToken, refreshToken] = await Promise.all([
-      this.jwtService.signAsync(accessPayload, {
-        secret: this.configService.get<string>('JWT_ACCESS_SECRET'),
-        expiresIn: this.configService.get<string>('JWT_ACCESS_EXPIRES_IN'),
-      }),
-      this.jwtService.signAsync(refreshPayload, {
-        secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
-        expiresIn: this.configService.get<string>('JWT_REFRESH_EXPIRES_IN'),
-      }),
-    ])
-
-    return {
-      accessToken,
-      refreshToken,
     }
   }
 }

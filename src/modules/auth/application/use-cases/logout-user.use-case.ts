@@ -1,33 +1,37 @@
-import { UserNotFoundException } from '@/domain/exceptions/user-not-found.exception'
 import { RefreshTokenNotFoundException } from '@/modules/auth/domain/exceptions/refresh-token-not-found.exception'
 import { InvalidRefreshTokenException } from '@/modules/auth/domain/exceptions/invalid-refresh-token.exception'
-import { UserRepository } from '@/domain/repositories/user.repository'
+import { GetUserByIdUseCase } from '@/modules/user/application/use-cases/get-user-by-id.use-case'
+import { UpdateUserUseCase } from '@/modules/user/application/use-cases/update-user.use-case'
 import { Inject } from '@nestjs/common'
-import * as bcrypt from 'bcrypt'
+import { RefreshTokenService } from '../../domain/services/refresh-token.service'
 
 export class LogoutUserUseCase {
   constructor(
-    @Inject('UserRepository')
-    private readonly userRepository: UserRepository,
+    private readonly getUserByIdUseCase: GetUserByIdUseCase,
+    private readonly updateUserUseCase: UpdateUserUseCase,
+    @Inject('RefreshTokenService')
+    private readonly refreshTokenService: RefreshTokenService,
   ) {}
 
   async execute(userId: string, refreshToken: string): Promise<void> {
-    const user = await this.userRepository.findById(userId)
-    if (!user) throw new UserNotFoundException()
+    // 1. Obtener usuario y validar token
+    const user = await this.getUserByIdUseCase.execute(userId)
 
-    const { refreshToken: hashedRefreshToken } = user
-
-    if (!hashedRefreshToken) {
+    if (!user.refreshToken) {
       throw new RefreshTokenNotFoundException()
     }
 
-    const isValidToken = await bcrypt.compare(refreshToken, hashedRefreshToken)
+    const isValidToken = this.refreshTokenService.compareTokens(
+      refreshToken,
+      user.refreshToken,
+    )
 
     if (!isValidToken) {
       throw new InvalidRefreshTokenException()
     }
 
-    await this.userRepository.update(userId, {
+    // 2. Limpiar el refresh token
+    await this.updateUserUseCase.execute(userId, {
       refreshToken: null,
     })
   }
