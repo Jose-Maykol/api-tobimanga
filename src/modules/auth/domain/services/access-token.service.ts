@@ -1,4 +1,4 @@
-import { JwtPayload } from '../../modules/auth/domain/interfaces/auth.interface'
+import { JwtPayload } from '../interfaces/auth.interface'
 
 export interface AccessTokenService {
   generateToken(payload: JwtPayload): Promise<string>

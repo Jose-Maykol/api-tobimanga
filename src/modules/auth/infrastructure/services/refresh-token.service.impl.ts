@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common'
-import { RefreshTokenService } from '@/domain/services/refresh-token.service'
 import * as crypto from 'crypto'
+import { RefreshTokenService } from '../../domain/services/refresh-token.service'
 
 @Injectable()
 export class RefreshTokenServiceImpl implements RefreshTokenService {

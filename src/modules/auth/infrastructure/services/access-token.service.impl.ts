@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { JwtService } from '@nestjs/jwt'
-import { AccessTokenService } from '@/domain/services/access-token.service'
 import { JwtPayload } from '@/modules/auth/domain/interfaces/auth.interface'
+import { AccessTokenService } from '../../domain/services/access-token.service'
 
 @Injectable()
 export class AccessTokenServiceImpl implements AccessTokenService {
