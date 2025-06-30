@@ -1,16 +1,18 @@
 import { RefreshTokenNotFoundException } from '@/modules/auth/domain/exceptions/refresh-token-not-found.exception'
 import { InvalidRefreshTokenException } from '@/modules/auth/domain/exceptions/invalid-refresh-token.exception'
 import { GetUserByIdUseCase } from '@/modules/user/application/use-cases/get-user-by-id.use-case'
-import { UpdateUserUseCase } from '@/modules/user/application/use-cases/update-user.use-case'
-import { Inject } from '@nestjs/common'
+import { Inject, Injectable } from '@nestjs/common'
 import { RefreshTokenService } from '../../domain/services/refresh-token.service'
+import { UserRepository } from '@/modules/user/domain/repositories/user.repository'
 
+@Injectable()
 export class LogoutUserUseCase {
   constructor(
     private readonly getUserByIdUseCase: GetUserByIdUseCase,
-    private readonly updateUserUseCase: UpdateUserUseCase,
     @Inject('RefreshTokenService')
     private readonly refreshTokenService: RefreshTokenService,
+    @Inject('UserRepository')
+    private readonly userRepository: UserRepository,
   ) {}
 
   async execute(userId: string, refreshToken: string): Promise<void> {
@@ -31,7 +33,7 @@ export class LogoutUserUseCase {
     }
 
     // 2. Limpiar el refresh token
-    await this.updateUserUseCase.execute(userId, {
+    await this.userRepository.update(userId, {
       refreshToken: null,
     })
   }

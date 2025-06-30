@@ -44,7 +44,7 @@ import { InvalidRefreshTokenException } from '../../domain/exceptions/invalid-re
 import { RefreshSwaggerExamples } from '../swagger/refresh.swagger'
 
 @ApiTags('Autenticación')
-@Controller('auth')
+@Controller()
 export class AuthController {
   constructor(
     private readonly loginUserUseCase: LoginUserUseCase,

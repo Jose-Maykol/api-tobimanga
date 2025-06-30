@@ -1,15 +1,17 @@
-import { Inject } from '@nestjs/common'
+import { Inject, Injectable } from '@nestjs/common'
 import { GetUserByEmailUseCase } from '@/modules/user/application/use-cases/get-user-by-email.use-case'
-import { UpdateUserUseCase } from '@/modules/user/application/use-cases/update-user.use-case'
 import { InvalidCredentialsException } from '../../domain/exceptions/invalid-credentials.exception'
 import { AccessTokenService } from '../../domain/services/access-token.service'
 import { RefreshTokenService } from '../../domain/services/refresh-token.service'
 import * as bcrypt from 'bcrypt'
+import { UserRepository } from '@/modules/user/domain/repositories/user.repository'
 
+@Injectable()
 export class LoginUserUseCase {
   constructor(
     private readonly getUserByEmailUseCase: GetUserByEmailUseCase,
-    private readonly updateUserUseCase: UpdateUserUseCase,
+    @Inject('UserRepository')
+    private readonly userRepository: UserRepository,
     @Inject('AccessTokenService')
     private readonly accessTokenService: AccessTokenService,
     @Inject('RefreshTokenService')
@@ -36,7 +38,7 @@ export class LoginUserUseCase {
 
     // 3. Actualizar refresh token en base de datos
     const hashedRefreshToken = this.refreshTokenService.hashToken(refreshToken)
-    await this.updateUserUseCase.execute(user.id, {
+    await this.userRepository.update(user.id, {
       refreshToken: hashedRefreshToken,
     })
 

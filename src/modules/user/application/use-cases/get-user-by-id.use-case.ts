@@ -1,8 +1,9 @@
-import { Inject } from '@nestjs/common'
+import { Inject, Injectable } from '@nestjs/common'
 import { UserRepository } from '../../domain/repositories/user.repository'
 import { User } from '../../domain/entities/user'
 import { UserNotFoundException } from '../../domain/exceptions/user-not-found.exception'
 
+@Injectable()
 export class GetUserByIdUseCase {
   constructor(
     @Inject('UserRepository')

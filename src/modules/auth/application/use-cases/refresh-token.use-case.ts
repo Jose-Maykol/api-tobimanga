@@ -1,19 +1,21 @@
 import { InvalidRefreshTokenException } from '@/modules/auth/domain/exceptions/invalid-refresh-token.exception'
 import { RefreshTokenNotFoundException } from '@/modules/auth/domain/exceptions/refresh-token-not-found.exception'
-import { Inject } from '@nestjs/common'
+import { Inject, Injectable } from '@nestjs/common'
 import { GetUserByIdUseCase } from '@/modules/user/application/use-cases/get-user-by-id.use-case'
-import { UpdateUserUseCase } from '@/modules/user/application/use-cases/update-user.use-case'
 import { AccessTokenService } from '../../domain/services/access-token.service'
 import { RefreshTokenService } from '../../domain/services/refresh-token.service'
+import { UserRepository } from '@/modules/user/domain/repositories/user.repository'
 
+@Injectable()
 export class RefreshTokenUseCase {
   constructor(
     private readonly getUserByIdUseCase: GetUserByIdUseCase,
-    private readonly updateUserUseCase: UpdateUserUseCase,
     @Inject('AccessTokenService')
     private readonly accessTokenService: AccessTokenService,
     @Inject('RefreshTokenService')
     private readonly refreshTokenService: RefreshTokenService,
+    @Inject('UserRepository')
+    private readonly userRepository: UserRepository,
   ) {}
 
   async execute(
@@ -52,7 +54,7 @@ export class RefreshTokenUseCase {
     // 4. Actualizar refresh token en base de datos
     const hashedRefreshToken =
       this.refreshTokenService.hashToken(newRefreshToken)
-    await this.updateUserUseCase.execute(user.id, {
+    await this.userRepository.update(user.id, {
       refreshToken: hashedRefreshToken,
     })
 

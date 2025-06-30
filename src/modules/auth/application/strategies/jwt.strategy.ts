@@ -6,7 +6,7 @@ import { AuthenticatedUser } from '@/common/interfaces/authenticated-user.interf
 import { DecodedJwtPayload } from '../../domain/interfaces/auth.interface'
 import { ResponseBuilder } from '@/common/utils/response.util'
 import { ErrorKeys } from '@/modules/auth/domain/exceptions/error-keys.enum'
-import { AccessTokenService } from '@/domain/services/access-token.service'
+import { AccessTokenService } from '../../domain/services/access-token.service'
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
