@@ -1,8 +1,8 @@
-import { BaseException } from './base.exception'
-import { ErrorKeys } from './error-keys.enum'
+import { BaseException } from '../../../../common/exceptions/base.exception'
+import { ErrorCodes } from './error-keys.enum'
 
 export class InvalidCredentialsException extends BaseException {
   constructor() {
-    super('Credenciales incorrectas', ErrorKeys.INVALID_CREDENTIALS)
+    super('Credenciales incorrectas', ErrorCodes.INVALID_CREDENTIALS)
   }
 }

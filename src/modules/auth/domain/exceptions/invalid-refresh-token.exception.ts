@@ -1,8 +1,8 @@
-import { BaseException } from './base.exception'
-import { ErrorKeys } from './error-keys.enum'
+import { BaseException } from '../../../../common/exceptions/base.exception'
+import { ErrorCodes } from './error-keys.enum'
 
 export class InvalidRefreshTokenException extends BaseException {
   constructor() {
-    super('Refresh token inválido', ErrorKeys.INVALID_REFRESH_TOKEN)
+    super('Refresh token inválido', ErrorCodes.INVALID_REFRESH_TOKEN)
   }
 }

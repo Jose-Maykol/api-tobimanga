@@ -1,10 +1,10 @@
 export class BaseException extends Error {
-  public readonly key: string
+  public readonly code: string
 
-  constructor(message: string, key: string) {
+  constructor(message: string, code: string) {
     super(message)
-    this.key = key
-    this.name = key
+    this.code = code
+    this.name = code
 
     Object.setPrototypeOf(this, new.target.prototype)
     if (Error.captureStackTrace) {

@@ -1,8 +1,8 @@
-import { BaseException } from '../../../auth/domain/exceptions/base.exception'
-import { ErrorKeys } from '../../../auth/domain/exceptions/error-keys.enum'
+import { BaseException } from '../../../../common/exceptions/base.exception'
+import { ErrorCodes } from './error-codes.enum'
 
 export class UserAlreadyExistsException extends BaseException {
   constructor() {
-    super('El usuario ya existe', ErrorKeys.USER_ALREADY_EXISTS)
+    super('El usuario ya existe', ErrorCodes.USER_ALREADY_EXISTS)
   }
 }
