@@ -22,13 +22,8 @@ const modules = [AuthModule, UserModule]
     ...modules,
     RouterModule.register([
       {
-        path: '/v2',
-        children: [
-          {
-            module: AuthModule,
-            path: 'auth',
-          },
-        ],
+        module: AuthModule,
+        path: 'auth',
       },
     ]),
     /*     AdminModule,
