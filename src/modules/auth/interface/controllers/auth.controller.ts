@@ -43,8 +43,8 @@ import { RefreshTokenNotFoundException } from '../../domain/exceptions/refresh-t
 import { InvalidRefreshTokenException } from '../../domain/exceptions/invalid-refresh-token.exception'
 import { RefreshSwaggerExamples } from '../swagger/refresh.swagger'
 
-@ApiTags('Autenticación')
 @Controller()
+@ApiTags('Autenticación')
 export class AuthController {
   constructor(
     private readonly loginUserUseCase: LoginUserUseCase,
@@ -117,14 +117,18 @@ export class AuthController {
     } catch (error) {
       if (error instanceof UserAlreadyExistsException) {
         throw new HttpException(
-          ResponseBuilder.error(error.message, error.key, HttpStatus.NOT_FOUND),
+          ResponseBuilder.error(
+            error.message,
+            error.code,
+            HttpStatus.NOT_FOUND,
+          ),
           HttpStatus.NOT_FOUND,
         )
       } else if (error instanceof InvalidCredentialsException) {
         throw new HttpException(
           ResponseBuilder.error(
             error.message,
-            error.key,
+            error.code,
             HttpStatus.UNAUTHORIZED,
           ),
           HttpStatus.UNAUTHORIZED,
@@ -192,7 +196,7 @@ export class AuthController {
         throw new HttpException(
           ResponseBuilder.error(
             error.message,
-            error.key,
+            error.code,
             HttpStatus.BAD_REQUEST,
           ),
           HttpStatus.BAD_REQUEST,
@@ -247,19 +251,27 @@ export class AuthController {
     } catch (error) {
       if (error instanceof UserNotFoundException) {
         throw new HttpException(
-          ResponseBuilder.error(error.message, error.key, HttpStatus.NOT_FOUND),
+          ResponseBuilder.error(
+            error.message,
+            error.code,
+            HttpStatus.NOT_FOUND,
+          ),
           HttpStatus.NOT_FOUND,
         )
       } else if (error instanceof RefreshTokenNotFoundException) {
         throw new HttpException(
-          ResponseBuilder.error(error.message, error.key, HttpStatus.NOT_FOUND),
+          ResponseBuilder.error(
+            error.message,
+            error.code,
+            HttpStatus.NOT_FOUND,
+          ),
           HttpStatus.NOT_FOUND,
         )
       } else if (error instanceof InvalidRefreshTokenException) {
         throw new HttpException(
           ResponseBuilder.error(
             error.message,
-            error.key,
+            error.code,
             HttpStatus.UNAUTHORIZED,
           ),
           HttpStatus.UNAUTHORIZED,
@@ -322,19 +334,27 @@ export class AuthController {
     } catch (error) {
       if (error instanceof UserNotFoundException) {
         throw new HttpException(
-          ResponseBuilder.error(error.message, error.key, HttpStatus.NOT_FOUND),
+          ResponseBuilder.error(
+            error.message,
+            error.code,
+            HttpStatus.NOT_FOUND,
+          ),
           HttpStatus.NOT_FOUND,
         )
       } else if (error instanceof RefreshTokenNotFoundException) {
         throw new HttpException(
-          ResponseBuilder.error(error.message, error.key, HttpStatus.NOT_FOUND),
+          ResponseBuilder.error(
+            error.message,
+            error.code,
+            HttpStatus.NOT_FOUND,
+          ),
           HttpStatus.NOT_FOUND,
         )
       } else if (error instanceof InvalidRefreshTokenException) {
         throw new HttpException(
           ResponseBuilder.error(
             error.message,
-            error.key,
+            error.code,
             HttpStatus.UNAUTHORIZED,
           ),
           HttpStatus.UNAUTHORIZED,

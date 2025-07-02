@@ -5,7 +5,7 @@ import { ExtractJwt, Strategy } from 'passport-jwt'
 import { AuthenticatedUser } from '@/common/interfaces/authenticated-user.interface'
 import { DecodedJwtPayload } from '../../domain/interfaces/auth.interface'
 import { ResponseBuilder } from '@/common/utils/response.util'
-import { ErrorKeys } from '@/modules/auth/domain/exceptions/error-keys.enum'
+import { ErrorCodes } from '@/modules/auth/domain/exceptions/error-keys.enum'
 import { AccessTokenService } from '../../domain/services/access-token.service'
 
 @Injectable()
@@ -30,7 +30,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
         throw new HttpException(
           ResponseBuilder.error(
             'Token inválido',
-            ErrorKeys.INVALID_ACCESS_TOKEN,
+            ErrorCodes.INVALID_ACCESS_TOKEN,
             HttpStatus.UNAUTHORIZED,
           ),
           HttpStatus.UNAUTHORIZED,
@@ -46,7 +46,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
       throw new HttpException(
         ResponseBuilder.error(
           'Token inválido o expirado',
-          ErrorKeys.INVALID_ACCESS_TOKEN,
+          ErrorCodes.INVALID_ACCESS_TOKEN,
           HttpStatus.UNAUTHORIZED,
         ),
         HttpStatus.UNAUTHORIZED,
