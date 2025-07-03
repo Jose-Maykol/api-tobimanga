@@ -53,6 +53,7 @@ export class AuthController {
     private readonly refreshTokenUseCase: RefreshTokenUseCase,
     private configService: ConfigService,
   ) {}
+
   @Post('login')
   @ApiOperation({
     summary: 'Iniciar sesión',

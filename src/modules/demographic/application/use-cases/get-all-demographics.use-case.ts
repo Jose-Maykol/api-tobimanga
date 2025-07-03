@@ -3,7 +3,7 @@ import { DemographicRepository } from '../../domain/repositories/demographic.rep
 import { Demographic } from '../../domain/entities/demographic.entity'
 
 @Injectable()
-export class GetDemographicsUseCase {
+export class GetAllDemographicsUseCase {
   constructor(
     @Inject('DemographicRepository')
     private readonly demographicRepository: DemographicRepository,

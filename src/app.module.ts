@@ -13,8 +13,9 @@ import { UserModule } from './modules/user/user.module'
 import { AuthModule } from './modules/auth/auth.module'
 import { RouterModule } from '@nestjs/core'
 import { DemographicModule } from './modules/demographic/demographic.module'
+import { AuthorModule } from './modules/author/author.module'
 
-const modules = [AuthModule, UserModule, DemographicModule]
+const modules = [AuthModule, UserModule, DemographicModule, AuthModule]
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -29,6 +30,10 @@ const modules = [AuthModule, UserModule, DemographicModule]
       {
         module: DemographicModule,
         path: 'demographics',
+      },
+      {
+        module: AuthorModule,
+        path: 'authors',
       },
     ]),
     /*     AdminModule,
