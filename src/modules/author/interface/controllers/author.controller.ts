@@ -15,6 +15,7 @@ import { AuthorAlreadyExistsException } from '../../domain/exceptions/author-alr
 import { JwtAuthGuard } from '@/modules/auth/interface/guards/jwt-auth.guard'
 import { RolesGuard } from '@/modules/auth/interface/guards/roles.guard'
 import { Roles } from '@/modules/auth/interface/decorators/roles.decorator'
+import { ROLES } from '@/common/constants/roles.const'
 
 @Controller()
 export class AuthorController {
@@ -24,9 +25,8 @@ export class AuthorController {
   ) {}
 
   @Post()
-  @UseGuards(JwtAuthGuard)
-  @UseGuards(RolesGuard)
-  @Roles('ADMIN')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(ROLES.ADMIN)
   async createAuthor(@Body() createAuthorDto: CreateAuthorDto) {
     try {
       const result = await this.createAuthorUseCase.execute(createAuthorDto)
