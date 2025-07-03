@@ -1,0 +1,62 @@
+import { DATABASE_SERVICE } from '@/core/database/constants/database.constants'
+import { DatabaseService } from '@/core/database/services/database.service'
+import { Inject, Injectable } from '@nestjs/common'
+import { AuthorRepository } from '../../domain/repositories/author.repository'
+import { Author } from '../../domain/entities/author.entity'
+import { authors } from '@/core/database/schemas/author.schema'
+import { desc, eq, inArray } from 'drizzle-orm'
+
+@Injectable()
+export class AuthorRepositoryImpl implements AuthorRepository {
+  constructor(
+    @Inject(DATABASE_SERVICE)
+    private readonly db: DatabaseService,
+  ) {}
+
+  async findAll(): Promise<Author[]> {
+    const authorList = await this.db.query
+      .select()
+      .from(authors)
+      .orderBy(desc(authors.name))
+
+    return authorList as Author[]
+  }
+
+  async findById(id: string): Promise<Author | null> {
+    const author = await this.db.query
+      .select()
+      .from(authors)
+      .where(eq(authors.id, id))
+      .limit(1)
+
+    return author ? (author[0] as Author) : null
+  }
+
+  async findByIds(ids: string[]): Promise<Author[]> {
+    const authorList = await this.db.query
+      .select()
+      .from(authors)
+      .where(inArray(authors.id, ids))
+      .orderBy(desc(authors.name))
+
+    return authorList as Author[]
+  }
+
+  async findByName(name: string): Promise<Author | null> {
+    const author = await this.db.query
+      .select()
+      .from(authors)
+      .where(eq(authors.name, name))
+      .limit(1)
+    return author ? (author[0] as Author) : null
+  }
+
+  async save(author: Author): Promise<Author> {
+    const savedAuthor = await this.db.query
+      .insert(authors)
+      .values(author)
+      .returning()
+
+    return savedAuthor[0] as Author
+  }
+}
