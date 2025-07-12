@@ -53,7 +53,7 @@ export class ImageDto {
   data: string
 }
 
-export class SaveMangaDto {
+export class CreateMangaDto {
   @IsString({ message: 'El nombre original debe ser un string' })
   @IsNotEmpty({ message: 'El nombre original es requerido' })
   @MinLength(3, {
