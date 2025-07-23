@@ -52,7 +52,7 @@ export class ImageStorageService implements StorageService {
 
   async uploadFromBase64(
     base64: string,
-    options: UploadOptions,
+    options?: UploadOptions,
   ): Promise<UploadResult> {
     const data = base64.replace(/^data:[^;]+;base64,/, '')
     const buffer = Buffer.from(data, 'base64')

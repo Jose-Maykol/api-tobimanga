@@ -86,6 +86,16 @@ export class AuthController {
     description: 'Las credenciales proporcionadas son incorrectas',
     schema: { example: LoginSwaggerExamples.unauthorized },
   })
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description: 'Los datos proporcionados no son válidos.',
+    schema: { example: LoginSwaggerExamples.validationError },
+  })
+  @ApiResponse({
+    status: HttpStatus.INTERNAL_SERVER_ERROR,
+    description: 'Error interno del servidor.',
+    schema: { example: LoginSwaggerExamples.serverError },
+  })
   async login(
     @Res({ passthrough: true }) res: Response,
     @Body() userLoginDto: UserLoginDto,
