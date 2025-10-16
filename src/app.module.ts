@@ -8,6 +8,7 @@ import { RouterModule } from '@nestjs/core'
 import { DemographicModule } from './modules/demographic/demographic.module'
 import { AuthorModule } from './modules/author/author.module'
 import { GenreModule } from './modules/genres/genre.module'
+import { MangaModule } from './modules/manga/manga.module'
 
 const modules = [
   AuthModule,
@@ -15,6 +16,7 @@ const modules = [
   DemographicModule,
   AuthorModule,
   GenreModule,
+  MangaModule,
 ]
 @Module({
   imports: [
@@ -38,6 +40,10 @@ const modules = [
       {
         module: GenreModule,
         path: 'genres',
+      },
+      {
+        module: MangaModule,
+        path: 'mangas',
       },
     ]),
   ],
