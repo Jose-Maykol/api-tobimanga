@@ -14,7 +14,7 @@ export class DatabaseService implements IDatabaseService, OnModuleDestroy {
     this.validateConnection()
   }
 
-  get query(): NodePgDatabase<typeof databaseSchema> {
+  get client(): NodePgDatabase<typeof databaseSchema> {
     return this.dbInstance
   }
 
@@ -31,18 +31,23 @@ export class DatabaseService implements IDatabaseService, OnModuleDestroy {
     }
   }
 
-  /*   async withTransaction<T>(callback: (tx: Transaction) => Promise<T>): Promise<T> {
+  async withTransaction<T>(
+    callback: (
+      tx: NodePgDatabase<typeof databaseSchema>['transaction']['prototype'],
+    ) => Promise<T>,
+  ): Promise<T> {
     return this.dbInstance.transaction(async (tx) => {
       try {
+        this.logger.debug('Transaction started')
         const result = await callback(tx)
+        this.logger.debug('Transaction completed successfully')
         return result
       } catch (error) {
-        this.logger.error('Transaction failed', error.stack)
-        tx.rollback()
+        this.logger.error('Transaction failed, rolling back', error.stack)
         throw error
       }
     })
-  } */
+  }
 
   async onModuleDestroy() {
     await this.pool.end()
