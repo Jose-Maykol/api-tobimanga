@@ -14,7 +14,7 @@ export class DemographicRepositoryImpl implements DemographicRepository {
   ) {}
 
   async findAll(): Promise<Demographic[]> {
-    const demographicList = await this.db.query
+    const demographicList = await this.db.client
       .select()
       .from(demographics)
       .orderBy(desc(demographics.name))
@@ -23,7 +23,7 @@ export class DemographicRepositoryImpl implements DemographicRepository {
   }
 
   async findById(id: string): Promise<Demographic | null> {
-    const demographic = await this.db.query
+    const demographic = await this.db.client
       .select()
       .from(demographics)
       .where(eq(demographics.id, id))

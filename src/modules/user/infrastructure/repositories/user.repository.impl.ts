@@ -14,7 +14,7 @@ export class UserRepositoryImpl implements UserRepository {
   ) {}
 
   async findById(id: string): Promise<User | null> {
-    const user = await this.db.query
+    const user = await this.db.client
       .select()
       .from(users)
       .where(eq(users.id, id))
@@ -24,7 +24,7 @@ export class UserRepositoryImpl implements UserRepository {
   }
 
   async findByEmail(email: string): Promise<User | null> {
-    const user = await this.db.query
+    const user = await this.db.client
       .select()
       .from(users)
       .where(eq(users.email, email))
@@ -34,7 +34,7 @@ export class UserRepositoryImpl implements UserRepository {
   }
 
   async exists(email: string): Promise<boolean> {
-    const user = await this.db.query
+    const user = await this.db.client
       .select()
       .from(users)
       .where(eq(users.email, email))
@@ -44,10 +44,10 @@ export class UserRepositoryImpl implements UserRepository {
   }
 
   async save(user: User): Promise<void> {
-    await this.db.query.insert(users).values(user)
+    await this.db.client.insert(users).values(user)
   }
 
   async update(id: string, user: Partial<User>): Promise<void> {
-    await this.db.query.update(users).set(user).where(eq(users.id, id))
+    await this.db.client.update(users).set(user).where(eq(users.id, id))
   }
 }

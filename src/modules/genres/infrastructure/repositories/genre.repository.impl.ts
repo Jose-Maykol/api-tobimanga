@@ -14,7 +14,7 @@ export class GenreRepositoryImpl implements GenreRepository {
   ) {}
 
   async findAll(): Promise<Genre[]> {
-    const genreList = await this.db.query
+    const genreList = await this.db.client
       .select()
       .from(genres)
       .orderBy(desc(genres.name))
@@ -23,7 +23,7 @@ export class GenreRepositoryImpl implements GenreRepository {
   }
 
   async findById(id: string): Promise<Genre | null> {
-    const genre = await this.db.query
+    const genre = await this.db.client
       .select()
       .from(genres)
       .where(eq(genres.id, id))
@@ -33,7 +33,7 @@ export class GenreRepositoryImpl implements GenreRepository {
   }
 
   async findByIds(ids: string[]): Promise<Genre[]> {
-    const genreList = await this.db.query
+    const genreList = await this.db.client
       .select()
       .from(genres)
       .where(inArray(genres.id, ids))
@@ -43,7 +43,7 @@ export class GenreRepositoryImpl implements GenreRepository {
   }
 
   async findByName(name: string): Promise<Genre | null> {
-    const genre = await this.db.query
+    const genre = await this.db.client
       .select()
       .from(genres)
       .where(eq(genres.name, name))
@@ -53,7 +53,7 @@ export class GenreRepositoryImpl implements GenreRepository {
   }
 
   async save(genre: Genre): Promise<Genre> {
-    const savedGenre = await this.db.query
+    const savedGenre = await this.db.client
       .insert(genres)
       .values(genre)
       .returning()
