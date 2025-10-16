@@ -2,6 +2,7 @@ export interface SuccessResponse<T> {
   success?: true
   message: string
   data: T
+  meta?: T
 }
 
 export interface ErrorResponse {

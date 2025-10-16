@@ -3,8 +3,9 @@ import { DemographicRepositoryImpl } from './infrastructure/repositories/demogra
 import { GetAllDemographicsUseCase } from './application/use-cases/get-all-demographics.use-case'
 import { DatabaseModule } from '@/core/database/database.module'
 import { DemographicController } from './interface/controllers/demographic.controller'
+import { GetDemographicByIdUseCase } from './application/use-cases/get-demographic-by-id.use-case'
 
-const useCases = [GetAllDemographicsUseCase]
+const useCases = [GetAllDemographicsUseCase, GetDemographicByIdUseCase]
 
 const repositories = [
   {
@@ -17,6 +18,6 @@ const repositories = [
   imports: [DatabaseModule],
   controllers: [DemographicController],
   providers: [...repositories, ...useCases],
-  exports: [],
+  exports: [GetDemographicByIdUseCase, GetDemographicByIdUseCase],
 })
 export class DemographicModule {}

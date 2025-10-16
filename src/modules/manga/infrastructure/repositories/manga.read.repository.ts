@@ -3,8 +3,8 @@ import { mangas } from '@/core/database/schemas/manga.schema'
 import { DATABASE_SERVICE } from '@/core/database/constants/database.constants'
 import { DatabaseService } from '@/core/database/services/database.service'
 import { MangaListItemDto } from '../../application/dtos/manga-list-item.dto'
-import { MangaListItemManagementDto } from '../../application/dtos/manga-list-management-item.dto'
 import { count } from 'drizzle-orm'
+import { MangaManagementListItemDto } from '../../application/dtos/manga-management-list-item.dto'
 
 /**
  * Provides read-only access and projections for Manga entities.
@@ -69,7 +69,7 @@ export class MangaReadRepository {
   async findManagementPaginated(
     page: number,
     limit: number,
-  ): Promise<{ items: MangaListItemManagementDto[]; total: number }> {
+  ): Promise<{ items: MangaManagementListItemDto[]; total: number }> {
     const offset: number = (page - 1) * limit
     const [items, total] = await Promise.all([
       this.db.client
@@ -90,6 +90,6 @@ export class MangaReadRepository {
         .offset(offset),
       this.countAll(),
     ])
-    return { items: items as MangaListItemManagementDto[], total }
+    return { items: items as MangaManagementListItemDto[], total }
   }
 }

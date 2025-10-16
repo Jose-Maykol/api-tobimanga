@@ -3,12 +3,14 @@ import { ErrorResponse, SuccessResponse } from '../interfaces/api-response'
 export class ResponseBuilder {
   static success<T>(options: {
     data: T
+    meta?: T
     message?: string
   }): SuccessResponse<T> {
     return {
       success: true,
       message: options.message || 'Operación exitosa',
       data: options.data,
+      meta: options.meta,
     }
   }
 

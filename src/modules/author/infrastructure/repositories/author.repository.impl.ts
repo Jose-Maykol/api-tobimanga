@@ -14,7 +14,7 @@ export class AuthorRepositoryImpl implements AuthorRepository {
   ) {}
 
   async findAll(): Promise<Author[]> {
-    const authorList = await this.db.query
+    const authorList = await this.db.client
       .select()
       .from(authors)
       .orderBy(desc(authors.name))
@@ -23,7 +23,7 @@ export class AuthorRepositoryImpl implements AuthorRepository {
   }
 
   async findById(id: string): Promise<Author | null> {
-    const author = await this.db.query
+    const author = await this.db.client
       .select()
       .from(authors)
       .where(eq(authors.id, id))
@@ -33,7 +33,7 @@ export class AuthorRepositoryImpl implements AuthorRepository {
   }
 
   async findByIds(ids: string[]): Promise<Author[]> {
-    const authorList = await this.db.query
+    const authorList = await this.db.client
       .select()
       .from(authors)
       .where(inArray(authors.id, ids))
@@ -43,7 +43,7 @@ export class AuthorRepositoryImpl implements AuthorRepository {
   }
 
   async findByName(name: string): Promise<Author | null> {
-    const author = await this.db.query
+    const author = await this.db.client
       .select()
       .from(authors)
       .where(eq(authors.name, name))
@@ -52,7 +52,7 @@ export class AuthorRepositoryImpl implements AuthorRepository {
   }
 
   async save(author: Author): Promise<Author> {
-    const savedAuthor = await this.db.query
+    const savedAuthor = await this.db.client
       .insert(authors)
       .values(author)
       .returning()
