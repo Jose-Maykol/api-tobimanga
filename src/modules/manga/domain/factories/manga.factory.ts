@@ -1,5 +1,4 @@
 import { v4 as uuidv4 } from 'uuid'
-import slugify from 'slugify'
 import { Manga } from '../entities/manga.entity'
 
 export class MangaFactory {
@@ -8,17 +7,12 @@ export class MangaFactory {
   public create(
     props: Omit<
       Manga,
-      | 'id'
-      | 'slugName'
-      | 'scrappingName'
-      | 'rating'
-      | 'active'
-      | 'createdAt'
-      | 'updatedAt'
+      'id' | 'scrappingName' | 'rating' | 'active' | 'createdAt' | 'updatedAt'
     >,
   ): Manga {
     const {
       originalName,
+      slugName,
       alternativeNames,
       sinopsis,
       chapters,
@@ -31,16 +25,10 @@ export class MangaFactory {
       demographic,
     } = props
 
-    const slugName = slugify(originalName, {
-      lower: true,
-      strict: true,
-      locale: 'es',
-    })
-
     return {
       id: uuidv4(),
       originalName,
-      slugName: slugName,
+      slugName,
       scrappingName: originalName.toLowerCase(),
       alternativeNames: alternativeNames,
       sinopsis,

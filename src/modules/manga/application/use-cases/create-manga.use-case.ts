@@ -7,6 +7,8 @@ import { IMAGE_STORAGE_SERVICE } from '@/core/storage/constants/storage.constant
 import { ImageStorageService } from '@/core/storage/services/image-storage.service'
 import { MangaFactory } from '../../domain/factories/manga.factory'
 import { MangaRepository } from '../../domain/repositories/manga.repository'
+import slugify from 'slugify'
+import { MangaAlreadyExistsException } from '../../domain/exceptions/manga-already-exists'
 
 @Injectable()
 export class CreateMangaUseCase {
@@ -30,7 +32,18 @@ export class CreateMangaUseCase {
     const genresIds = genres.map((genre) => genre.id)
     const authorsIds = authors.map((author) => author.id)
 
-    // TODO: Validar si ya existe el manga con el mismo título
+    const slugName = slugify(params.originalName, {
+      lower: true,
+      strict: true,
+      locale: 'es',
+      trim: true,
+    })
+
+    const exists = await this.mangaRepository.existBySlugName(slugName)
+
+    if (exists) {
+      throw new MangaAlreadyExistsException()
+    }
 
     const authorsEntities =
       await this.getAuthorsByIdsUseCase.execute(authorsIds)
@@ -46,6 +59,7 @@ export class CreateMangaUseCase {
 
     const newManga = this.mangaFactory.create({
       originalName: params.originalName,
+      slugName: slugName,
       alternativeNames: params.alternativeNames || null,
       sinopsis: params.sinopsis,
       chapters: params.chapters,
@@ -59,7 +73,5 @@ export class CreateMangaUseCase {
     })
 
     await this.mangaRepository.save(newManga)
-
-    return newManga
   }
 }
