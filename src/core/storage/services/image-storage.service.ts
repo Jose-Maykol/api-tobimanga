@@ -5,7 +5,7 @@ import {
   UploadResult,
 } from '../interfaces/storage.service'
 import { v2 as cloudinary } from 'cloudinary'
-import sharp from 'sharp'
+import * as sharp from 'sharp'
 import { fileTypeFromBuffer } from 'file-type'
 import * as streamifier from 'streamifier'
 import { InvalidImageException } from '../exceptions/invalid-image.exception'
@@ -45,9 +45,13 @@ export class ImageStorageService implements StorageService {
     file: Buffer,
     options?: UploadOptions,
   ): Promise<UploadResult> {
-    await this.validateImage(file)
-    const webpBuffer = await this.convertToWebp(file)
-    return await this.uploadToCloudinary(webpBuffer, options)
+    try {
+      await this.validateImage(file)
+      const webpBuffer = await this.convertToWebp(file)
+      return await this.uploadToCloudinary(webpBuffer, options)
+    } catch (error) {
+      throw new InvalidImageException()
+    }
   }
 
   async uploadFromBase64(

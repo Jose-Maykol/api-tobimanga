@@ -3,6 +3,8 @@ import {
   Body,
   Controller,
   Get,
+  HttpException,
+  HttpStatus,
   Inject,
   Post,
   Query,
@@ -14,6 +16,7 @@ import { ResponseBuilder } from '@/common/utils/response.util'
 import { PaginationDto } from '@/common/dto/pagination.dto'
 import { FindPaginatedMangaUseCase } from '../../application/use-cases/find-paginated-manga.use-case'
 import { FindPaginatedMangaManagementUseCase } from '../../application/use-cases/find-paginated-manga-management.use-case'
+import { MangaAlreadyExistsException } from '../../domain/exceptions/manga-already-exists'
 
 @Controller()
 export class MangaController {
@@ -35,13 +38,17 @@ export class MangaController {
       return ResponseBuilder.success({
         message: 'Manga creado exitosamente',
         data: {
-          manga: {
-            id: result.id,
-            name: result.originalName,
-          },
+          manga: result,
         },
       })
-    } catch (error) {}
+    } catch (error) {
+      if (error instanceof MangaAlreadyExistsException) {
+        throw new HttpException(
+          ResponseBuilder.error(error.message, error.code, HttpStatus.CONFLICT),
+          HttpStatus.CONFLICT,
+        )
+      }
+    }
   }
 
   @Get()
