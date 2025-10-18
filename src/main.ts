@@ -30,7 +30,7 @@ async function bootstrap() {
   )
 
   app.use(cookieParser())
-  app.use(bodyParser.json({ limit: '5mb' }))
+  app.use(bodyParser.json({ limit: '15mb' }))
   app.setGlobalPrefix('api')
 
   app.use(
