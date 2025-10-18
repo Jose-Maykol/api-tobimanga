@@ -6,9 +6,6 @@ import { MangaListItemDto } from '../../application/dtos/manga-list-item.dto'
 import { count } from 'drizzle-orm'
 import { MangaManagementListItemDto } from '../../application/dtos/manga-management-list-item.dto'
 
-/**
- * Provides read-only access and projections for Manga entities.
- */
 @Injectable()
 export class MangaReadRepository {
   constructor(
