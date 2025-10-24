@@ -12,6 +12,7 @@ import { DemographicModule } from '../demographic/demographic.module'
 import { StorageModule } from '@/core/storage/storage.module'
 import { MangaFactory } from './domain/factories/manga.factory'
 import { FindPaginatedMangaManagementUseCase } from './application/use-cases/find-paginated-manga-management.use-case'
+import { ChapterRepositoryImpl } from './infrastructure/repositories/chapter.repository.impl'
 
 const useCases = [
   CreateMangaUseCase,
@@ -23,6 +24,10 @@ const repositories = [
   {
     provide: 'MangaRepository',
     useClass: MangaRepositoryImpl,
+  },
+  {
+    provide: 'ChapterRepository',
+    useClass: ChapterRepositoryImpl,
   },
   MangaReadRepository,
 ]

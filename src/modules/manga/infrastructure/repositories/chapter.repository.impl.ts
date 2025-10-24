@@ -44,4 +44,23 @@ export class ChapterRepositoryImpl implements ChapterRepository {
 
     return result
   }
+
+  async saveMany(mangaId: string, chapterCount: number): Promise<void> {
+    const now: Date = new Date()
+    const chaptersToInsert: Array<{
+      mangaId: string
+      chapterNumber: number
+      releaseDate: string | null
+      createdAt: Date
+      updatedAt: Date | null
+    }> = Array.from({ length: chapterCount }, (_, i) => ({
+      mangaId,
+      chapterNumber: i + 1,
+      releaseDate: null,
+      createdAt: now,
+      updatedAt: null,
+    }))
+
+    await this.db.client.insert(chapters).values(chaptersToInsert)
+  }
 }
