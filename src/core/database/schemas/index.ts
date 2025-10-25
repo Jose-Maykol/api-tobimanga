@@ -7,7 +7,7 @@ import { mangaGenres } from './manga-genre.schema'
 import { mangas } from './manga.schema'
 import { publicationStatusEnum } from './publication-status.schema'
 import { readingStatusEnum } from './reading-status.schema'
-import { userChapters } from './user-chapter.schema'
+import { userChapterProgress } from './user-chapter-progress.schema'
 import { userFavoriteMangas } from './user-favorite-manga.schema'
 import { userMangas } from './user-manga.schema'
 import { users } from './user.schema'
@@ -22,7 +22,7 @@ export const databaseSchema = {
   mangas,
   publicationStatusEnum,
   readingStatusEnum,
-  userChapters,
+  userChapterProgress,
   userFavoriteMangas,
   userMangas,
   users,

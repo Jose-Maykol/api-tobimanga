@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common'
 import { eq } from 'drizzle-orm'
-import { User } from '@/modules/user/domain/entities/user'
+import { User } from '@/modules/user/domain/entities/user.entity'
 import { DATABASE_SERVICE } from '@/core/database/constants/database.constants'
 import { DatabaseService } from '@/core/database/services/database.service'
 import { users } from '@/core/database/schemas/user.schema'

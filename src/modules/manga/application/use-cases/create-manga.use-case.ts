@@ -9,12 +9,15 @@ import { MangaFactory } from '../../domain/factories/manga.factory'
 import { MangaRepository } from '../../domain/repositories/manga.repository'
 import slugify from 'slugify'
 import { MangaAlreadyExistsException } from '../../domain/exceptions/manga-already-exists'
+import { ChapterRepository } from '../../domain/repositories/chapter.repository'
 
 @Injectable()
 export class CreateMangaUseCase {
   constructor(
     @Inject('MangaRepository')
     private readonly mangaRepository: MangaRepository,
+    @Inject('ChapterRepository')
+    private readonly chapterRepository: ChapterRepository,
     @Inject()
     private readonly getAuthorsByIdsUseCase: GetAuthorsByIdsUseCase,
     @Inject()
@@ -72,6 +75,9 @@ export class CreateMangaUseCase {
       demographic: demographicEntity,
     })
 
-    await this.mangaRepository.save(newManga)
+    const savedManga = await this.mangaRepository.save(newManga)
+    await this.chapterRepository.saveMany(savedManga.id, savedManga.chapters)
+
+    return savedManga
   }
 }
