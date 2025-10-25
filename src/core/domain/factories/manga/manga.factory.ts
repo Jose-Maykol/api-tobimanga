@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from 'uuid'
-import { Manga } from '../entities/manga.entity'
+import { Manga } from '../../entities/manga.entity'
 
 export class MangaFactory {
   constructor() {}

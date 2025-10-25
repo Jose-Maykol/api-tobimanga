@@ -4,7 +4,7 @@ import { InvalidCredentialsException } from '../../domain/exceptions/invalid-cre
 import { AccessTokenService } from '../../domain/services/access-token.service'
 import { RefreshTokenService } from '../../domain/services/refresh-token.service'
 import * as bcrypt from 'bcrypt'
-import { UserRepository } from '@/modules/user/domain/repositories/user.repository'
+import { UserRepository } from '@/core/domain/repositories/user.repository'
 
 @Injectable()
 export class LoginUserUseCase {

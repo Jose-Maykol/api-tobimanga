@@ -1,8 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common'
-import { AuthorRepository } from '../../domain/repositories/author.repository'
 import { CreateAuthorDto } from '../dtos/create-author.dto'
-import { Author } from '../../domain/entities/author.entity'
-import { AuthorAlreadyExistsException } from '../../domain/exceptions/author-already-exists.exception'
+import { Author } from '../../../../core/domain/entities/author.entity'
+import { AuthorAlreadyExistsException } from '@/core/domain/exceptions/author/author-already-exists.exception'
+import { AuthorRepository } from '@/core/domain/repositories/author.repository'
 
 @Injectable()
 export class CreateAuthorUseCase {

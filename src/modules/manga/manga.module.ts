@@ -10,7 +10,7 @@ import { AuthorModule } from '../author/author.module'
 import { GenreModule } from '../genres/genre.module'
 import { DemographicModule } from '../demographic/demographic.module'
 import { StorageModule } from '@/core/storage/storage.module'
-import { MangaFactory } from './domain/factories/manga.factory'
+import { MangaFactory } from '../../core/domain/factories/manga/manga.factory'
 import { FindPaginatedMangaManagementUseCase } from './application/use-cases/find-paginated-manga-management.use-case'
 import { ChapterRepositoryImpl } from './infrastructure/repositories/chapter.repository.impl'
 

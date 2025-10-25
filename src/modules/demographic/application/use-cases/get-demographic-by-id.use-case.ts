@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common'
-import { DemographicRepository } from '../../domain/repositories/demographic.repository'
-import { Demographic } from '../../domain/entities/demographic.entity'
-import { DemographicNotFoundException } from '../../domain/exceptions/demographic-not-found.exception'
+import { DemographicRepository } from '../../../../core/domain/repositories/demographic.repository'
+import { Demographic } from '../../../../core/domain/entities/demographic.entity'
+import { DemographicNotFoundException } from '@/core/domain/exceptions/demographic/demographic-not-found.exception'
 
 @Injectable()
 export class GetDemographicByIdUseCase {

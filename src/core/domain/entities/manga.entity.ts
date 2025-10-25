@@ -1,7 +1,7 @@
-import { Demographic } from '@/modules/demographic/domain/entities/demographic.entity'
-import { PublicationStatus } from '../../application/enums/publication-status.enum'
-import { Genre } from '@/modules/genres/domain/entities/genre.entity'
-import { Author } from '@/modules/author/domain/entities/author.entity'
+import { Demographic } from '@/core/domain/entities/demographic.entity'
+import { PublicationStatus } from '../../../modules/manga/application/enums/publication-status.enum'
+import { Genre } from '@/core/domain/entities/genre.entity'
+import { Author } from '@/core/domain/entities/author.entity'
 
 export interface Manga {
   id: string

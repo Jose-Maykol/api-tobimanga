@@ -5,11 +5,11 @@ import { GetGenresByIdsUseCase } from '@/modules/genres/application/use-cases/ge
 import { GetDemographicByIdUseCase } from '@/modules/demographic/application/use-cases/get-demographic-by-id.use-case'
 import { IMAGE_STORAGE_SERVICE } from '@/core/storage/constants/storage.constants'
 import { ImageStorageService } from '@/core/storage/services/image-storage.service'
-import { MangaFactory } from '../../domain/factories/manga.factory'
-import { MangaRepository } from '../../domain/repositories/manga.repository'
+import { MangaFactory } from '../../../../core/domain/factories/manga/manga.factory'
+import { MangaRepository } from '../../../../core/domain/repositories/manga.repository'
 import slugify from 'slugify'
-import { MangaAlreadyExistsException } from '../../domain/exceptions/manga-already-exists'
-import { ChapterRepository } from '../../domain/repositories/chapter.repository'
+import { ChapterRepository } from '../../../../core/domain/repositories/chapter.repository'
+import { MangaAlreadyExistsException } from '@/core/domain/exceptions/manga/manga-already-exists'
 
 @Injectable()
 export class CreateMangaUseCase {

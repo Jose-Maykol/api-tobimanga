@@ -1,4 +1,4 @@
-import { UserChapterProgress } from '../entities/user-chapter-progress.entity'
+import { UserChapterProgress } from '../../../../core/domain/entities/user-chapter-progress.entity'
 
 export interface UserChapterProgressRepository {
   findByUserAndChapter(

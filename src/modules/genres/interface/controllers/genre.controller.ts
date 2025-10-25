@@ -15,7 +15,7 @@ import { CreateGenreDto } from '../../application/dtos/create-genre.dto'
 import { CreateGenreUseCase } from '../../application/use-cases/create-genre.use-case'
 import { GetAllGenresUseCase } from '../../application/use-cases/get-all-genres.use-case'
 import { ResponseBuilder } from '@/common/utils/response.util'
-import { GenreAlreadyExistsException } from '../../domain/exceptions/genre-already-exists.exception'
+import { GenreAlreadyExistsException } from '@/core/domain/exceptions/genre/genre-already-exists.exception'
 
 @Controller()
 export class GenreController {

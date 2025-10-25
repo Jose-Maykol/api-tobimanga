@@ -1,8 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common'
-import { DemographicRepository } from '../../domain/repositories/demographic.repository'
+import { DemographicRepository } from '../../../../core/domain/repositories/demographic.repository'
 import { DATABASE_SERVICE } from '@/core/database/constants/database.constants'
 import { DatabaseService } from '@/core/database/services/database.service'
-import { Demographic } from '../../domain/entities/demographic.entity'
+import { Demographic } from '../../../../core/domain/entities/demographic.entity'
 import { demographics } from '@/core/database/schemas/demographic.schema'
 import { desc, eq } from 'drizzle-orm'
 

@@ -16,7 +16,7 @@ import { ResponseBuilder } from '@/common/utils/response.util'
 import { PaginationDto } from '@/common/dto/pagination.dto'
 import { FindPaginatedMangaUseCase } from '../../application/use-cases/find-paginated-manga.use-case'
 import { FindPaginatedMangaManagementUseCase } from '../../application/use-cases/find-paginated-manga-management.use-case'
-import { MangaAlreadyExistsException } from '../../domain/exceptions/manga-already-exists'
+import { MangaAlreadyExistsException } from '@/core/domain/exceptions/manga/manga-already-exists'
 
 @Controller()
 export class MangaController {

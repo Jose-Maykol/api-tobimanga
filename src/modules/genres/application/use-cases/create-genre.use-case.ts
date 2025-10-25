@@ -1,8 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common'
-import { GenreRepository } from '../../domain/repositories/genre.repository'
-import { Genre } from '../../domain/entities/genre.entity'
-import { GenreAlreadyExistsException } from '../../domain/exceptions/genre-already-exists.exception'
+import { Genre } from '../../../../core/domain/entities/genre.entity'
 import { CreateGenreDto } from '../dtos/create-genre.dto'
+import { GenreAlreadyExistsException } from '@/core/domain/exceptions/genre/genre-already-exists.exception'
+import { GenreRepository } from '@/core/domain/repositories/genre.repository'
 
 @Injectable()
 export class CreateGenreUseCase {

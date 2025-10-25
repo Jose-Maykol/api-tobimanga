@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common'
-import { DemographicRepository } from '../../domain/repositories/demographic.repository'
-import { Demographic } from '../../domain/entities/demographic.entity'
+import { DemographicRepository } from '../../../../core/domain/repositories/demographic.repository'
+import { Demographic } from '../../../../core/domain/entities/demographic.entity'
 
 @Injectable()
 export class GetAllDemographicsUseCase {

@@ -1,10 +1,10 @@
 import { DATABASE_SERVICE } from '@/core/database/constants/database.constants'
 import { DatabaseService } from '@/core/database/services/database.service'
 import { Inject, Injectable } from '@nestjs/common'
-import { Chapter } from '../../domain/entities/chapter.entity'
+import { Chapter } from '../../../../core/domain/entities/chapter.entity'
 import { chapters } from '@/core/database/schemas/chapter.schema'
 import { eq } from 'drizzle-orm'
-import { ChapterRepository } from '../../domain/repositories/chapter.repository'
+import { ChapterRepository } from '../../../../core/domain/repositories/chapter.repository'
 
 @Injectable()
 export class ChapterRepositoryImpl implements ChapterRepository {
