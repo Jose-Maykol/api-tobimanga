@@ -1,3 +1,4 @@
+import { sql } from 'drizzle-orm'
 import {
   boolean,
   date,
@@ -7,8 +8,8 @@ import {
   timestamp,
   uuid,
 } from 'drizzle-orm/pg-core'
+
 import { demographics } from './demographic.schema'
-import { sql } from 'drizzle-orm'
 import { publicationStatusEnum } from './publication-status.schema'
 
 export const mangas = pgTable('mangas', {

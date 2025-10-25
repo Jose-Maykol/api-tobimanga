@@ -1,10 +1,13 @@
-import { DATABASE_SERVICE } from '@/core/database/constants/database.constants'
-import { DatabaseService } from '@/core/database/services/database.service'
-import { Inject, Injectable } from '@nestjs/common'
-import { Genre } from '../../../../core/domain/entities/genre.entity'
 import { desc, eq, inArray } from 'drizzle-orm'
+
+import { Inject, Injectable } from '@nestjs/common'
+
+import { DATABASE_SERVICE } from '@/core/database/constants/database.constants'
 import { genres } from '@/core/database/schemas/genres.schema'
+import { DatabaseService } from '@/core/database/services/database.service'
 import { GenreRepository } from '@/core/domain/repositories/genre.repository'
+
+import { Genre } from '../../../../core/domain/entities/genre.entity'
 
 @Injectable()
 export class GenreRepositoryImpl implements GenreRepository {

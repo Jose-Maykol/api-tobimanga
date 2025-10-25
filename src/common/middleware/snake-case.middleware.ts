@@ -1,6 +1,7 @@
-import { Injectable, NestMiddleware } from '@nestjs/common'
-import { Response, Request, NextFunction } from 'express'
+import { NextFunction, Request, Response } from 'express'
 import * as humps from 'humps'
+
+import { Injectable, NestMiddleware } from '@nestjs/common'
 
 @Injectable()
 export class SnakeCaseMiddleware implements NestMiddleware {

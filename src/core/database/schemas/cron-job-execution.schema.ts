@@ -1,5 +1,6 @@
 import { sql } from 'drizzle-orm'
 import { pgEnum, pgTable, timestamp, uuid } from 'drizzle-orm/pg-core'
+
 import { cronJobs } from './cron-job.schema'
 
 export const cronJobExecutionStatusEnum = pgEnum('cron_job_execution_status', [

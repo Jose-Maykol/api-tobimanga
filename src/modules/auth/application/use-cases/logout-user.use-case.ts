@@ -1,9 +1,11 @@
-import { RefreshTokenNotFoundException } from '@/modules/auth/domain/exceptions/refresh-token-not-found.exception'
-import { InvalidRefreshTokenException } from '@/modules/auth/domain/exceptions/invalid-refresh-token.exception'
-import { GetUserByIdUseCase } from '@/modules/user/application/use-cases/get-user-by-id.use-case'
 import { Inject, Injectable } from '@nestjs/common'
-import { RefreshTokenService } from '../../domain/services/refresh-token.service'
+
 import { UserRepository } from '@/core/domain/repositories/user.repository'
+import { InvalidRefreshTokenException } from '@/modules/auth/domain/exceptions/invalid-refresh-token.exception'
+import { RefreshTokenNotFoundException } from '@/modules/auth/domain/exceptions/refresh-token-not-found.exception'
+import { GetUserByIdUseCase } from '@/modules/user/application/use-cases/get-user-by-id.use-case'
+
+import { RefreshTokenService } from '../../domain/services/refresh-token.service'
 
 @Injectable()
 export class LogoutUserUseCase {

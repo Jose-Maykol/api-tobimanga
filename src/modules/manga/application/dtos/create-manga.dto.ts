@@ -1,3 +1,4 @@
+import { Type } from 'class-transformer'
 import {
   ArrayMinSize,
   IsArray,
@@ -14,7 +15,7 @@ import {
   MinLength,
   ValidateNested,
 } from 'class-validator'
-import { Type } from 'class-transformer'
+
 import { PublicationStatus } from '../enums/publication-status.enum'
 
 // DTO para autores

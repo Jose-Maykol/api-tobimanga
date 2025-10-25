@@ -1,9 +1,11 @@
-import { DatabaseModule } from '@/core/database/database.module'
 import { Module } from '@nestjs/common'
-import { RegisterUserUseCase } from './application/use-cases/register-user.use-case'
-import { UserRepositoryImpl } from './infrastructure/repositories/user.repository.impl'
+
+import { DatabaseModule } from '@/core/database/database.module'
+
 import { GetUserByEmailUseCase } from './application/use-cases/get-user-by-email.use-case'
 import { GetUserByIdUseCase } from './application/use-cases/get-user-by-id.use-case'
+import { RegisterUserUseCase } from './application/use-cases/register-user.use-case'
+import { UserRepositoryImpl } from './infrastructure/repositories/user.repository.impl'
 
 const useCases = [
   RegisterUserUseCase,

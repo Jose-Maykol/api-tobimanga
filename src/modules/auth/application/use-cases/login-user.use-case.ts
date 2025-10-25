@@ -1,10 +1,13 @@
+import * as bcrypt from 'bcrypt'
+
 import { Inject, Injectable } from '@nestjs/common'
+
+import { UserRepository } from '@/core/domain/repositories/user.repository'
 import { GetUserByEmailUseCase } from '@/modules/user/application/use-cases/get-user-by-email.use-case'
+
 import { InvalidCredentialsException } from '../../domain/exceptions/invalid-credentials.exception'
 import { AccessTokenService } from '../../domain/services/access-token.service'
 import { RefreshTokenService } from '../../domain/services/refresh-token.service'
-import * as bcrypt from 'bcrypt'
-import { UserRepository } from '@/core/domain/repositories/user.repository'
 
 @Injectable()
 export class LoginUserUseCase {

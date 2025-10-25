@@ -1,4 +1,5 @@
 import { pgTable, timestamp, uuid } from 'drizzle-orm/pg-core'
+
 import { mangas } from './manga.schema'
 import { users } from './user.schema'
 

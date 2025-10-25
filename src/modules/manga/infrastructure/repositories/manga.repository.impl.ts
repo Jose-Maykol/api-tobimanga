@@ -1,12 +1,15 @@
-import { Inject, Injectable } from '@nestjs/common'
 import { eq } from 'drizzle-orm'
-import { MangaRepository } from '../../../../core/domain/repositories/manga.repository'
-import { Manga } from '../../../../core/domain/entities/manga.entity'
+
+import { Inject, Injectable } from '@nestjs/common'
+
 import { DATABASE_SERVICE } from '@/core/database/constants/database.constants'
-import { DatabaseService } from '@/core/database/services/database.service'
+import { mangas } from '@/core/database/schemas/manga.schema'
 import { mangaAuthors } from '@/core/database/schemas/manga-author.schema'
 import { mangaGenres } from '@/core/database/schemas/manga-genre.schema'
-import { mangas } from '@/core/database/schemas/manga.schema'
+import { DatabaseService } from '@/core/database/services/database.service'
+
+import { Manga } from '../../../../core/domain/entities/manga.entity'
+import { MangaRepository } from '../../../../core/domain/repositories/manga.repository'
 
 /**
  * Implements write operations for Manga entity persistence.

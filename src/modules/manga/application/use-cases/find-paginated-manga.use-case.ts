@@ -1,8 +1,10 @@
 import { Inject, Injectable } from '@nestjs/common'
+
+import { Pagination } from '@/common/interfaces/pagination.interface'
+import { calculatePagination } from '@/common/utils/pagination.util'
+
 import { MangaReadRepository } from '../../infrastructure/repositories/manga.read.repository'
 import { MangaListItemDto } from '../dtos/manga-list-item.dto'
-import { calculatePagination } from '@/common/utils/pagination.util'
-import { Pagination } from '@/common/interfaces/pagination.interface'
 
 /**
  * Use case for retrieving paginated mangas and pagination metadata.

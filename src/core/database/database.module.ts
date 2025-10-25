@@ -1,6 +1,8 @@
+import { Pool } from 'pg'
+
 import { Global, Module } from '@nestjs/common'
 import { ConfigModule, ConfigService } from '@nestjs/config'
-import { Pool } from 'pg'
+
 import {
   DATABASE_CONNECTION,
   DATABASE_SERVICE,

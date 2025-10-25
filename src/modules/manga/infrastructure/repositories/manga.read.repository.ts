@@ -1,9 +1,12 @@
-import { Inject, Injectable } from '@nestjs/common'
-import { mangas } from '@/core/database/schemas/manga.schema'
-import { DATABASE_SERVICE } from '@/core/database/constants/database.constants'
-import { DatabaseService } from '@/core/database/services/database.service'
-import { MangaListItemDto } from '../../application/dtos/manga-list-item.dto'
 import { count } from 'drizzle-orm'
+
+import { Inject, Injectable } from '@nestjs/common'
+
+import { DATABASE_SERVICE } from '@/core/database/constants/database.constants'
+import { mangas } from '@/core/database/schemas/manga.schema'
+import { DatabaseService } from '@/core/database/services/database.service'
+
+import { MangaListItemDto } from '../../application/dtos/manga-list-item.dto'
 import { MangaManagementListItemDto } from '../../application/dtos/manga-management-list-item.dto'
 
 @Injectable()

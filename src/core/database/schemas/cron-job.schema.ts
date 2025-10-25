@@ -1,11 +1,11 @@
 import { sql } from 'drizzle-orm'
 import {
+  boolean,
   pgTable,
   text,
-  varchar,
-  boolean,
   timestamp,
   uuid,
+  varchar,
 } from 'drizzle-orm/pg-core'
 
 export const cronJobs = pgTable('cron_jobs', {

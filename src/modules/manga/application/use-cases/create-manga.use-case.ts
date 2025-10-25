@@ -1,15 +1,18 @@
+import slugify from 'slugify'
+
 import { Inject, Injectable } from '@nestjs/common'
-import { CreateMangaDto } from '../dtos/create-manga.dto'
-import { GetAuthorsByIdsUseCase } from '@/modules/author/application/use-cases/get-authors-by-ids.use-case'
-import { GetGenresByIdsUseCase } from '@/modules/genres/application/use-cases/get-genres-by-ids.use-case'
-import { GetDemographicByIdUseCase } from '@/modules/demographic/application/use-cases/get-demographic-by-id.use-case'
+
+import { MangaAlreadyExistsException } from '@/core/domain/exceptions/manga/manga-already-exists'
 import { IMAGE_STORAGE_SERVICE } from '@/core/storage/constants/storage.constants'
 import { ImageStorageService } from '@/core/storage/services/image-storage.service'
+import { GetAuthorsByIdsUseCase } from '@/modules/author/application/use-cases/get-authors-by-ids.use-case'
+import { GetDemographicByIdUseCase } from '@/modules/demographic/application/use-cases/get-demographic-by-id.use-case'
+import { GetGenresByIdsUseCase } from '@/modules/genres/application/use-cases/get-genres-by-ids.use-case'
+
 import { MangaFactory } from '../../../../core/domain/factories/manga/manga.factory'
-import { MangaRepository } from '../../../../core/domain/repositories/manga.repository'
-import slugify from 'slugify'
 import { ChapterRepository } from '../../../../core/domain/repositories/chapter.repository'
-import { MangaAlreadyExistsException } from '@/core/domain/exceptions/manga/manga-already-exists'
+import { MangaRepository } from '../../../../core/domain/repositories/manga.repository'
+import { CreateMangaDto } from '../dtos/create-manga.dto'
 
 @Injectable()
 export class CreateMangaUseCase {

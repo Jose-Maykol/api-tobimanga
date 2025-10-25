@@ -1,6 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common'
-import { Author } from '../../../../core/domain/entities/author.entity'
+
 import { AuthorRepository } from '@/core/domain/repositories/author.repository'
+
+import { Author } from '../../../../core/domain/entities/author.entity'
 
 @Injectable()
 export class GetAllAuthorsUseCase {

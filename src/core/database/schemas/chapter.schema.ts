@@ -1,6 +1,7 @@
-import { date, pgTable, smallint, timestamp, uuid } from 'drizzle-orm/pg-core'
-import { mangas } from './manga.schema'
 import { sql } from 'drizzle-orm'
+import { date, pgTable, smallint, timestamp, uuid } from 'drizzle-orm/pg-core'
+
+import { mangas } from './manga.schema'
 
 export const chapters = pgTable('chapters', {
   id: uuid('chapter_id')

@@ -1,47 +1,50 @@
+import { Request, Response } from 'express'
+
 import {
   Body,
   Controller,
-  HttpStatus,
-  Post,
   HttpCode,
   HttpException,
-  UseGuards,
-  Res,
+  HttpStatus,
+  Post,
   Req,
+  Res,
+  UseGuards,
 } from '@nestjs/common'
+import { ConfigService } from '@nestjs/config'
 import {
+  ApiBearerAuth,
   ApiBody,
+  ApiCookieAuth,
   ApiOperation,
   ApiResponse,
   ApiTags,
-  ApiBearerAuth,
-  ApiCookieAuth,
 } from '@nestjs/swagger'
-import { UserLoginDto } from '../dtos/login-user.dto'
-import { RegisterUserDto } from '../dtos/register-user.dto'
-import { UserAlreadyExistsException } from '@/core/domain/exceptions/user/user-already-exists.exception'
-import { ResponseBuilder } from '@/common/utils/response.util'
+
 import { SuccessResponse } from '@/common/interfaces/api-response'
-import { User } from '../decorators/user.decorator'
 import { AuthenticatedUser } from '@/common/interfaces/authenticated-user.interface'
+import { ResponseBuilder } from '@/common/utils/response.util'
+import { UserAlreadyExistsException } from '@/core/domain/exceptions/user/user-already-exists.exception'
 import { UserNotFoundException } from '@/core/domain/exceptions/user/user-not-found.exception'
-import { JwtAuthGuard } from '../guards/jwt-auth.guard'
-import { ConfigService } from '@nestjs/config'
-import { Request, Response } from 'express'
-import { LoginUserUseCase } from '../../application/use-cases/login-user.use-case'
 import {
   RegisterUserUseCase,
   RegisterUserUseCaseResult,
 } from '@/modules/user/application/use-cases/register-user.use-case'
+
+import { LoginUserUseCase } from '../../application/use-cases/login-user.use-case'
 import { LogoutUserUseCase } from '../../application/use-cases/logout-user.use-case'
 import { RefreshTokenUseCase } from '../../application/use-cases/refresh-token.use-case'
-import { LoginSwaggerExamples } from '../swagger/login.swagger'
 import { InvalidCredentialsException } from '../../domain/exceptions/invalid-credentials.exception'
-import { RegisterSwaggerExamples } from '../swagger/register.swagger'
-import { LogoutSwaggerExamples } from '../swagger/logout.swagger'
-import { RefreshTokenNotFoundException } from '../../domain/exceptions/refresh-token-not-found.exception'
 import { InvalidRefreshTokenException } from '../../domain/exceptions/invalid-refresh-token.exception'
+import { RefreshTokenNotFoundException } from '../../domain/exceptions/refresh-token-not-found.exception'
+import { User } from '../decorators/user.decorator'
+import { UserLoginDto } from '../dtos/login-user.dto'
+import { RegisterUserDto } from '../dtos/register-user.dto'
+import { JwtAuthGuard } from '../guards/jwt-auth.guard'
+import { LoginSwaggerExamples } from '../swagger/login.swagger'
+import { LogoutSwaggerExamples } from '../swagger/logout.swagger'
 import { RefreshSwaggerExamples } from '../swagger/refresh.swagger'
+import { RegisterSwaggerExamples } from '../swagger/register.swagger'
 
 @Controller()
 @ApiTags('Autenticación')

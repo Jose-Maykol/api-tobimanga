@@ -1,8 +1,10 @@
+import { v2 as cloudinary } from 'cloudinary'
+
 import { Module } from '@nestjs/common'
 import { ConfigModule, ConfigService } from '@nestjs/config'
-import { v2 as cloudinary } from 'cloudinary'
-import { ImageStorageService } from './services/image-storage.service'
+
 import { IMAGE_STORAGE_SERVICE } from './constants/storage.constants'
+import { ImageStorageService } from './services/image-storage.service'
 
 @Module({
   imports: [ConfigModule],

@@ -1,6 +1,7 @@
 import { pgTable, uuid } from 'drizzle-orm/pg-core'
-import { mangas } from './manga.schema'
+
 import { authors } from './author.schema'
+import { mangas } from './manga.schema'
 
 export const mangaAuthors = pgTable('manga_authors', {
   mangaId: uuid('manga_id')

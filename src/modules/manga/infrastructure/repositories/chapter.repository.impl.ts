@@ -1,9 +1,12 @@
-import { DATABASE_SERVICE } from '@/core/database/constants/database.constants'
-import { DatabaseService } from '@/core/database/services/database.service'
-import { Inject, Injectable } from '@nestjs/common'
-import { Chapter } from '../../../../core/domain/entities/chapter.entity'
-import { chapters } from '@/core/database/schemas/chapter.schema'
 import { eq } from 'drizzle-orm'
+
+import { Inject, Injectable } from '@nestjs/common'
+
+import { DATABASE_SERVICE } from '@/core/database/constants/database.constants'
+import { chapters } from '@/core/database/schemas/chapter.schema'
+import { DatabaseService } from '@/core/database/services/database.service'
+
+import { Chapter } from '../../../../core/domain/entities/chapter.entity'
 import { ChapterRepository } from '../../../../core/domain/repositories/chapter.repository'
 
 @Injectable()

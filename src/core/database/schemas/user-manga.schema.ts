@@ -1,8 +1,9 @@
-import { pgTable, smallint, timestamp, uuid } from 'drizzle-orm/pg-core'
-import { users } from './user.schema'
-import { mangas } from './manga.schema'
 import { sql } from 'drizzle-orm'
+import { pgTable, smallint, timestamp, uuid } from 'drizzle-orm/pg-core'
+
+import { mangas } from './manga.schema'
 import { readingStatusEnum } from './reading-status.schema'
+import { users } from './user.schema'
 
 export const userMangas = pgTable('user_mangas', {
   id: uuid('id')

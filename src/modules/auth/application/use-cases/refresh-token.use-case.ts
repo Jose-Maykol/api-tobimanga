@@ -1,10 +1,12 @@
+import { Inject, Injectable } from '@nestjs/common'
+
+import { UserRepository } from '@/core/domain/repositories/user.repository'
 import { InvalidRefreshTokenException } from '@/modules/auth/domain/exceptions/invalid-refresh-token.exception'
 import { RefreshTokenNotFoundException } from '@/modules/auth/domain/exceptions/refresh-token-not-found.exception'
-import { Inject, Injectable } from '@nestjs/common'
 import { GetUserByIdUseCase } from '@/modules/user/application/use-cases/get-user-by-id.use-case'
+
 import { AccessTokenService } from '../../domain/services/access-token.service'
 import { RefreshTokenService } from '../../domain/services/refresh-token.service'
-import { UserRepository } from '@/core/domain/repositories/user.repository'
 
 @Injectable()
 export class RefreshTokenUseCase {

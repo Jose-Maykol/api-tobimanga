@@ -1,14 +1,16 @@
+import { v2 as cloudinary } from 'cloudinary'
+import { fileTypeFromBuffer } from 'file-type'
+import * as sharp from 'sharp'
+import * as streamifier from 'streamifier'
+
 import { Injectable } from '@nestjs/common'
+
+import { InvalidImageException } from '../exceptions/invalid-image.exception'
 import {
   StorageService,
   UploadOptions,
   UploadResult,
 } from '../interfaces/storage.service'
-import { v2 as cloudinary } from 'cloudinary'
-import * as sharp from 'sharp'
-import { fileTypeFromBuffer } from 'file-type'
-import * as streamifier from 'streamifier'
-import { InvalidImageException } from '../exceptions/invalid-image.exception'
 
 @Injectable()
 export class ImageStorageService implements StorageService {

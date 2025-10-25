@@ -1,11 +1,14 @@
+import { ExtractJwt, Strategy } from 'passport-jwt'
+
 import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import { PassportStrategy } from '@nestjs/passport'
-import { ExtractJwt, Strategy } from 'passport-jwt'
+
 import { AuthenticatedUser } from '@/common/interfaces/authenticated-user.interface'
-import { DecodedJwtPayload } from '../../domain/interfaces/auth.interface'
 import { ResponseBuilder } from '@/common/utils/response.util'
 import { ErrorCodes } from '@/modules/auth/domain/exceptions/error-keys.enum'
+
+import { DecodedJwtPayload } from '../../domain/interfaces/auth.interface'
 import { AccessTokenService } from '../../domain/services/access-token.service'
 
 @Injectable()

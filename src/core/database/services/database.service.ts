@@ -1,9 +1,11 @@
-import { Inject, Injectable, Logger, OnModuleDestroy } from '@nestjs/common'
 import { drizzle, NodePgDatabase } from 'drizzle-orm/node-postgres'
-import { databaseSchema } from '../schemas'
-import { IDatabaseService } from '../interfaces/database.service'
-import { DATABASE_CONNECTION } from '../constants/database.constants'
 import { Pool } from 'pg'
+
+import { Inject, Injectable, Logger, OnModuleDestroy } from '@nestjs/common'
+
+import { DATABASE_CONNECTION } from '../constants/database.constants'
+import { IDatabaseService } from '../interfaces/database.service'
+import { databaseSchema } from '../schemas'
 
 @Injectable()
 export class DatabaseService implements IDatabaseService, OnModuleDestroy {

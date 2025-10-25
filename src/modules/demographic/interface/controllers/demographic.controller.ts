@@ -1,7 +1,9 @@
 import { Controller, Get } from '@nestjs/common'
 import { ApiTags } from '@nestjs/swagger'
-import { GetAllDemographicsUseCase } from '../../application/use-cases/get-all-demographics.use-case'
+
 import { ResponseBuilder } from '@/common/utils/response.util'
+
+import { GetAllDemographicsUseCase } from '../../application/use-cases/get-all-demographics.use-case'
 
 @Controller()
 @ApiTags('Demografías')

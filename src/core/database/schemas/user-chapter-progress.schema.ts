@@ -1,6 +1,7 @@
 import { pgTable, timestamp, uuid } from 'drizzle-orm/pg-core'
-import { users } from './user.schema'
+
 import { chapters } from './chapter.schema'
+import { users } from './user.schema'
 
 export const userChapterProgress = pgTable('user_chapter_progress', {
   id: uuid('id').defaultRandom().primaryKey(),

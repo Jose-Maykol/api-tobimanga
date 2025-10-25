@@ -1,4 +1,3 @@
-import { JwtAuthGuard } from '@/modules/auth/interface/guards/jwt-auth.guard'
 import {
   Body,
   Controller,
@@ -10,13 +9,16 @@ import {
   Query,
   UseGuards,
 } from '@nestjs/common'
+
+import { PaginationDto } from '@/common/dto/pagination.dto'
+import { ResponseBuilder } from '@/common/utils/response.util'
+import { MangaAlreadyExistsException } from '@/core/domain/exceptions/manga/manga-already-exists'
+import { JwtAuthGuard } from '@/modules/auth/interface/guards/jwt-auth.guard'
+
 import { CreateMangaDto } from '../../application/dtos/create-manga.dto'
 import { CreateMangaUseCase } from '../../application/use-cases/create-manga.use-case'
-import { ResponseBuilder } from '@/common/utils/response.util'
-import { PaginationDto } from '@/common/dto/pagination.dto'
 import { FindPaginatedMangaUseCase } from '../../application/use-cases/find-paginated-manga.use-case'
 import { FindPaginatedMangaManagementUseCase } from '../../application/use-cases/find-paginated-manga-management.use-case'
-import { MangaAlreadyExistsException } from '@/core/domain/exceptions/manga/manga-already-exists'
 
 @Controller()
 export class MangaController {
