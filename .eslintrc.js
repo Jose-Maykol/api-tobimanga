@@ -5,7 +5,7 @@ module.exports = {
     tsconfigRootDir: __dirname,
     sourceType: 'module',
   },
-  plugins: ['@typescript-eslint/eslint-plugin'],
+  plugins: ['@typescript-eslint/eslint-plugin', 'simple-import-sort', 'prettier'],
   extends: [
     'plugin:@typescript-eslint/recommended',
     'plugin:prettier/recommended',
@@ -15,7 +15,7 @@ module.exports = {
     node: true,
     jest: true,
   },
-  ignorePatterns: ['.eslintrc.js'],
+  ignorePatterns: ['.eslintrc.js', 'dist', 'node_modules'],
   rules: {
     'prettier/prettier': ['error', { 'endOfLine': 'auto' }, { usePrettierrc: true }],
     '@typescript-eslint/interface-name-prefix': 'off',
@@ -23,5 +23,21 @@ module.exports = {
     '@typescript-eslint/explicit-module-boundary-types': 'off',
     '@typescript-eslint/no-explicit-any': 'off',
     'semi:': 'off',
+
+    'simple-import-sort/imports': [
+      'error',
+      {
+        groups: [
+          [
+            '^node:',
+            `^(${require('module').builtinModules.join('|')})(/|$)`,
+          ],
+          ['^@?\\w'],
+          ['^@nestjs'],
+          ['^@/'],
+          ['^\\.'],
+        ],
+      },
+    ],
   },
 };
