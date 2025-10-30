@@ -4,6 +4,8 @@ import { RouterModule } from '@nestjs/core'
 
 import { AppController } from './app.controller'
 import { AppService } from './app.service'
+import { AdminModule } from './modules/admin/admin.module'
+import { MangaManagementModule } from './modules/admin/manga-management/manga-management.module'
 import { AuthModule } from './modules/auth/auth.module'
 import { AuthorModule } from './modules/author/author.module'
 import { DemographicModule } from './modules/demographic/demographic.module'
@@ -18,6 +20,8 @@ const modules = [
   AuthorModule,
   GenreModule,
   MangaModule,
+  AdminModule,
+  MangaManagementModule,
 ]
 @Module({
   imports: [
@@ -26,6 +30,19 @@ const modules = [
     }),
     ...modules,
     RouterModule.register([
+      {
+        module: AdminModule,
+        path: 'admin',
+        children: [
+          {
+            module: MangaManagementModule,
+            path: 'mangas',
+          },
+          /* { path: 'authors', module: AuthorManagementModule },
+          { path: 'genres', module: GenreManagementModule },
+          { path: 'users', module: UserManagementModule }, */
+        ],
+      },
       {
         module: AuthModule,
         path: 'auth',
