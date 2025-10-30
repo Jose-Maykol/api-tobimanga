@@ -6,8 +6,8 @@ import { DATABASE_SERVICE } from '@/core/database/constants/database.constants'
 import { chapters } from '@/core/database/schemas/chapter.schema'
 import { DatabaseService } from '@/core/database/services/database.service'
 
-import { Chapter } from '../../../../core/domain/entities/chapter.entity'
-import { ChapterRepository } from '../../../../core/domain/repositories/chapter.repository'
+import { Chapter } from '../../core/domain/entities/chapter.entity'
+import { ChapterRepository } from '../../core/domain/repositories/chapter.repository'
 
 @Injectable()
 export class ChapterRepositoryImpl implements ChapterRepository {

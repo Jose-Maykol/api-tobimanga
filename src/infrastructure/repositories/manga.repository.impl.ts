@@ -7,14 +7,9 @@ import { mangas } from '@/core/database/schemas/manga.schema'
 import { mangaAuthors } from '@/core/database/schemas/manga-author.schema'
 import { mangaGenres } from '@/core/database/schemas/manga-genre.schema'
 import { DatabaseService } from '@/core/database/services/database.service'
+import { Manga } from '@/core/domain/entities/manga.entity'
+import { MangaRepository } from '@/core/domain/repositories/manga.repository'
 
-import { Manga } from '../../../../core/domain/entities/manga.entity'
-import { MangaRepository } from '../../../../core/domain/repositories/manga.repository'
-
-/**
- * Implements write operations for Manga entity persistence.
- * Also provides composition read by slug to return the full domain entity.
- */
 @Injectable()
 export class MangaRepositoryImpl implements MangaRepository {
   constructor(

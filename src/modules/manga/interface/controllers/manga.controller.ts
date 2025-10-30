@@ -1,37 +1,24 @@
-import {
-  Body,
-  Controller,
-  Get,
-  HttpException,
-  HttpStatus,
-  Inject,
-  Post,
-  Query,
-  UseGuards,
-} from '@nestjs/common'
+import { Controller, Get, Inject, Query, UseGuards } from '@nestjs/common'
 
 import { PaginationDto } from '@/common/dto/pagination.dto'
 import { ResponseBuilder } from '@/common/utils/response.util'
-import { MangaAlreadyExistsException } from '@/core/domain/exceptions/manga/manga-already-exists'
 import { JwtAuthGuard } from '@/modules/auth/interface/guards/jwt-auth.guard'
 
-import { CreateMangaDto } from '../../application/dtos/create-manga.dto'
-import { CreateMangaUseCase } from '../../application/use-cases/create-manga.use-case'
 import { FindPaginatedMangaUseCase } from '../../application/use-cases/find-paginated-manga.use-case'
 import { FindPaginatedMangaManagementUseCase } from '../../application/use-cases/find-paginated-manga-management.use-case'
 
 @Controller()
 export class MangaController {
   constructor(
-    @Inject()
-    private readonly createMangaUseCase: CreateMangaUseCase,
+    /* @Inject()
+    private readonly createMangaUseCase: CreateMangaUseCase, */
     @Inject()
     private readonly findPaginatedMangaUseCase: FindPaginatedMangaUseCase,
     @Inject()
     private readonly findPaginatedMangaManagementUseCase: FindPaginatedMangaManagementUseCase,
   ) {}
 
-  @Post()
+  /* @Post()
   @UseGuards(JwtAuthGuard)
   async create(@Body() createMangaDto: CreateMangaDto) {
     try {
@@ -51,7 +38,7 @@ export class MangaController {
         )
       }
     }
-  }
+  } */
 
   @Get()
   @UseGuards(JwtAuthGuard)
