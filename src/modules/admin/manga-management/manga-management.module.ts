@@ -6,11 +6,11 @@ import { StorageModule } from '@/core/storage/storage.module'
 import { InfrastructureModule } from '@/infrastructure/infraestructure.module'
 import { AuthModule } from '@/modules/auth/auth.module'
 import { AuthorModule } from '@/modules/author/author.module'
-import { DemographicModule } from '@/modules/demographic/demographic.module'
-import { GenreModule } from '@/modules/genres/genre.module'
 
+import { DemographicManagementModule } from '../demographic-management/demographic-management.module'
+import { GenreManagementModule } from '../genre-management/genre-management.module'
 import { CreateMangaUseCase } from './application/use-cases/create-manga.use-case'
-import { MangaManagementController } from './interface/manga-management.controller'
+import { MangaManagementController } from './interface/controllers/manga-management.controller'
 
 @Module({
   imports: [
@@ -19,8 +19,8 @@ import { MangaManagementController } from './interface/manga-management.controll
     StorageModule,
     AuthModule,
     AuthorModule,
-    GenreModule,
-    DemographicModule,
+    GenreManagementModule,
+    DemographicManagementModule,
   ],
   providers: [CreateMangaUseCase, MangaFactory],
   controllers: [MangaManagementController],
