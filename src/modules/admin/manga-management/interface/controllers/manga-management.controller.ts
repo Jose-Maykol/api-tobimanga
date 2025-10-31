@@ -10,10 +10,10 @@ import {
 
 import { ResponseBuilder } from '@/common/utils/response.util'
 import { MangaAlreadyExistsException } from '@/core/domain/exceptions/manga/manga-already-exists'
+import { CreateMangaDto } from '@/modules/admin/manga-management/application/dtos/create-manga.dto'
 import { JwtAuthGuard } from '@/modules/auth/interface/guards/jwt-auth.guard'
-import { CreateMangaDto } from '@/modules/manga/application/dtos/create-manga.dto'
 
-import { CreateMangaUseCase } from '../application/use-cases/create-manga.use-case'
+import { CreateMangaUseCase } from '../../application/use-cases/create-manga.use-case'
 
 @Controller()
 export class MangaManagementController {

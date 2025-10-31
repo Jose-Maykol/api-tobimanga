@@ -8,22 +8,26 @@ import { ChapterRepository } from '@/core/domain/repositories/chapter.repository
 import { MangaRepository } from '@/core/domain/repositories/manga.repository'
 import { IMAGE_STORAGE_SERVICE } from '@/core/storage/constants/storage.constants'
 import { ImageStorageService } from '@/core/storage/services/image-storage.service'
+import {
+  CHAPTER_REPOSITORY,
+  MANGA_REPOSITORY,
+} from '@/infrastructure/tokens/repositories'
+import { GetDemographicByIdUseCase } from '@/modules/admin/demographic-management/application/use-cases/get-demographic-by-id.use-case'
+import { GetGenreByIdUseCase } from '@/modules/admin/genre-management/application/use-cases/get-genre-by-id.use-case'
+import { CreateMangaDto } from '@/modules/admin/manga-management/application/dtos/create-manga.dto'
 import { GetAuthorsByIdsUseCase } from '@/modules/author/application/use-cases/get-authors-by-ids.use-case'
-import { GetDemographicByIdUseCase } from '@/modules/demographic/application/use-cases/get-demographic-by-id.use-case'
-import { GetGenresByIdsUseCase } from '@/modules/genres/application/use-cases/get-genres-by-ids.use-case'
-import { CreateMangaDto } from '@/modules/manga/application/dtos/create-manga.dto'
 
 @Injectable()
 export class CreateMangaUseCase {
   constructor(
-    @Inject('MangaRepository')
+    @Inject(MANGA_REPOSITORY)
     private readonly mangaRepository: MangaRepository,
-    @Inject('ChapterRepository')
+    @Inject(CHAPTER_REPOSITORY)
     private readonly chapterRepository: ChapterRepository,
     @Inject()
     private readonly getAuthorsByIdsUseCase: GetAuthorsByIdsUseCase,
     @Inject()
-    private readonly getGenresByIdsUseCase: GetGenresByIdsUseCase,
+    private readonly getGenreByIdUseCase: GetGenreByIdUseCase,
     @Inject()
     private readonly getDemographicByIdUseCase: GetDemographicByIdUseCase,
     @Inject(IMAGE_STORAGE_SERVICE)
@@ -52,7 +56,10 @@ export class CreateMangaUseCase {
 
     const authorsEntities =
       await this.getAuthorsByIdsUseCase.execute(authorsIds)
-    const genresEntities = await this.getGenresByIdsUseCase.execute(genresIds)
+
+    const genresEntities = await Promise.all(
+      genresIds.map((id) => this.getGenreByIdUseCase.execute(id)),
+    )
     const demographicEntity = await this.getDemographicByIdUseCase.execute(
       demographic.id,
     )
