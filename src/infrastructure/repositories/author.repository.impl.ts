@@ -7,7 +7,7 @@ import { authors } from '@/core/database/schemas/author.schema'
 import { DatabaseService } from '@/core/database/services/database.service'
 import { AuthorRepository } from '@/core/domain/repositories/author.repository'
 
-import { Author } from '../../../../core/domain/entities/author.entity'
+import { Author } from '../../core/domain/entities/author.entity'
 
 @Injectable()
 export class AuthorRepositoryImpl implements AuthorRepository {

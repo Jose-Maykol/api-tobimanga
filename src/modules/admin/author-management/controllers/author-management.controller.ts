@@ -15,12 +15,12 @@ import { Roles } from '@/modules/auth/interface/decorators/roles.decorator'
 import { JwtAuthGuard } from '@/modules/auth/interface/guards/jwt-auth.guard'
 import { RolesGuard } from '@/modules/auth/interface/guards/roles.guard'
 
-import { CreateAuthorDto } from '../../application/dtos/create-author.dto'
-import { CreateAuthorUseCase } from '../../application/use-cases/create-author.use-case'
-import { GetAllAuthorsUseCase } from '../../application/use-cases/get-all-authors.use-case'
+import { CreateAuthorDto } from '../application/dtos/create-author.dto'
+import { CreateAuthorUseCase } from '../application/use-cases/create-author.use-case'
+import { GetAllAuthorsUseCase } from '../application/use-cases/get-all-authors.use-case'
 
 @Controller()
-export class AuthorController {
+export class AuthorManagementController {
   constructor(
     private readonly createAuthorUseCase: CreateAuthorUseCase,
     private readonly getAllAuthorsUseCase: GetAllAuthorsUseCase,

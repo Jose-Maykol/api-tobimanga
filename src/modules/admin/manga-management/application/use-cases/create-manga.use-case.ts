@@ -12,10 +12,10 @@ import {
   CHAPTER_REPOSITORY,
   MANGA_REPOSITORY,
 } from '@/infrastructure/tokens/repositories'
+import { GetAuthorByIdUseCase } from '@/modules/admin/author-management/application/use-cases/get-author-by-id.use-case'
 import { GetDemographicByIdUseCase } from '@/modules/admin/demographic-management/application/use-cases/get-demographic-by-id.use-case'
 import { GetGenreByIdUseCase } from '@/modules/admin/genre-management/application/use-cases/get-genre-by-id.use-case'
 import { CreateMangaDto } from '@/modules/admin/manga-management/application/dtos/create-manga.dto'
-import { GetAuthorsByIdsUseCase } from '@/modules/author/application/use-cases/get-authors-by-ids.use-case'
 
 @Injectable()
 export class CreateMangaUseCase {
@@ -25,7 +25,7 @@ export class CreateMangaUseCase {
     @Inject(CHAPTER_REPOSITORY)
     private readonly chapterRepository: ChapterRepository,
     @Inject()
-    private readonly getAuthorsByIdsUseCase: GetAuthorsByIdsUseCase,
+    private readonly getAuthorByIdUseCase: GetAuthorByIdUseCase,
     @Inject()
     private readonly getGenreByIdUseCase: GetGenreByIdUseCase,
     @Inject()
@@ -54,8 +54,9 @@ export class CreateMangaUseCase {
       throw new MangaAlreadyExistsException()
     }
 
-    const authorsEntities =
-      await this.getAuthorsByIdsUseCase.execute(authorsIds)
+    const authorsEntities = await Promise.all(
+      authorsIds.map((id) => this.getAuthorByIdUseCase.execute(id)),
+    )
 
     const genresEntities = await Promise.all(
       genresIds.map((id) => this.getGenreByIdUseCase.execute(id)),

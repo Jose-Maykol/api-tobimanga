@@ -4,8 +4,8 @@ import { DatabaseModule } from '@/core/database/database.module'
 import { MangaFactory } from '@/core/domain/factories/manga/manga.factory'
 import { StorageModule } from '@/core/storage/storage.module'
 import { InfrastructureModule } from '@/infrastructure/infraestructure.module'
+import { AuthorManagementModule } from '@/modules/admin/author-management/author-management.module'
 import { AuthModule } from '@/modules/auth/auth.module'
-import { AuthorModule } from '@/modules/author/author.module'
 
 import { DemographicManagementModule } from '../demographic-management/demographic-management.module'
 import { GenreManagementModule } from '../genre-management/genre-management.module'
@@ -18,9 +18,9 @@ import { MangaManagementController } from './interface/controllers/manga-managem
     DatabaseModule,
     StorageModule,
     AuthModule,
-    AuthorModule,
     GenreManagementModule,
     DemographicManagementModule,
+    AuthorManagementModule,
   ],
   providers: [CreateMangaUseCase, MangaFactory],
   controllers: [MangaManagementController],
