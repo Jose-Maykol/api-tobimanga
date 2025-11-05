@@ -19,6 +19,8 @@ import { CreateGenreDto } from '../application/dtos/create-genre.dto'
 import { CreateGenreUseCase } from '../application/use-cases/create-genre.use-case'
 import { GetAllGenresUseCase } from '../application/use-cases/get-all-genres.use-case'
 
+@UseGuards(JwtAuthGuard, RolesGuard)
+@Roles(ROLES.ADMIN)
 @Controller()
 export class GenreManagementController {
   constructor(
@@ -34,8 +36,6 @@ export class GenreManagementController {
    * @throws HttpException if genre already exists
    */
   @Post()
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(ROLES.ADMIN)
   async createGenre(@Body() createGenreDto: CreateGenreDto) {
     try {
       const result = await this.createGenreUseCase.execute(createGenreDto)
