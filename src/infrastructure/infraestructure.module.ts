@@ -11,6 +11,7 @@ import {
   DEMOGRAPHIC_REPOSITORY,
   GENRE_REPOSITORY,
   MANGA_REPOSITORY,
+  UPLOAD_REPOSITORY,
 } from './tokens/repositories'
 
 @Module({
@@ -35,6 +36,10 @@ import {
       provide: AUTHOR_REPOSITORY,
       useClass: AuthorRepositoryImpl,
     },
+    {
+      provide: UPLOAD_REPOSITORY,
+      useClass: AuthorRepositoryImpl,
+    },
   ],
   exports: [
     MANGA_REPOSITORY,
@@ -42,6 +47,7 @@ import {
     GENRE_REPOSITORY,
     DEMOGRAPHIC_REPOSITORY,
     AUTHOR_REPOSITORY,
+    UPLOAD_REPOSITORY,
   ],
 })
 export class InfrastructureModule {}
