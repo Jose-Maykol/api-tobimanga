@@ -20,14 +20,16 @@ export const mangas = pgTable('mangas', {
     .notNull()
     .references(() => demographics.id, { onDelete: 'cascade' }),
   originalName: text('original_name').notNull().unique(),
-  slugName: text('slug_name').unique(), // TODO: Add unique constraint
-  scrappingName: text('scrapping_name').unique(), // TODO: Add unique constraint
+  slugName: text('slug_name').unique(),
+  scrappingName: text('scrapping_name').unique(),
   alternativeNames: text('alternative_names').array(),
   sinopsis: text('sinopsis').notNull(),
   chapters: smallint('chapters').notNull(),
   releaseDate: date('release_date'),
-  coverImage: text('cover_image'),
-  bannerImage: text('banner_image'),
+  coverImageUrl: text('cover_image_url'),
+  coverImageObjectKey: text('cover_image_object_key'),
+  bannerImageUrl: text('banner_image_url'),
+  bannerImageObjectKey: text('banner_image_object_key'),
   publicationStatus: publicationStatusEnum('publication_status').notNull(),
   rating: smallint('rating').default(0).notNull(),
   active: boolean('active').default(true).notNull(),

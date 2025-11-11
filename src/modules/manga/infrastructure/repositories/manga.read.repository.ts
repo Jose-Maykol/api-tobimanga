@@ -36,7 +36,7 @@ export class MangaReadRepository {
           scrappingName: mangas.scrappingName,
           chapters: mangas.chapters,
           rating: mangas.rating,
-          coverImage: mangas.coverImage,
+          coverImage: mangas.coverImageUrl,
         })
         .from(mangas)
         .limit(limit)
@@ -80,7 +80,7 @@ export class MangaReadRepository {
           chapters: mangas.chapters,
           rating: mangas.rating,
           publicationStatus: mangas.publicationStatus,
-          coverImage: mangas.coverImage,
+          coverImage: mangas.coverImageUrl,
           active: mangas.active,
           createdAt: mangas.createdAt,
           updatedAt: mangas.updatedAt,
