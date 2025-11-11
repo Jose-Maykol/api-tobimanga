@@ -9,6 +9,7 @@ import { AuthorManagementModule } from './modules/admin/author-management/author
 import { DemographicManagementModule } from './modules/admin/demographic-management/demographic-management.module'
 import { GenreManagementModule } from './modules/admin/genre-management/genre-management.module'
 import { MangaManagementModule } from './modules/admin/manga-management/manga-management.module'
+import { UploadModule } from './modules/admin/upload/upload.module'
 import { AuthModule } from './modules/auth/auth.module'
 import { UserModule } from './modules/user/user.module'
 
@@ -20,6 +21,7 @@ const modules = [
   GenreManagementModule,
   DemographicManagementModule,
   AuthorManagementModule,
+  UploadModule,
 ]
 @Module({
   imports: [
@@ -47,6 +49,10 @@ const modules = [
           {
             module: AuthorManagementModule,
             path: 'authors',
+          },
+          {
+            module: UploadModule,
+            path: 'uploads',
           },
           /* { path: 'authors', module: AuthorManagementModule },
           { path: 'genres', module: GenreManagementModule },
