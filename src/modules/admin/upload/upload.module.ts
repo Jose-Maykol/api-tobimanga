@@ -5,7 +5,7 @@ import { StorageModule } from '@/core/storage/storage.module'
 import { InfrastructureModule } from '@/infrastructure/infraestructure.module'
 
 import { UploadFileUseCase } from './application/use-cases/upload-file.use-case'
-import { UploadController } from './interface/upload.controller'
+import { UploadController } from './interface/controllers/upload.controller'
 
 @Module({
   imports: [InfrastructureModule, DatabaseModule, StorageModule],
