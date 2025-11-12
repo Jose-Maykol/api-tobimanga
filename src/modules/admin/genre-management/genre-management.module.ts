@@ -7,7 +7,7 @@ import { AuthModule } from '@/modules/auth/auth.module'
 import { CreateGenreUseCase } from './application/use-cases/create-genre.use-case'
 import { GetAllGenresUseCase } from './application/use-cases/get-all-genres.use-case'
 import { GetGenreByIdUseCase } from './application/use-cases/get-genre-by-id.use-case'
-import { GenreManagementController } from './interface/genre-management.controller'
+import { GenreManagementController } from './interface/controllers/genre-management.controller'
 
 @Module({
   imports: [InfrastructureModule, DatabaseModule, AuthModule],
