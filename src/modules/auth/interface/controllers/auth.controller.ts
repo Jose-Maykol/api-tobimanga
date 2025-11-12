@@ -41,10 +41,7 @@ import { User } from '../decorators/user.decorator'
 import { UserLoginDto } from '../dtos/login-user.dto'
 import { RegisterUserDto } from '../dtos/register-user.dto'
 import { JwtAuthGuard } from '../guards/jwt-auth.guard'
-import { LoginSwaggerExamples } from '../swagger/login.swagger'
-import { LogoutSwaggerExamples } from '../swagger/logout.swagger'
-import { RefreshSwaggerExamples } from '../swagger/refresh.swagger'
-import { RegisterSwaggerExamples } from '../swagger/register.swagger'
+import { AuthSwagger } from '../swagger/auth.swagger'
 
 @Controller()
 @ApiTags('Autenticación')
@@ -63,42 +60,12 @@ export class AuthController {
     description:
       'Permite a un usuario autenticarse en el sistema utilizando su email y contraseña. Devuelve un access token JWT y establece una cookie httpOnly con el refresh token.',
   })
-  @ApiBody({
-    description: 'Credenciales del usuario',
-    type: UserLoginDto,
-    examples: {
-      correctCredentials: {
-        summary: 'Credenciales correctas',
-        value: { email: 'user@example.com', password: 'password123' },
-      },
-    },
-  })
-  @ApiResponse({
-    status: HttpStatus.OK,
-    description:
-      'Login exitoso. Retorna access token y datos del usuario. El refresh token se establece como cookie httpOnly.',
-    schema: { example: LoginSwaggerExamples.success },
-  })
-  @ApiResponse({
-    status: HttpStatus.NOT_FOUND,
-    description: 'El usuario no existe en el sistema',
-    schema: { example: LoginSwaggerExamples.notFound },
-  })
-  @ApiResponse({
-    status: HttpStatus.UNAUTHORIZED,
-    description: 'Las credenciales proporcionadas son incorrectas',
-    schema: { example: LoginSwaggerExamples.unauthorized },
-  })
-  @ApiResponse({
-    status: HttpStatus.BAD_REQUEST,
-    description: 'Los datos proporcionados no son válidos.',
-    schema: { example: LoginSwaggerExamples.validationError },
-  })
-  @ApiResponse({
-    status: HttpStatus.INTERNAL_SERVER_ERROR,
-    description: 'Error interno del servidor.',
-    schema: { example: LoginSwaggerExamples.serverError },
-  })
+  @ApiBody(AuthSwagger.login.body)
+  @ApiResponse(AuthSwagger.login.responses.ok)
+  @ApiResponse(AuthSwagger.login.responses.notFound)
+  @ApiResponse(AuthSwagger.login.responses.unauthorized)
+  @ApiResponse(AuthSwagger.login.responses.badRequest)
+  @ApiResponse(AuthSwagger.login.responses.serverError)
   async login(
     @Res({ passthrough: true }) res: Response,
     @Body() userLoginDto: UserLoginDto,
@@ -157,38 +124,10 @@ export class AuthController {
     description:
       'Crea una nueva cuenta de usuario en el sistema. Valida que el email no esté en uso y que los datos cumplan con los requisitos mínimos.',
   })
-  @ApiBody({
-    description: 'Información del nuevo usuario',
-    type: RegisterUserDto,
-    examples: {
-      validUser: {
-        summary: 'Usuario válido',
-        value: {
-          email: 'nuevo@example.com',
-          password: 'Password123!',
-          username: 'nuevoUsuario',
-        },
-      },
-    },
-  })
-  @ApiResponse({
-    status: HttpStatus.CREATED,
-    description:
-      'Usuario creado exitosamente. Retorna los datos básicos del usuario registrado.',
-    schema: { example: RegisterSwaggerExamples.success },
-  })
-  @ApiResponse({
-    status: HttpStatus.BAD_REQUEST,
-    description:
-      'El email ya está registrado o los datos proporcionados no son válidos',
-    schema: { example: RegisterSwaggerExamples.badRequest },
-  })
-  @ApiResponse({
-    status: HttpStatus.UNPROCESSABLE_ENTITY,
-    description:
-      'Los datos proporcionados no cumplen con las validaciones requeridas',
-    schema: { example: RegisterSwaggerExamples.validationError },
-  })
+  @ApiBody(AuthSwagger.register.body)
+  @ApiResponse(AuthSwagger.register.responses.created)
+  @ApiResponse(AuthSwagger.register.responses.badRequest)
+  @ApiResponse(AuthSwagger.register.responses.validationError)
   @HttpCode(HttpStatus.CREATED)
   async register(
     @Body() registerUserDto: RegisterUserDto,
@@ -229,21 +168,9 @@ export class AuthController {
     description:
       'Cierra la sesión del usuario actual, invalida el refresh token y limpia la cookie.',
   })
-  @ApiResponse({
-    status: HttpStatus.OK,
-    description: 'Sesión cerrada exitosamente',
-    schema: { example: LogoutSwaggerExamples.success },
-  })
-  @ApiResponse({
-    status: HttpStatus.NOT_FOUND,
-    description: 'Usuario no encontrado o refresh token no encontrado',
-    schema: { example: LogoutSwaggerExamples.notFound },
-  })
-  @ApiResponse({
-    status: HttpStatus.UNAUTHORIZED,
-    description: 'Refresh token inválido o expirado',
-    schema: { example: LogoutSwaggerExamples.invalidToken },
-  })
+  @ApiResponse(AuthSwagger.logout.responses.ok)
+  @ApiResponse(AuthSwagger.logout.responses.notFound)
+  @ApiResponse(AuthSwagger.logout.responses.unauthorized)
   async logout(
     @User() user: AuthenticatedUser,
     @Req() req: Request,
@@ -304,22 +231,9 @@ export class AuthController {
     description:
       'Genera un nuevo access token y refresh token usando el refresh token actual. El nuevo refresh token se establece como cookie httpOnly.',
   })
-  @ApiResponse({
-    status: HttpStatus.OK,
-    description:
-      'Tokens renovados exitosamente. Retorna nuevo access token y actualiza la cookie del refresh token.',
-    schema: { example: RefreshSwaggerExamples.success },
-  })
-  @ApiResponse({
-    status: HttpStatus.NOT_FOUND,
-    description: 'Usuario no encontrado o refresh token no encontrado',
-    schema: { example: RefreshSwaggerExamples.notFound },
-  })
-  @ApiResponse({
-    status: HttpStatus.UNAUTHORIZED,
-    description: 'Refresh token inválido o expirado',
-    schema: { example: RefreshSwaggerExamples.invalidToken },
-  })
+  @ApiResponse(AuthSwagger.refresh.responses.ok)
+  @ApiResponse(AuthSwagger.refresh.responses.notFound)
+  @ApiResponse(AuthSwagger.refresh.responses.unauthorized)
   async refresh(
     @User() user: AuthenticatedUser,
     @Req() req: Request,
