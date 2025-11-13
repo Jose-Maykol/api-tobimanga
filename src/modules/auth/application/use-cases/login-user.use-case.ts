@@ -1,6 +1,5 @@
 import * as bcrypt from 'bcrypt'
-
-import { Inject, Injectable } from '@nestjs/common'
+import { Inject, Injectable, Logger } from '@nestjs/common'
 
 import { UserRepository } from '@/core/domain/repositories/user.repository'
 import { GetUserByEmailUseCase } from '@/modules/user/application/use-cases/get-user-by-email.use-case'
@@ -11,6 +10,8 @@ import { RefreshTokenService } from '../../domain/services/refresh-token.service
 
 @Injectable()
 export class LoginUserUseCase {
+  private readonly logger = new Logger(LoginUserUseCase.name)
+
   constructor(
     private readonly getUserByEmailUseCase: GetUserByEmailUseCase,
     @Inject('UserRepository')
@@ -22,14 +23,15 @@ export class LoginUserUseCase {
   ) {}
 
   async execute(email: string, password: string) {
-    // 1. Obtener usuario y validar credenciales
+    this.logger.log(`Login attempt for email: ${email}`)
+
     const user = await this.getUserByEmailUseCase.execute(email)
     const isPasswordValid = await bcrypt.compare(password, user.password)
     if (!isPasswordValid) {
+      this.logger.warn(`Invalid credentials for email: ${email}`)
       throw new InvalidCredentialsException()
     }
 
-    // 2. Generar tokens
     const [accessToken, refreshToken] = await Promise.all([
       this.accessTokenService.generateToken({
         sub: user.id,
@@ -39,11 +41,13 @@ export class LoginUserUseCase {
       Promise.resolve(this.refreshTokenService.generateToken()),
     ])
 
-    // 3. Actualizar refresh token en base de datos
     const hashedRefreshToken = this.refreshTokenService.hashToken(refreshToken)
     await this.userRepository.update(user.id, {
       refreshToken: hashedRefreshToken,
     })
+    this.logger.log(`Refresh token updated for userId: ${user.id}`)
+
+    this.logger.log(`Login successful for userId: ${user.id}, email: ${email}`)
 
     return {
       accessToken,
