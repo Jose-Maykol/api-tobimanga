@@ -11,6 +11,7 @@ import {
   Res,
   UseGuards,
 } from '@nestjs/common'
+import { Logger } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import {
   ApiBearerAuth,
@@ -46,6 +47,8 @@ import { AuthSwagger } from '../swagger/auth.swagger'
 @Controller()
 @ApiTags('Autenticación')
 export class AuthController {
+  private readonly logger = new Logger(AuthController.name)
+
   constructor(
     private readonly loginUserUseCase: LoginUserUseCase,
     private readonly registerUserUseCase: RegisterUserUseCase,
@@ -72,6 +75,9 @@ export class AuthController {
   ) {
     try {
       const { email, password } = userLoginDto
+
+      this.logger.log(`Login endpoint called for email: ${email}`)
+
       const result = await this.loginUserUseCase.execute(email, password)
       const secure = this.configService.get<string>('NODE_ENV') === 'production'
 
@@ -82,6 +88,10 @@ export class AuthController {
         path: '/api/auth',
         maxAge: 7 * 24 * 60 * 60 * 1000, // 7 días
       })
+
+      this.logger.log(
+        `Login successful for userId: ${result.user.id}, email: ${email}`,
+      )
 
       return ResponseBuilder.success({
         message: 'Login exitoso',
@@ -96,6 +106,10 @@ export class AuthController {
         },
       })
     } catch (error) {
+      this.logger.warn(
+        `Login failed for email: ${userLoginDto.email} - ${error.message}`,
+      )
+
       if (error instanceof UserAlreadyExistsException) {
         throw new HttpException(
           ResponseBuilder.error(
@@ -133,11 +147,18 @@ export class AuthController {
     @Body() registerUserDto: RegisterUserDto,
   ): Promise<SuccessResponse<{ user: RegisterUserUseCaseResult }>> {
     try {
+      this.logger.log(
+        `Register endpoint called for email: ${registerUserDto.email}`,
+      )
+
       const result = await this.registerUserUseCase.execute({
         email: registerUserDto.email,
         password: registerUserDto.password,
         username: registerUserDto.username,
       })
+
+      this.logger.log(`User registered successfully: ${result.id}`)
+
       return ResponseBuilder.success({
         data: {
           user: result,
@@ -145,6 +166,10 @@ export class AuthController {
         message: 'Usuario registrado exitosamente',
       })
     } catch (error) {
+      this.logger.warn(
+        `Register failed for email: ${registerUserDto.email} - ${error.message}`,
+      )
+
       if (error instanceof UserAlreadyExistsException) {
         throw new HttpException(
           ResponseBuilder.error(
@@ -179,17 +204,26 @@ export class AuthController {
     try {
       const { id } = user
       const refreshToken = req.cookies['refreshToken']
+
+      this.logger.log(`Logout endpoint called for userId: ${id}`)
+
       await this.logoutUserUseCase.execute(id, refreshToken)
 
       res.clearCookie('refreshToken', {
         path: '/api/auth',
       })
 
+      this.logger.log(`Logout successful for userId: ${id}`)
+
       return ResponseBuilder.success({
         message: 'Sesión cerrada exitosamente',
         data: null,
       })
     } catch (error) {
+      this.logger.warn(
+        `Logout failed for userId: ${user?.id} - ${error.message}`,
+      )
+
       if (error instanceof UserNotFoundException) {
         throw new HttpException(
           ResponseBuilder.error(
@@ -242,6 +276,9 @@ export class AuthController {
     try {
       const { id } = user
       const refreshToken = req.cookies['refreshToken']
+
+      this.logger.log(`Refresh endpoint called for userId: ${id}`)
+
       const result = await this.refreshTokenUseCase.execute(id, refreshToken)
       const secure = this.configService.get<string>('NODE_ENV') === 'production'
 
@@ -253,6 +290,8 @@ export class AuthController {
         maxAge: 7 * 24 * 60 * 60 * 1000, // 7 días
       })
 
+      this.logger.log(`Token refresh successful for userId: ${id}`)
+
       return ResponseBuilder.success({
         message: 'Sesión renovada exitosamente',
         data: {
@@ -260,6 +299,10 @@ export class AuthController {
         },
       })
     } catch (error) {
+      this.logger.warn(
+        `Token refresh failed for userId: ${user?.id} - ${error.message}`,
+      )
+
       if (error instanceof UserNotFoundException) {
         throw new HttpException(
           ResponseBuilder.error(
