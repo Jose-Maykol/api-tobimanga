@@ -1,6 +1,6 @@
 import * as bcrypt from 'bcrypt'
 
-import { Inject, Injectable } from '@nestjs/common'
+import { Inject, Injectable, Logger } from '@nestjs/common'
 
 import { User } from '@/core/domain/entities/user.entity'
 import { UserAlreadyExistsException } from '@/core/domain/exceptions/user/user-already-exists.exception'
@@ -22,6 +22,8 @@ export interface RegisterUserUseCaseResult {
 
 @Injectable()
 export class RegisterUserUseCase {
+  private readonly logger = new Logger(RegisterUserUseCase.name)
+
   constructor(
     @Inject('UserRepository')
     private readonly userRepository: UserRepository,
@@ -32,9 +34,14 @@ export class RegisterUserUseCase {
     password,
     username,
   }: RegisterUserUseCaseParams): Promise<RegisterUserUseCaseResult> {
+    this.logger.log(`Register attempt for email: ${email}`)
+
     const user = await this.userRepository.exists(email)
 
-    if (user) throw new UserAlreadyExistsException()
+    if (user) {
+      this.logger.warn(`User already exists for email: ${email}`)
+      throw new UserAlreadyExistsException()
+    }
 
     const hashedPassword = await this.hashPassword(password)
 
@@ -45,6 +52,10 @@ export class RegisterUserUseCase {
     })
 
     await this.userRepository.save(newUser)
+
+    this.logger.log(
+      `User registered successfully: ${newUser.id}, email: ${email}`,
+    )
 
     return {
       id: newUser.id,
