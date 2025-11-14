@@ -1,4 +1,5 @@
 import * as bcrypt from 'bcrypt'
+
 import { Inject, Injectable, Logger } from '@nestjs/common'
 
 import { UserRepository } from '@/core/domain/repositories/user.repository'
