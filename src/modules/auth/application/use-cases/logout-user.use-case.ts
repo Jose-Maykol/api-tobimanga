@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common'
+import { Inject, Injectable, Logger } from '@nestjs/common'
 
 import { UserRepository } from '@/core/domain/repositories/user.repository'
 import { InvalidRefreshTokenException } from '@/modules/auth/domain/exceptions/invalid-refresh-token.exception'
@@ -9,6 +9,8 @@ import { RefreshTokenService } from '../../domain/services/refresh-token.service
 
 @Injectable()
 export class LogoutUserUseCase {
+  private readonly logger = new Logger(LogoutUserUseCase.name)
+
   constructor(
     private readonly getUserByIdUseCase: GetUserByIdUseCase,
     @Inject('RefreshTokenService')
@@ -18,10 +20,12 @@ export class LogoutUserUseCase {
   ) {}
 
   async execute(userId: string, refreshToken: string): Promise<void> {
-    // 1. Obtener usuario y validar token
+    this.logger.log(`Logout attempt for userId: ${userId}`)
+
     const user = await this.getUserByIdUseCase.execute(userId)
 
     if (!user.refreshToken) {
+      this.logger.warn(`No refresh token found for userId: ${userId}`)
       throw new RefreshTokenNotFoundException()
     }
 
@@ -31,12 +35,13 @@ export class LogoutUserUseCase {
     )
 
     if (!isValidToken) {
+      this.logger.warn(`Invalid refresh token for userId: ${userId}`)
       throw new InvalidRefreshTokenException()
     }
 
-    // 2. Limpiar el refresh token
     await this.userRepository.update(userId, {
       refreshToken: null,
     })
+    this.logger.log(`Logout successful for userId: ${userId}`)
   }
 }

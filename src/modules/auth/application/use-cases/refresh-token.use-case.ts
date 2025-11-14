@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common'
+import { Inject, Injectable, Logger } from '@nestjs/common'
 
 import { UserRepository } from '@/core/domain/repositories/user.repository'
 import { InvalidRefreshTokenException } from '@/modules/auth/domain/exceptions/invalid-refresh-token.exception'
@@ -10,6 +10,8 @@ import { RefreshTokenService } from '../../domain/services/refresh-token.service
 
 @Injectable()
 export class RefreshTokenUseCase {
+  private readonly logger = new Logger(RefreshTokenUseCase.name)
+
   constructor(
     private readonly getUserByIdUseCase: GetUserByIdUseCase,
     @Inject('AccessTokenService')
@@ -24,14 +26,16 @@ export class RefreshTokenUseCase {
     userId: string,
     refreshToken: string,
   ): Promise<{ accessToken: string; refreshToken: string }> {
-    // 1. Validar el refresh token
+    this.logger.log(`Refresh token attempt for userId: ${userId}`)
+
     if (!refreshToken?.trim()) {
+      this.logger.warn(`No refresh token provided for userId: ${userId}`)
       throw new InvalidRefreshTokenException()
     }
 
-    // 2. Obtener usuario y validar token
     const user = await this.getUserByIdUseCase.execute(userId)
     if (!user.refreshToken) {
+      this.logger.warn(`No stored refresh token for userId: ${userId}`)
       throw new RefreshTokenNotFoundException()
     }
 
@@ -40,10 +44,10 @@ export class RefreshTokenUseCase {
       user.refreshToken,
     )
     if (!isValidToken) {
+      this.logger.warn(`Invalid refresh token for userId: ${userId}`)
       throw new InvalidRefreshTokenException()
     }
 
-    // 3. Generar nuevos tokens
     const [accessToken, newRefreshToken] = await Promise.all([
       this.accessTokenService.generateToken({
         sub: user.id,
@@ -53,12 +57,13 @@ export class RefreshTokenUseCase {
       Promise.resolve(this.refreshTokenService.generateToken()),
     ])
 
-    // 4. Actualizar refresh token en base de datos
     const hashedRefreshToken =
       this.refreshTokenService.hashToken(newRefreshToken)
     await this.userRepository.update(user.id, {
       refreshToken: hashedRefreshToken,
     })
+
+    this.logger.log(`Refresh token successful for userId: ${userId}`)
 
     return {
       accessToken,
