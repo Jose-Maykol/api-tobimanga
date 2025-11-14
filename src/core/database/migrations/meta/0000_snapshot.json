@@ -1,5 +1,5 @@
 {
-  "id": "bdfd0c5b-bbc0-4425-8ab5-ad139ec6eaed",
+  "id": "a0d76895-c7c5-425a-8db8-aaac4cfef447",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -500,14 +500,26 @@
           "primaryKey": false,
           "notNull": false
         },
-        "cover_image": {
-          "name": "cover_image",
+        "cover_image_url": {
+          "name": "cover_image_url",
           "type": "text",
           "primaryKey": false,
           "notNull": false
         },
-        "banner_image": {
-          "name": "banner_image",
+        "cover_image_object_key": {
+          "name": "cover_image_object_key",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "banner_image_url": {
+          "name": "banner_image_url",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "banner_image_object_key": {
+          "name": "banner_image_object_key",
           "type": "text",
           "primaryKey": false,
           "notNull": false
@@ -591,8 +603,65 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.user_chapters": {
-      "name": "user_chapters",
+    "public.uploads": {
+      "name": "uploads",
+      "schema": "",
+      "columns": {
+        "upload_id": {
+          "name": "upload_id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "uuid_generate_v4()"
+        },
+        "content_type": {
+          "name": "content_type",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "url": {
+          "name": "url",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "object_key": {
+          "name": "object_key",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.user_chapter_progress": {
+      "name": "user_chapter_progress",
       "schema": "",
       "columns": {
         "id": {
@@ -614,38 +683,19 @@
           "primaryKey": false,
           "notNull": true
         },
-        "read": {
-          "name": "read",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": true,
-          "default": false
-        },
         "read_at": {
           "name": "read_at",
           "type": "timestamp",
           "primaryKey": false,
-          "notNull": false
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp",
-          "primaryKey": false,
           "notNull": true,
           "default": "now()"
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": false
         }
       },
       "indexes": {},
       "foreignKeys": {
-        "user_chapters_user_id_users_user_id_fk": {
-          "name": "user_chapters_user_id_users_user_id_fk",
-          "tableFrom": "user_chapters",
+        "user_chapter_progress_user_id_users_user_id_fk": {
+          "name": "user_chapter_progress_user_id_users_user_id_fk",
+          "tableFrom": "user_chapter_progress",
           "tableTo": "users",
           "columnsFrom": [
             "user_id"
@@ -656,9 +706,9 @@
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
-        "user_chapters_chapter_id_chapters_chapter_id_fk": {
-          "name": "user_chapters_chapter_id_chapters_chapter_id_fk",
-          "tableFrom": "user_chapters",
+        "user_chapter_progress_chapter_id_chapters_chapter_id_fk": {
+          "name": "user_chapter_progress_chapter_id_chapters_chapter_id_fk",
+          "tableFrom": "user_chapter_progress",
           "tableTo": "chapters",
           "columnsFrom": [
             "chapter_id"
