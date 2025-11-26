@@ -17,11 +17,6 @@ export class MangaRepositoryImpl implements MangaRepository {
     private readonly db: DatabaseService,
   ) {}
 
-  /**
-   * Persist a new Manga entity and its associations.
-   * @param manga Manga entity to persist
-   * @returns Promise<Manga>
-   */
   async save(manga: Manga): Promise<Manga> {
     await this.db.client.insert(mangas).values({
       id: manga.id,
@@ -80,11 +75,6 @@ export class MangaRepositoryImpl implements MangaRepository {
     }
   }
 
-  /**
-   * Check if a manga exists by its slug.
-   * @param slugName Slug identifier for the manga
-   * @returns Promise<boolean> True if exists, false otherwise
-   */
   async existBySlugName(slugName: string): Promise<boolean> {
     const result = await this.db.client
       .select({ id: mangas.id })
