@@ -4,13 +4,14 @@ import { Upload, UploadStatus } from '@/core/domain/entities/upload.entity'
 import { UploadRepository } from '@/core/domain/repositories/upload.repository'
 import { IMAGE_STORAGE_SERVICE } from '@/core/storage/constants/storage.constants'
 import { StorageService } from '@/core/storage/interfaces/storage.service'
+import { UPLOAD_REPOSITORY } from '@/infrastructure/tokens/repositories'
 
 @Injectable()
 export class UploadFileUseCase {
   constructor(
     @Inject(IMAGE_STORAGE_SERVICE)
     private readonly imageStorageService: StorageService,
-    @Inject('UploadRepository')
+    @Inject(UPLOAD_REPOSITORY)
     private readonly uploadRepository: UploadRepository,
   ) {}
 
