@@ -2,7 +2,6 @@ import { Type } from 'class-transformer'
 import {
   ArrayMinSize,
   IsArray,
-  IsBase64,
   IsDateString,
   IsEnum,
   IsInt,
@@ -11,7 +10,7 @@ import {
   IsOptional,
   IsPositive,
   IsString,
-  Matches,
+  IsUrl,
   MinLength,
   ValidateNested,
 } from 'class-validator'
@@ -32,23 +31,8 @@ export class SaveMangaGenreDto {
 
 export class SaveMangaDemographicDto {
   @IsString()
-  @IsNotEmpty({ message: 'demographic id es requerido' })
+  @IsNotEmpty({ message: 'Demographic id es requerido' })
   id: string
-}
-
-export class ImageDto {
-  @IsString({ message: 'El tipo de contenido es requerido' })
-  @IsNotEmpty({ message: 'El tipo de contenido es requerido' })
-  @Matches(/^image\/(png|jpeg|jpg|webp)$/, {
-    message:
-      'El tipo de contenido debe ser una imagen válida (png, jpeg, jpg, webp)',
-  })
-  contentType: string
-
-  @IsString({ message: 'La imagen es requerida' })
-  @IsNotEmpty({ message: 'La imagen es requerida' })
-  @IsBase64({}, { message: 'La imagen debe estar en formato base64' })
-  data: string
 }
 
 export class CreateMangaDto {
@@ -85,13 +69,15 @@ export class CreateMangaDto {
   )
   releaseDate: string
 
-  @ValidateNested()
-  @Type(() => ImageDto)
-  coverImage: ImageDto
+  @IsString({ message: 'La URL de la portada es requerida' })
+  @IsNotEmpty({ message: 'La URL de la portada es requerida' })
+  @IsUrl({}, { message: 'La URL de la portada debe ser una URL válida' })
+  coverImage: string
 
-  @ValidateNested()
-  @Type(() => ImageDto)
-  bannerImage: ImageDto
+  @IsString({ message: 'La URL del banner es requerida' })
+  @IsNotEmpty({ message: 'La URL del banner es requerida' })
+  @IsUrl({}, { message: 'La URL del banner debe ser una URL válida' })
+  bannerImage: string
 
   @IsEnum(PublicationStatus, {
     message: 'El estado de publicación debe ser un valor válido',
