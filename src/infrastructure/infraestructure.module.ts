@@ -5,6 +5,7 @@ import { ChapterRepositoryImpl } from './repositories/chapter.repository.impl'
 import { DemographicRepositoryImpl } from './repositories/demographic.repository.impl'
 import { GenreRepositoryImpl } from './repositories/genre.repository.impl'
 import { MangaRepositoryImpl } from './repositories/manga.repository.impl'
+import { UploadRepositoryImpl } from './repositories/upload.repository.impl'
 import {
   AUTHOR_REPOSITORY,
   CHAPTER_REPOSITORY,
@@ -38,7 +39,7 @@ import {
     },
     {
       provide: UPLOAD_REPOSITORY,
-      useClass: AuthorRepositoryImpl,
+      useClass: UploadRepositoryImpl,
     },
   ],
   exports: [
