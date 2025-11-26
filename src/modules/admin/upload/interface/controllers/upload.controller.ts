@@ -1,4 +1,5 @@
 import {
+  Body,
   Controller,
   Post,
   UploadedFile,
@@ -19,7 +20,10 @@ import { Roles } from '@/modules/auth/interface/decorators/roles.decorator'
 import { JwtAuthGuard } from '@/modules/auth/interface/guards/jwt-auth.guard'
 import { RolesGuard } from '@/modules/auth/interface/guards/roles.guard'
 
+import { UpdateStatusUploadUseCase } from '../../application/use-cases/update-status-upload.use-case'
 import { UploadFileUseCase } from '../../application/use-cases/upload-file.use-case'
+import { UpdateStatusUploadDto } from '../dtos/update-status-upload.dto'
+import { UploadFileDto } from '../dtos/upload-file.dto'
 import { FileValidationPipe } from '../pipes/file-validation.pipe'
 import { UploadSwagger } from '../swagger/upload.swagger'
 
@@ -28,7 +32,10 @@ import { UploadSwagger } from '../swagger/upload.swagger'
 @ApiTags('Upload')
 @Controller()
 export class UploadController {
-  constructor(private readonly uploadFileUseCase: UploadFileUseCase) {}
+  constructor(
+    private readonly uploadFileUseCase: UploadFileUseCase,
+    private readonly updateStatusUploadUseCase: UpdateStatusUploadUseCase,
+  ) {}
 
   @Post()
   @ApiOperation({
@@ -43,7 +50,25 @@ export class UploadController {
   async uploadFile(
     @UploadedFile(new FileValidationPipe({ maxSizeMB: 5 }))
     file: Express.Multer.File,
+    @Body() dto: UploadFileDto,
   ) {
-    await this.uploadFileUseCase.execute(file)
+    await this.uploadFileUseCase.execute({
+      file,
+      entityType: dto.entityType,
+    })
+  }
+
+  @Post('status')
+  @ApiOperation({
+    summary: 'Actualizar estado de un archivo subido',
+    description:
+      'Actualiza el estado de un archivo subido. Solo accesible por usuarios ADMIN.',
+  })
+  @ApiBody(UploadSwagger.updateUploadStatus.body)
+  @ApiResponse(UploadSwagger.updateUploadStatus.responses.ok)
+  @ApiResponse(UploadSwagger.updateUploadStatus.responses.badRequest)
+  @ApiBearerAuth()
+  async updateUploadStatus(@Body() dto: UpdateStatusUploadDto): Promise<void> {
+    await this.updateStatusUploadUseCase.execute(dto)
   }
 }
