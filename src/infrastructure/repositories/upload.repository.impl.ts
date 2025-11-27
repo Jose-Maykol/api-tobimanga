@@ -47,4 +47,28 @@ export class UploadRepositoryImpl implements UploadRepository {
       .set(updateData)
       .where(eq(uploads.id, id))
   }
+
+  async findByUrl(url: string): Promise<Upload | null> {
+    const result = await this.db.client
+      .select()
+      .from(uploads)
+      .where(eq(uploads.url, url))
+      .limit(1)
+
+    if (result.length === 0) return null
+
+    const row = result[0]
+    return {
+      id: row.id,
+      fileName: row.fileName,
+      contentType: row.contentType,
+      url: row.url,
+      status: row.status as UploadStatus,
+      objectKey: row.objectKey,
+      entityType: row.entityType,
+      usedAt: row.usedAt ?? null,
+      createdAt: row.createdAt,
+      updatedAt: row.updatedAt ?? null,
+    }
+  }
 }
