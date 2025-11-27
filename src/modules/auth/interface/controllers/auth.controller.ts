@@ -110,6 +110,17 @@ export class AuthController {
         `Login failed for email: ${userLoginDto.email} - ${error.message}`,
       )
 
+      if (error instanceof UserNotFoundException) {
+        throw new HttpException(
+          ResponseBuilder.error(
+            error.message,
+            error.code,
+            HttpStatus.NOT_FOUND,
+          ),
+          HttpStatus.NOT_FOUND,
+        )
+      }
+
       if (error instanceof UserAlreadyExistsException) {
         throw new HttpException(
           ResponseBuilder.error(
