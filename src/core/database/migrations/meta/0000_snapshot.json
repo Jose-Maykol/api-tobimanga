@@ -1,5 +1,5 @@
 {
-  "id": "a0d76895-c7c5-425a-8db8-aaac4cfef447",
+  "id": "04f5e422-d05e-463d-b1db-3d6262f3c438",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -614,6 +614,12 @@
           "notNull": true,
           "default": "uuid_generate_v4()"
         },
+        "file_name": {
+          "name": "file_name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
         "content_type": {
           "name": "content_type",
           "type": "text",
@@ -630,13 +636,26 @@
           "name": "status",
           "type": "text",
           "primaryKey": false,
-          "notNull": true
+          "notNull": true,
+          "default": "'PENDING'"
         },
         "object_key": {
           "name": "object_key",
           "type": "text",
           "primaryKey": false,
           "notNull": true
+        },
+        "entity_type": {
+          "name": "entity_type",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "used_at": {
+          "name": "used_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
         },
         "created_at": {
           "name": "created_at",
@@ -655,7 +674,15 @@
       "indexes": {},
       "foreignKeys": {},
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
+      "uniqueConstraints": {
+        "uploads_object_key_unique": {
+          "name": "uploads_object_key_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "object_key"
+          ]
+        }
+      },
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false

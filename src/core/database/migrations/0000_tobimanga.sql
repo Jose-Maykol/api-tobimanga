@@ -90,12 +90,16 @@ CREATE TABLE "mangas" (
 --> statement-breakpoint
 CREATE TABLE "uploads" (
 	"upload_id" uuid PRIMARY KEY DEFAULT uuid_generate_v4() NOT NULL,
+	"file_name" text NOT NULL,
 	"content_type" text NOT NULL,
 	"url" text NOT NULL,
-	"status" text NOT NULL,
+	"status" text DEFAULT 'PENDING' NOT NULL,
 	"object_key" text NOT NULL,
+	"entity_type" text,
+	"used_at" timestamp,
 	"created_at" timestamp DEFAULT now() NOT NULL,
-	"updated_at" timestamp
+	"updated_at" timestamp,
+	CONSTRAINT "uploads_object_key_unique" UNIQUE("object_key")
 );
 --> statement-breakpoint
 CREATE TABLE "user_chapter_progress" (
