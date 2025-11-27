@@ -9,6 +9,7 @@ import { AuthModule } from '@/modules/auth/auth.module'
 
 import { DemographicManagementModule } from '../demographic-management/demographic-management.module'
 import { GenreManagementModule } from '../genre-management/genre-management.module'
+import { UploadModule } from '../upload/upload.module'
 import { CreateMangaUseCase } from './application/use-cases/create-manga.use-case'
 import { MangaManagementController } from './interface/controllers/manga-management.controller'
 
@@ -21,6 +22,7 @@ import { MangaManagementController } from './interface/controllers/manga-managem
     GenreManagementModule,
     DemographicManagementModule,
     AuthorManagementModule,
+    UploadModule,
   ],
   providers: [CreateMangaUseCase, MangaFactory],
   controllers: [MangaManagementController],

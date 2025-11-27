@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Inject,
   Post,
   UploadedFile,
   UseGuards,
@@ -20,7 +21,7 @@ import { Roles } from '@/modules/auth/interface/decorators/roles.decorator'
 import { JwtAuthGuard } from '@/modules/auth/interface/guards/jwt-auth.guard'
 import { RolesGuard } from '@/modules/auth/interface/guards/roles.guard'
 
-import { UpdateStatusUploadUseCase } from '../../application/use-cases/update-status-upload.use-case'
+import { UpdateUploadStatusUseCase } from '../../application/use-cases/update-upload-status.use-case'
 import { UploadFileUseCase } from '../../application/use-cases/upload-file.use-case'
 import { UpdateStatusUploadDto } from '../dtos/update-status-upload.dto'
 import { UploadFileDto } from '../dtos/upload-file.dto'
@@ -33,8 +34,10 @@ import { UploadSwagger } from '../swagger/upload.swagger'
 @Controller()
 export class UploadController {
   constructor(
+    @Inject()
     private readonly uploadFileUseCase: UploadFileUseCase,
-    private readonly updateStatusUploadUseCase: UpdateStatusUploadUseCase,
+    @Inject()
+    private readonly updateStatusUploadUseCase: UpdateUploadStatusUseCase,
   ) {}
 
   @Post()
