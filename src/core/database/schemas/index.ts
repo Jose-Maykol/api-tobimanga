@@ -1,3 +1,7 @@
+import { demographicRelations } from '../relations/demographic.relations'
+import { mangaRelations } from '../relations/manga.relations'
+import { mangaAuthorRelations } from '../relations/manga-author.relations'
+import { mangaGenreRelations } from '../relations/manga-genre.relations'
 import { authors } from './author.schema'
 import { chapters } from './chapter.schema'
 import { demographics } from './demographic.schema'
@@ -17,13 +21,18 @@ export const databaseSchema = {
   chapters,
   demographics,
   genres,
+  mangas,
   mangaAuthors,
   mangaGenres,
-  mangas,
+  userMangas,
   publicationStatusEnum,
   readingStatusEnum,
   userChapterProgress,
   userFavoriteMangas,
-  userMangas,
   users,
+
+  mangaRelations,
+  mangaAuthorRelations,
+  mangaGenreRelations,
+  demographicRelations,
 }
