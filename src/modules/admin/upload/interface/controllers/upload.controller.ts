@@ -17,6 +17,7 @@ import {
 } from '@nestjs/swagger'
 
 import { ROLES } from '@/common/constants/roles.const'
+import { ResponseBuilder } from '@/common/utils/response.util'
 import { Roles } from '@/modules/auth/interface/decorators/roles.decorator'
 import { JwtAuthGuard } from '@/modules/auth/interface/guards/jwt-auth.guard'
 import { RolesGuard } from '@/modules/auth/interface/guards/roles.guard'
@@ -60,7 +61,10 @@ export class UploadController {
       entityType: dto.entityType,
     })
 
-    return result
+    return ResponseBuilder.success({
+      message: 'Archivo subido exitosamente',
+      data: result,
+    })
   }
 
   @Post('status')

@@ -1,10 +1,12 @@
 import {
   Body,
   Controller,
+  Get,
   HttpException,
   HttpStatus,
   Inject,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common'
 import {
@@ -24,6 +26,7 @@ import { JwtAuthGuard } from '@/modules/auth/interface/guards/jwt-auth.guard'
 import { RolesGuard } from '@/modules/auth/interface/guards/roles.guard'
 
 import { CreateMangaUseCase } from '../../application/use-cases/create-manga.use-case'
+import { ListMangasUseCase } from '../../application/use-cases/list-mangas.use-case'
 import { MangaManagementSwagger } from '../swagger/manga-management.swagger'
 
 @UseGuards(JwtAuthGuard, RolesGuard)
@@ -34,6 +37,8 @@ export class MangaManagementController {
   constructor(
     @Inject()
     private readonly createMangaUseCase: CreateMangaUseCase,
+    @Inject()
+    private readonly listMangasUseCase: ListMangasUseCase,
   ) {}
 
   @Post()
@@ -51,9 +56,7 @@ export class MangaManagementController {
       const result = await this.createMangaUseCase.execute(createMangaDto)
       return ResponseBuilder.success({
         message: 'Manga creado exitosamente',
-        data: {
-          manga: result,
-        },
+        data: result,
       })
     } catch (error) {
       if (error instanceof MangaAlreadyExistsException) {
@@ -63,5 +66,18 @@ export class MangaManagementController {
         )
       }
     }
+  }
+
+  @Get()
+  @ApiOperation({
+    summary: 'Listar mangas',
+    description: 'Obtiene una lista de mangas con paginación.',
+  })
+  async getAll(@Query('page') page = 1, @Query('limit') limit = 10) {
+    const mangas = await this.listMangasUseCase.execute({ page, limit })
+    return ResponseBuilder.success({
+      data: mangas.items,
+      meta: mangas.meta,
+    })
   }
 }
