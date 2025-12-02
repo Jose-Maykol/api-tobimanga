@@ -1,8 +1,8 @@
 export interface SuccessResponse<T> {
   success?: true
-  message: string
+  message?: string
   data: T
-  meta?: T
+  meta?: any
 }
 
 export interface ErrorResponse {
