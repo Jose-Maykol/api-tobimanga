@@ -55,10 +55,12 @@ export class UploadController {
     file: Express.Multer.File,
     @Body() dto: UploadFileDto,
   ) {
-    await this.uploadFileUseCase.execute({
+    const result = await this.uploadFileUseCase.execute({
       file,
       entityType: dto.entityType,
     })
+
+    return result
   }
 
   @Post('status')

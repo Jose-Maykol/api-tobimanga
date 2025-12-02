@@ -23,7 +23,12 @@ export class UploadFileUseCase {
   async execute(params: {
     file: Express.Multer.File
     entityType?: string
-  }): Promise<{ url: string; contentType: string; objectKey: string }> {
+  }): Promise<{
+    url: string
+    contentType: string
+    objectKey: string
+    id: string
+  }> {
     const { file, entityType } = params
     const uploadResult = await this.imageStorageService.uploadFromBuffer(
       file.buffer,
@@ -44,6 +49,7 @@ export class UploadFileUseCase {
     await this.uploadRepository.save(upload)
 
     return {
+      id: upload.id,
       url: upload.url,
       contentType: upload.contentType,
       objectKey: upload.objectKey,
