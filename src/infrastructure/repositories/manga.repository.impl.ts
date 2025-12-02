@@ -3,7 +3,6 @@ import { count, eq } from 'drizzle-orm'
 import { Inject, Injectable } from '@nestjs/common'
 
 import { DATABASE_SERVICE } from '@/core/database/constants/database.constants'
-import { demographics } from '@/core/database/schemas/demographic.schema'
 import { mangas } from '@/core/database/schemas/manga.schema'
 import { mangaAuthors } from '@/core/database/schemas/manga-author.schema'
 import { mangaGenres } from '@/core/database/schemas/manga-genre.schema'
@@ -89,39 +88,43 @@ export class MangaRepositoryImpl implements MangaRepository {
   async findAll(page: number, limit: number): Promise<Manga[]> {
     const offset = (page - 1) * limit
 
-    const results = await this.db.client
-      .select({
-        manga: mangas,
-        authors: mangaAuthors,
-        genres: mangaGenres,
-        demographic: demographics,
-      })
-      .from(mangas)
-      .innerJoin(mangaAuthors, eq(mangas.id, mangaAuthors.mangaId))
-      .innerJoin(mangaGenres, eq(mangas.id, mangaGenres.mangaId))
-      .innerJoin(demographics, eq(mangas.demographicId, demographics.id))
-      .limit(limit)
-      .offset(offset)
+    const results = await this.db.client.query.mangas.findMany({
+      with: {
+        authors: {
+          with: {
+            author: true,
+          },
+        },
+        genres: {
+          with: {
+            genre: true,
+          },
+        },
+        demographic: true,
+      },
+      limit,
+      offset,
+    })
 
     return results.map((result) => ({
-      id: result.manga.id,
-      originalName: result.manga.originalName,
-      slugName: result.manga.slugName,
-      scrappingName: result.manga.scrappingName,
-      alternativeNames: result.manga.alternativeNames,
-      sinopsis: result.manga.sinopsis,
-      chapters: result.manga.chapters,
-      releaseDate: new Date(result.manga.releaseDate),
-      coverImage: result.manga.coverImageUrl,
-      bannerImage: result.manga.bannerImageUrl,
-      publicationStatus: result.manga.publicationStatus as PublicationStatus,
-      rating: result.manga.rating,
-      active: result.manga.active,
-      authors: [],
-      genres: [],
+      id: result.id,
+      originalName: result.originalName,
+      slugName: result.slugName,
+      scrappingName: result.scrappingName,
+      alternativeNames: result.alternativeNames,
+      sinopsis: result.sinopsis,
+      chapters: result.chapters,
+      releaseDate: new Date(result.releaseDate),
+      coverImage: result.coverImageUrl,
+      bannerImage: result.bannerImageUrl,
+      publicationStatus: result.publicationStatus as PublicationStatus,
+      rating: result.rating,
+      active: result.active,
+      authors: result.authors.map((ma) => ma.author),
+      genres: result.genres.map((mg) => mg.genre),
       demographic: result.demographic,
-      createdAt: result.manga.createdAt,
-      updatedAt: result.manga.updatedAt,
+      createdAt: result.createdAt,
+      updatedAt: result.updatedAt,
     }))
   }
 

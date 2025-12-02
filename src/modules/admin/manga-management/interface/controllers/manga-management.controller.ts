@@ -74,7 +74,10 @@ export class MangaManagementController {
     description: 'Obtiene una lista de mangas con paginación.',
   })
   async getAll(@Query('page') page = 1, @Query('limit') limit = 10) {
-    const mangas = await this.listMangasUseCase.execute({ page, limit })
+    const mangas = await this.listMangasUseCase.execute({
+      page: Number(page),
+      limit: Number(limit),
+    })
     return ResponseBuilder.success({
       data: mangas.items,
       meta: mangas.meta,
