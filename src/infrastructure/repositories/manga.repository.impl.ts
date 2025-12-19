@@ -132,4 +132,113 @@ export class MangaRepositoryImpl implements MangaRepository {
     const result = await this.db.client.select({ total: count() }).from(mangas)
     return result[0].total
   }
+
+  async findById(id: string): Promise<Manga | null> {
+    const result = await this.db.client.query.mangas.findFirst({
+      where: eq(mangas.id, id),
+      with: {
+        authors: {
+          with: {
+            author: true,
+          },
+        },
+        genres: {
+          with: {
+            genre: true,
+          },
+        },
+        demographic: true,
+      },
+    })
+
+    if (!result) {
+      return null
+    }
+
+    return {
+      id: result.id,
+      originalName: result.originalName,
+      slugName: result.slugName,
+      scrappingName: result.scrappingName,
+      alternativeNames: result.alternativeNames,
+      sinopsis: result.sinopsis,
+      chapters: result.chapters,
+      releaseDate: new Date(result.releaseDate),
+      coverImage: result.coverImageUrl,
+      bannerImage: result.bannerImageUrl,
+      publicationStatus: result.publicationStatus as PublicationStatus,
+      rating: result.rating,
+      active: result.active,
+      authors: result.authors.map((ma) => ma.author),
+      genres: result.genres.map((mg) => mg.genre),
+      demographic: result.demographic,
+      createdAt: result.createdAt,
+      updatedAt: result.updatedAt,
+    }
+  }
+
+  async update(manga: Manga): Promise<Manga> {
+    await this.db.client
+      .update(mangas)
+      .set({
+        demographicId: manga.demographic.id,
+        originalName: manga.originalName,
+        slugName: manga.slugName,
+        scrappingName: manga.scrappingName,
+        alternativeNames: manga.alternativeNames,
+        sinopsis: manga.sinopsis,
+        releaseDate: manga.releaseDate.toISOString(),
+        coverImageUrl: manga.coverImage,
+        bannerImageUrl: manga.bannerImage,
+        publicationStatus: manga.publicationStatus,
+        updatedAt: manga.updatedAt,
+      })
+      .where(eq(mangas.id, manga.id))
+
+    await this.db.client
+      .delete(mangaAuthors)
+      .where(eq(mangaAuthors.mangaId, manga.id))
+    await this.db.client
+      .delete(mangaGenres)
+      .where(eq(mangaGenres.mangaId, manga.id))
+
+    if (manga.authors.length > 0) {
+      await this.db.client.insert(mangaAuthors).values(
+        manga.authors.map((author) => ({
+          mangaId: manga.id,
+          authorId: author.id,
+        })),
+      )
+    }
+
+    if (manga.genres.length > 0) {
+      await this.db.client.insert(mangaGenres).values(
+        manga.genres.map((genre) => ({
+          mangaId: manga.id,
+          genreId: genre.id,
+        })),
+      )
+    }
+
+    return {
+      id: manga.id,
+      originalName: manga.originalName,
+      slugName: manga.slugName,
+      scrappingName: manga.scrappingName,
+      alternativeNames: manga.alternativeNames,
+      sinopsis: manga.sinopsis,
+      chapters: manga.chapters,
+      releaseDate: manga.releaseDate,
+      coverImage: manga.coverImage,
+      bannerImage: manga.bannerImage,
+      publicationStatus: manga.publicationStatus,
+      rating: manga.rating,
+      active: manga.active,
+      authors: manga.authors,
+      genres: manga.genres,
+      demographic: manga.demographic,
+      createdAt: manga.createdAt,
+      updatedAt: manga.updatedAt,
+    }
+  }
 }
