@@ -5,7 +5,9 @@ import {
   HttpException,
   HttpStatus,
   Inject,
+  Param,
   Post,
+  Put,
   Query,
   UseGuards,
 } from '@nestjs/common'
@@ -25,8 +27,10 @@ import { Roles } from '@/modules/auth/interface/decorators/roles.decorator'
 import { JwtAuthGuard } from '@/modules/auth/interface/guards/jwt-auth.guard'
 import { RolesGuard } from '@/modules/auth/interface/guards/roles.guard'
 
+import { UpdateMangaDto } from '../../application/dtos/update-manga.dto'
 import { CreateMangaUseCase } from '../../application/use-cases/create-manga.use-case'
 import { ListMangasUseCase } from '../../application/use-cases/list-mangas.use-case'
+import { UpdateMangaUseCase } from '../../application/use-cases/update-manga.use-case'
 import { MangaManagementSwagger } from '../swagger/manga-management.swagger'
 
 @UseGuards(JwtAuthGuard, RolesGuard)
@@ -39,6 +43,8 @@ export class MangaManagementController {
     private readonly createMangaUseCase: CreateMangaUseCase,
     @Inject()
     private readonly listMangasUseCase: ListMangasUseCase,
+    @Inject()
+    private readonly updateMangaUseCase: UpdateMangaUseCase,
   ) {}
 
   @Post()
@@ -82,5 +88,43 @@ export class MangaManagementController {
       data: mangas.items,
       meta: mangas.meta,
     })
+  }
+
+  @Put(':id')
+  @ApiOperation({
+    summary: 'Actualizar un manga',
+    description: 'Actualiza todos los datos de un manga existente.',
+  })
+  @ApiBody({ type: UpdateMangaDto })
+  @ApiBearerAuth()
+  async update(
+    @Param('id') id: string,
+    @Body() updateMangaDto: UpdateMangaDto,
+  ) {
+    try {
+      const result = await this.updateMangaUseCase.execute(id, updateMangaDto)
+      return ResponseBuilder.success({
+        message: 'Manga actualizado exitosamente',
+        data: result,
+      })
+    } catch (error) {
+      if (error instanceof MangaAlreadyExistsException) {
+        throw new HttpException(
+          ResponseBuilder.error(error.message, error.code, HttpStatus.CONFLICT),
+          HttpStatus.CONFLICT,
+        )
+      }
+      if (error.name === 'MangaNotFoundException') {
+        throw new HttpException(
+          ResponseBuilder.error(
+            error.message,
+            error.code,
+            HttpStatus.NOT_FOUND,
+          ),
+          HttpStatus.NOT_FOUND,
+        )
+      }
+      throw error
+    }
   }
 }
