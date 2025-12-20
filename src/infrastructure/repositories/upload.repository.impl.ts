@@ -34,18 +34,22 @@ export class UploadRepositoryImpl implements UploadRepository {
     id: string,
     status: UploadStatus,
     usedAt?: Date,
-  ): Promise<void> {
+  ): Promise<Upload> {
     const updateData: Record<string, unknown> = {
       status,
       updatedAt: new Date(),
     }
+
     if (status === UploadStatus.ACTIVE) {
       updateData.usedAt = usedAt ?? new Date()
     }
-    await this.db.client
+
+    const result = await this.db.client
       .update(uploads)
       .set(updateData)
       .where(eq(uploads.id, id))
+
+    return result[0]
   }
 
   async findByUrl(url: string): Promise<Upload | null> {
@@ -53,6 +57,30 @@ export class UploadRepositoryImpl implements UploadRepository {
       .select()
       .from(uploads)
       .where(eq(uploads.url, url))
+      .limit(1)
+
+    if (result.length === 0) return null
+
+    const row = result[0]
+    return {
+      id: row.id,
+      fileName: row.fileName,
+      contentType: row.contentType,
+      url: row.url,
+      status: row.status as UploadStatus,
+      objectKey: row.objectKey,
+      entityType: row.entityType,
+      usedAt: row.usedAt ?? null,
+      createdAt: row.createdAt,
+      updatedAt: row.updatedAt ?? null,
+    }
+  }
+
+  async findById(id: string): Promise<Upload | null> {
+    const result = await this.db.client
+      .select()
+      .from(uploads)
+      .where(eq(uploads.id, id))
       .limit(1)
 
     if (result.length === 0) return null

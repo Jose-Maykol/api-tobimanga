@@ -20,7 +20,9 @@ export class FindUploadByUrlUseCase {
    */
   async execute({ url }: { url: string }): Promise<Upload> {
     const upload = await this.uploadRepository.findByUrl(url)
+
     if (upload === null) throw new UploadNotFoundException()
+
     return upload
   }
 }

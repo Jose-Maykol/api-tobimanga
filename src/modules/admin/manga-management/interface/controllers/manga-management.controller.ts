@@ -22,6 +22,7 @@ import {
 import { ROLES } from '@/common/constants/roles.const'
 import { ResponseBuilder } from '@/common/utils/response.util'
 import { MangaAlreadyExistsException } from '@/core/domain/exceptions/manga/manga-already-exists'
+import { MangaNotFoundException } from '@/core/domain/exceptions/manga/manga-not-found'
 import { CreateMangaDto } from '@/modules/admin/manga-management/application/dtos/create-manga.dto'
 import { Roles } from '@/modules/auth/interface/decorators/roles.decorator'
 import { JwtAuthGuard } from '@/modules/auth/interface/guards/jwt-auth.guard'
@@ -114,7 +115,7 @@ export class MangaManagementController {
           HttpStatus.CONFLICT,
         )
       }
-      if (error.name === 'MangaNotFoundException') {
+      if (error instanceof MangaNotFoundException) {
         throw new HttpException(
           ResponseBuilder.error(
             error.message,

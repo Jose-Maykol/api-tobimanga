@@ -12,6 +12,7 @@ import { GenreManagementModule } from '../genre-management/genre-management.modu
 import { UploadModule } from '../upload/upload.module'
 import { CreateMangaUseCase } from './application/use-cases/create-manga.use-case'
 import { ListMangasUseCase } from './application/use-cases/list-mangas.use-case'
+import { UpdateMangaUseCase } from './application/use-cases/update-manga.use-case'
 import { MangaManagementController } from './interface/controllers/manga-management.controller'
 
 @Module({
@@ -25,8 +26,13 @@ import { MangaManagementController } from './interface/controllers/manga-managem
     AuthorManagementModule,
     UploadModule,
   ],
-  providers: [CreateMangaUseCase, ListMangasUseCase, MangaFactory],
+  providers: [
+    CreateMangaUseCase,
+    ListMangasUseCase,
+    UpdateMangaUseCase,
+    MangaFactory,
+  ],
   controllers: [MangaManagementController],
-  exports: [CreateMangaUseCase, ListMangasUseCase],
+  exports: [CreateMangaUseCase, ListMangasUseCase, UpdateMangaUseCase],
 })
 export class MangaManagementModule {}
