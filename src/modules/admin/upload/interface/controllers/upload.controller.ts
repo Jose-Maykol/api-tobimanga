@@ -1,7 +1,11 @@
 import {
   Body,
   Controller,
+  HttpException,
+  HttpStatus,
   Inject,
+  Param,
+  Patch,
   Post,
   UploadedFile,
   UseGuards,
@@ -18,6 +22,7 @@ import {
 
 import { ROLES } from '@/common/constants/roles.const'
 import { ResponseBuilder } from '@/common/utils/response.util'
+import { UploadNotFoundException } from '@/core/domain/exceptions/upload/upload-not-found'
 import { Roles } from '@/modules/auth/interface/decorators/roles.decorator'
 import { JwtAuthGuard } from '@/modules/auth/interface/guards/jwt-auth.guard'
 import { RolesGuard } from '@/modules/auth/interface/guards/roles.guard'
@@ -67,7 +72,7 @@ export class UploadController {
     })
   }
 
-  @Post('status')
+  @Patch(':id/status')
   @ApiOperation({
     summary: 'Actualizar estado de un archivo subido',
     description:
@@ -77,7 +82,38 @@ export class UploadController {
   @ApiResponse(UploadSwagger.updateUploadStatus.responses.ok)
   @ApiResponse(UploadSwagger.updateUploadStatus.responses.badRequest)
   @ApiBearerAuth()
-  async updateUploadStatus(@Body() dto: UpdateStatusUploadDto): Promise<void> {
-    await this.updateStatusUploadUseCase.execute(dto)
+  async updateUploadStatus(
+    @Body() dto: UpdateStatusUploadDto,
+    @Param('id') id: string,
+  ) {
+    try {
+      const result = await this.updateStatusUploadUseCase.execute({
+        id,
+        status: dto.status,
+        usedAt: dto.usedAt,
+      })
+
+      return ResponseBuilder.success({
+        message: 'Estado del archivo actualizado exitosamente',
+        data: {
+          id: result.id,
+          fileName: result.fileName,
+          url: result.url,
+          status: result.status,
+          usedAt: result.usedAt,
+        },
+      })
+    } catch (error) {
+      if (error instanceof UploadNotFoundException) {
+        throw new HttpException(
+          ResponseBuilder.error(
+            error.message,
+            error.code,
+            HttpStatus.NOT_FOUND,
+          ),
+          HttpStatus.NOT_FOUND,
+        )
+      }
+    }
   }
 }
