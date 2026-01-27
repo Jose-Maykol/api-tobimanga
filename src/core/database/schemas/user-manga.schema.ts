@@ -19,5 +19,5 @@ export const userMangas = pgTable('user_mangas', {
   rating: smallint('rating'),
   readingStatus: readingStatusEnum('reading_status').notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
-  updatedAt: timestamp('updated_at'),
+  updatedAt: timestamp('updated_at').$onUpdate(() => new Date()),
 })

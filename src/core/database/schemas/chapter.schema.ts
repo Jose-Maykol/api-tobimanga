@@ -13,5 +13,5 @@ export const chapters = pgTable('chapters', {
   chapterNumber: smallint('chapter_number').notNull(),
   releaseDate: date('release_date'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
-  updatedAt: timestamp('updated_at'),
+  updatedAt: timestamp('updated_at').$onUpdate(() => new Date()),
 })

@@ -17,5 +17,5 @@ export const cronJobs = pgTable('cron_jobs', {
   task: text('task').notNull(),
   isActive: boolean('is_active').notNull().default(true),
   createdAt: timestamp('created_at').notNull().defaultNow(),
-  updatedAt: timestamp('updated_at').notNull().defaultNow(),
+  updatedAt: timestamp('updated_at').$onUpdate(() => new Date()),
 })

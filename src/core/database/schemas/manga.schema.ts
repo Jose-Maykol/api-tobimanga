@@ -32,5 +32,5 @@ export const mangas = pgTable('mangas', {
   rating: smallint('rating').default(0).notNull(),
   active: boolean('active').default(true).notNull(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
-  updatedAt: timestamp('updated_at'),
+  updatedAt: timestamp('updated_at').$onUpdate(() => new Date()),
 })

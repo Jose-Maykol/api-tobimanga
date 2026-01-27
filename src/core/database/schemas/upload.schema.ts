@@ -17,5 +17,5 @@ export const uploads = pgTable('uploads', {
   entityType: text('entity_type'),
   usedAt: timestamp('used_at'),
   createdAt: timestamp('created_at').defaultNow().notNull(),
-  updatedAt: timestamp('updated_at'),
+  updatedAt: timestamp('updated_at').$onUpdate(() => new Date()),
 })

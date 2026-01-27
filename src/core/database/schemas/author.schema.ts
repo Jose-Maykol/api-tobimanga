@@ -7,5 +7,5 @@ export const authors = pgTable('authors', {
     .primaryKey(),
   name: varchar('name', { length: 100 }).notNull().unique(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
-  updatedAt: timestamp('updated_at'),
+  updatedAt: timestamp('updated_at').$onUpdate(() => new Date()),
 })
