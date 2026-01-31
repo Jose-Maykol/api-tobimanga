@@ -62,4 +62,14 @@ export class GenreRepositoryImpl implements GenreRepository {
 
     return savedGenre[0] as Genre
   }
+
+  async update(id: string, genre: Partial<Genre>): Promise<Genre | null> {
+    const updatedGenre = await this.db.client
+      .update(genres)
+      .set(genre)
+      .where(eq(genres.id, id))
+      .returning()
+
+    return updatedGenre[0] ? (updatedGenre[0] as Genre) : null
+  }
 }

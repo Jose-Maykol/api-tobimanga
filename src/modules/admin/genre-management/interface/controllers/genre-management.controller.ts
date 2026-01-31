@@ -4,7 +4,9 @@ import {
   Get,
   HttpException,
   HttpStatus,
+  Param,
   Post,
+  Put,
   UseGuards,
 } from '@nestjs/common'
 import {
@@ -18,13 +20,16 @@ import {
 import { ROLES } from '@/common/constants/roles.const'
 import { ResponseBuilder } from '@/common/utils/response.util'
 import { GenreAlreadyExistsException } from '@/core/domain/exceptions/genre/genre-already-exists.exception'
+import { GenreNotFoundException } from '@/core/domain/exceptions/genre/genre-not-found.exception'
 import { Roles } from '@/modules/auth/interface/decorators/roles.decorator'
 import { JwtAuthGuard } from '@/modules/auth/interface/guards/jwt-auth.guard'
 import { RolesGuard } from '@/modules/auth/interface/guards/roles.guard'
 
 import { CreateGenreDto } from '../../application/dtos/create-genre.dto'
+import { UpdateGenreDto } from '../../application/dtos/update-genre.dto'
 import { CreateGenreUseCase } from '../../application/use-cases/create-genre.use-case'
 import { GetAllGenresUseCase } from '../../application/use-cases/get-all-genres.use-case'
+import { UpdateGenreUseCase } from '../../application/use-cases/update-genre.use-case'
 import { GenreManagementSwagger } from '../swagger/genre-maagement.swagger'
 
 @UseGuards(JwtAuthGuard, RolesGuard)
@@ -35,6 +40,7 @@ export class GenreManagementController {
   constructor(
     private readonly createGenreUseCase: CreateGenreUseCase,
     private readonly getAllGenresUseCase: GetAllGenresUseCase,
+    private readonly updateGenreUseCase: UpdateGenreUseCase,
   ) {}
 
   @Post()
@@ -46,7 +52,7 @@ export class GenreManagementController {
   @ApiResponse(GenreManagementSwagger.create.responses.created)
   @ApiResponse(GenreManagementSwagger.create.responses.conflict)
   @ApiBearerAuth()
-  async createGenre(@Body() createGenreDto: CreateGenreDto) {
+  async create(@Body() createGenreDto: CreateGenreDto) {
     try {
       const result = await this.createGenreUseCase.execute(createGenreDto)
 
@@ -85,5 +91,48 @@ export class GenreManagementController {
         genres,
       },
     })
+  }
+
+  @Put(':id')
+  @ApiOperation({
+    summary: 'Actualizar un género existente',
+    description:
+      'Actualiza un género existente. Solo accesible por usuarios ADMIN.',
+  })
+  async update(
+    @Body() updateGenreDto: UpdateGenreDto,
+    @Param('id') id: string,
+  ) {
+    try {
+      const result = await this.updateGenreUseCase.execute(id, updateGenreDto)
+
+      return ResponseBuilder.success({
+        message: 'Género actualizado exitosamente',
+        data: {
+          genre: {
+            id: result.id,
+            name: result.name,
+          },
+        },
+      })
+    } catch (error) {
+      if (error instanceof GenreAlreadyExistsException) {
+        throw new HttpException(
+          ResponseBuilder.error(error.message, error.code, HttpStatus.CONFLICT),
+          HttpStatus.CONFLICT,
+        )
+      }
+      if (error instanceof GenreNotFoundException) {
+        throw new HttpException(
+          ResponseBuilder.error(
+            error.message,
+            error.code,
+            HttpStatus.NOT_FOUND,
+          ),
+          HttpStatus.NOT_FOUND,
+        )
+      }
+      throw error
+    }
   }
 }
