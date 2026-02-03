@@ -4,7 +4,9 @@ import {
   Get,
   HttpException,
   HttpStatus,
+  Param,
   Post,
+  Put,
   UseGuards,
 } from '@nestjs/common'
 import {
@@ -18,13 +20,16 @@ import {
 import { ROLES } from '@/common/constants/roles.const'
 import { ResponseBuilder } from '@/common/utils/response.util'
 import { AuthorAlreadyExistsException } from '@/core/domain/exceptions/author/author-already-exists.exception'
+import { AuthorNotFoundException } from '@/core/domain/exceptions/author/author-not-found.exception'
 import { Roles } from '@/modules/auth/interface/decorators/roles.decorator'
 import { JwtAuthGuard } from '@/modules/auth/interface/guards/jwt-auth.guard'
 import { RolesGuard } from '@/modules/auth/interface/guards/roles.guard'
 
 import { CreateAuthorDto } from '../../application/dtos/create-author.dto'
+import { UpdateAuthorDto } from '../../application/dtos/update-author.dto'
 import { CreateAuthorUseCase } from '../../application/use-cases/create-author.use-case'
 import { GetAllAuthorsUseCase } from '../../application/use-cases/get-all-authors.use-case'
+import { UpdateAuthorUseCase } from '../../application/use-cases/update-author.use-case'
 import { AuthorManagementSwagger } from '../swagger/author-management.swagger'
 
 @UseGuards(JwtAuthGuard, RolesGuard)
@@ -35,6 +40,7 @@ export class AuthorManagementController {
   constructor(
     private readonly createAuthorUseCase: CreateAuthorUseCase,
     private readonly getAllAuthorsUseCase: GetAllAuthorsUseCase,
+    private readonly updateAuthorUseCase: UpdateAuthorUseCase,
   ) {}
 
   @Post()
@@ -85,5 +91,47 @@ export class AuthorManagementController {
         authors,
       },
     })
+  }
+
+  @Put(':id')
+  @ApiOperation({
+    summary: 'Actualizar un autor',
+    description:
+      'Actualiza los datos de un autor existente. Solo accesible por usuarios ADMIN.',
+  })
+  async update(
+    @Body() updateAuthorDto: UpdateAuthorDto,
+    @Param('id') id: string,
+  ) {
+    try {
+      const result = await this.updateAuthorUseCase.execute(id, updateAuthorDto)
+      return ResponseBuilder.success({
+        message: 'Autor actualizado exitosamente',
+        data: {
+          author: {
+            id: result.id,
+            name: result.name,
+          },
+        },
+      })
+    } catch (error) {
+      if (error instanceof AuthorAlreadyExistsException) {
+        throw new HttpException(
+          ResponseBuilder.error(error.message, error.code, HttpStatus.CONFLICT),
+          HttpStatus.CONFLICT,
+        )
+      }
+      if (error instanceof AuthorNotFoundException) {
+        throw new HttpException(
+          ResponseBuilder.error(
+            error.message,
+            error.code,
+            HttpStatus.NOT_FOUND,
+          ),
+          HttpStatus.NOT_FOUND,
+        )
+      }
+      throw error
+    }
   }
 }

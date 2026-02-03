@@ -62,4 +62,17 @@ export class AuthorRepositoryImpl implements AuthorRepository {
 
     return savedAuthor[0] as Author
   }
+
+  async update(id: string, author: Partial<Author>): Promise<Author | null> {
+    const updatedAuthor = await this.db.client
+      .update(authors)
+      .set({
+        name: author.name!,
+        updatedAt: new Date(),
+      })
+      .where(eq(authors.id, id))
+      .returning()
+
+    return updatedAuthor.length ? (updatedAuthor[0] as Author) : null
+  }
 }
