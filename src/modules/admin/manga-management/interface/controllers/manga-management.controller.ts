@@ -58,11 +58,12 @@ export class MangaManagementController {
   @ApiOperation({
     summary: 'Crear un nuevo manga',
     description:
-      'Crea una nueva entidad manga. Solo accesible por usuarios ADMIN.',
+      'Crea un nuevo manga con todos sus datos relacionados. Genera automáticamente el slug, crea los capítulos especificados y activa los uploads de imágenes. Solo accesible por ADMIN.',
   })
   @ApiBody(MangaManagementSwagger.create.body)
   @ApiResponse(MangaManagementSwagger.create.responses.created)
   @ApiResponse(MangaManagementSwagger.create.responses.conflict)
+  @ApiResponse(MangaManagementSwagger.create.responses.badRequest)
   @ApiBearerAuth()
   async create(@Body() createMangaDto: CreateMangaDto) {
     try {
@@ -111,9 +112,14 @@ export class MangaManagementController {
   @Put(':id')
   @ApiOperation({
     summary: 'Actualizar un manga',
-    description: 'Actualiza todos los datos de un manga existente.',
+    description:
+      'Actualiza todos los campos del manga EXCEPTO chapters y scrappingName. Regenera el slug si cambia el originalName. Activa los uploads de nuevas imágenes. Solo accesible por ADMIN.',
   })
-  @ApiBody({ type: UpdateMangaDto })
+  @ApiParam(MangaManagementSwagger.update.param)
+  @ApiBody(MangaManagementSwagger.update.body)
+  @ApiResponse(MangaManagementSwagger.update.responses.success)
+  @ApiResponse(MangaManagementSwagger.update.responses.notFound)
+  @ApiResponse(MangaManagementSwagger.update.responses.conflict)
   @ApiBearerAuth()
   async update(
     @Param('id') id: string,
