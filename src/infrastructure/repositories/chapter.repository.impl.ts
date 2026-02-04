@@ -48,6 +48,21 @@ export class ChapterRepositoryImpl implements ChapterRepository {
     return result
   }
 
+  async findByMangaId(mangaId: string): Promise<Chapter[]> {
+    const rows = await this.db.client
+      .select()
+      .from(chapters)
+      .where(eq(chapters.mangaId, mangaId))
+      .orderBy(chapters.chapterNumber)
+
+    return rows.map((row) => ({
+      ...row,
+      releaseDate: row.releaseDate ? new Date(row.releaseDate) : null,
+      createdAt: row.createdAt ? new Date(row.createdAt) : row.createdAt,
+      updatedAt: row.updatedAt ? new Date(row.updatedAt) : null,
+    }))
+  }
+
   async saveMany(mangaId: string, chapterCount: number): Promise<void> {
     const now: Date = new Date()
     const chaptersToInsert: Array<{

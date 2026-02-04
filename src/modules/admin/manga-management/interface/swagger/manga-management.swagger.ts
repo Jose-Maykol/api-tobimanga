@@ -73,4 +73,52 @@ export const MangaManagementSwagger = {
       },
     },
   },
+  listChapters: {
+    param: {
+      name: 'mangaId',
+      type: String,
+      description: 'ID del manga',
+      example: 'f7b3c1a0-1234-5678-9abc-def012345678',
+    },
+    responses: {
+      success: {
+        status: 200,
+        description: 'Lista de capítulos obtenida exitosamente.',
+        schema: {
+          example: {
+            message: 'Capítulos obtenidos exitosamente',
+            data: {
+              chapters: [
+                {
+                  id: 'chapter-uuid-1',
+                  chapterNumber: 1,
+                  releaseDate: '2024-01-15',
+                  createdAt: '2024-01-01T00:00:00.000Z',
+                  updatedAt: null,
+                },
+                {
+                  id: 'chapter-uuid-2',
+                  chapterNumber: 2,
+                  releaseDate: '2024-01-22',
+                  createdAt: '2024-01-01T00:00:00.000Z',
+                  updatedAt: null,
+                },
+              ],
+            },
+          },
+        },
+      },
+      notFound: {
+        status: 404,
+        description: 'Manga no encontrado.',
+        schema: {
+          example: {
+            statusCode: 404,
+            message: 'Manga not found',
+            error: 'MANGA_NOT_FOUND',
+          },
+        },
+      },
+    },
+  },
 }

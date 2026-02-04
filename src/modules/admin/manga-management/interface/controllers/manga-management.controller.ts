@@ -5,6 +5,7 @@ import {
   HttpException,
   HttpStatus,
   Inject,
+  Logger,
   Param,
   Post,
   Put,
@@ -15,6 +16,7 @@ import {
   ApiBearerAuth,
   ApiBody,
   ApiOperation,
+  ApiParam,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger'
@@ -30,6 +32,7 @@ import { RolesGuard } from '@/modules/auth/interface/guards/roles.guard'
 
 import { UpdateMangaDto } from '../../application/dtos/update-manga.dto'
 import { CreateMangaUseCase } from '../../application/use-cases/create-manga.use-case'
+import { ListChaptersByMangaUseCase } from '../../application/use-cases/list-chapters-by-manga.use-case'
 import { ListMangasUseCase } from '../../application/use-cases/list-mangas.use-case'
 import { UpdateMangaUseCase } from '../../application/use-cases/update-manga.use-case'
 import { MangaManagementSwagger } from '../swagger/manga-management.swagger'
@@ -39,6 +42,8 @@ import { MangaManagementSwagger } from '../swagger/manga-management.swagger'
 @Controller()
 @ApiTags('Gestión de Mangas')
 export class MangaManagementController {
+  private readonly logger = new Logger(MangaManagementController.name)
+
   constructor(
     @Inject()
     private readonly createMangaUseCase: CreateMangaUseCase,
@@ -46,6 +51,8 @@ export class MangaManagementController {
     private readonly listMangasUseCase: ListMangasUseCase,
     @Inject()
     private readonly updateMangaUseCase: UpdateMangaUseCase,
+    @Inject()
+    private readonly listChaptersByMangaUseCase: ListChaptersByMangaUseCase,
   ) {}
 
   @Post()
@@ -125,6 +132,28 @@ export class MangaManagementController {
           HttpStatus.NOT_FOUND,
         )
       }
+      throw error
+    }
+  }
+
+  @Get(':mangaId/chapters')
+  @ApiOperation({
+    summary: 'Listar capítulos de un manga',
+    description:
+      'Obtiene todos los capítulos de un manga específico. Solo accesible por usuarios ADMIN.',
+  })
+  @ApiParam(MangaManagementSwagger.listChapters.param)
+  @ApiResponse(MangaManagementSwagger.listChapters.responses.success)
+  @ApiResponse(MangaManagementSwagger.listChapters.responses.notFound)
+  @ApiBearerAuth()
+  async getChaptersByMangaId(@Param('mangaId') mangaId: string) {
+    try {
+      const chapters = await this.listChaptersByMangaUseCase.execute(mangaId)
+      return ResponseBuilder.success({
+        message: 'Capítulos obtenidos exitosamente',
+        data: { chapters },
+      })
+    } catch (error) {
       throw error
     }
   }
