@@ -85,10 +85,17 @@ export class MangaRepositoryImpl implements MangaRepository {
     return result.length > 0
   }
 
-  async findAll(page: number, limit: number): Promise<Manga[]> {
+  async findAll(
+    page: number,
+    limit: number,
+    publicationStatus?: PublicationStatus,
+  ): Promise<Manga[]> {
     const offset = (page - 1) * limit
 
     const results = await this.db.client.query.mangas.findMany({
+      where: publicationStatus
+        ? eq(mangas.publicationStatus, publicationStatus)
+        : undefined,
       with: {
         authors: {
           with: {
@@ -128,8 +135,15 @@ export class MangaRepositoryImpl implements MangaRepository {
     }))
   }
 
-  async countAll(): Promise<number> {
-    const result = await this.db.client.select({ total: count() }).from(mangas)
+  async countAll(publicationStatus?: PublicationStatus): Promise<number> {
+    const result = await this.db.client
+      .select({ total: count() })
+      .from(mangas)
+      .where(
+        publicationStatus
+          ? eq(mangas.publicationStatus, publicationStatus)
+          : undefined,
+      )
     return result[0].total
   }
 

@@ -5,7 +5,6 @@ import {
   HttpException,
   HttpStatus,
   Inject,
-  Logger,
   Param,
   Post,
   Put,
@@ -17,6 +16,7 @@ import {
   ApiBody,
   ApiOperation,
   ApiParam,
+  ApiQuery,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger'
@@ -29,6 +29,7 @@ import { CreateMangaDto } from '@/modules/admin/manga-management/application/dto
 import { Roles } from '@/modules/auth/interface/decorators/roles.decorator'
 import { JwtAuthGuard } from '@/modules/auth/interface/guards/jwt-auth.guard'
 import { RolesGuard } from '@/modules/auth/interface/guards/roles.guard'
+import { PublicationStatus } from '@/modules/manga/application/enums/publication-status.enum'
 
 import { UpdateMangaDto } from '../../application/dtos/update-manga.dto'
 import { CreateMangaUseCase } from '../../application/use-cases/create-manga.use-case'
@@ -42,8 +43,6 @@ import { MangaManagementSwagger } from '../swagger/manga-management.swagger'
 @Controller()
 @ApiTags('Gestión de Mangas')
 export class MangaManagementController {
-  private readonly logger = new Logger(MangaManagementController.name)
-
   constructor(
     @Inject()
     private readonly createMangaUseCase: CreateMangaUseCase,
@@ -85,12 +84,23 @@ export class MangaManagementController {
   @Get()
   @ApiOperation({
     summary: 'Listar mangas',
-    description: 'Obtiene una lista de mangas con paginación.',
+    description:
+      'Obtiene una lista de mangas con paginación. Permite filtrar opcionalmente por estado de publicación.',
   })
-  async getAll(@Query('page') page = 1, @Query('limit') limit = 10) {
+  @ApiQuery(MangaManagementSwagger.listMangas.queries.page)
+  @ApiQuery(MangaManagementSwagger.listMangas.queries.limit)
+  @ApiQuery(MangaManagementSwagger.listMangas.queries.publicationStatus)
+  @ApiResponse(MangaManagementSwagger.listMangas.responses.success)
+  @ApiBearerAuth()
+  async getAll(
+    @Query('page') page = 1,
+    @Query('limit') limit = 10,
+    @Query('publicationStatus') publicationStatus?: PublicationStatus,
+  ) {
     const mangas = await this.listMangasUseCase.execute({
       page: Number(page),
       limit: Number(limit),
+      publicationStatus,
     })
     return ResponseBuilder.success({
       data: mangas.items,

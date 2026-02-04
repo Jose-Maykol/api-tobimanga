@@ -73,6 +73,78 @@ export const MangaManagementSwagger = {
       },
     },
   },
+  listMangas: {
+    queries: {
+      page: {
+        name: 'page',
+        required: false,
+        type: Number,
+        description: 'Número de página (por defecto: 1)',
+        example: 1,
+      },
+      limit: {
+        name: 'limit',
+        required: false,
+        type: Number,
+        description: 'Cantidad de items por página (por defecto: 10)',
+        example: 10,
+      },
+      publicationStatus: {
+        name: 'publicationStatus',
+        required: false,
+        enum: [
+          'ONGOING',
+          'FINISHED',
+          'HIATUS',
+          'CANCELLED',
+          'NOT_YET_RELEASED',
+          'UNKNOWN',
+        ],
+        description:
+          'Filtrar por estado de publicación. Si no se especifica, devuelve todos los mangas.',
+        examples: {
+          ongoing: {
+            summary: 'Mangas en curso',
+            value: 'ONGOING',
+          },
+          finished: {
+            summary: 'Mangas finalizados',
+            value: 'FINISHED',
+          },
+        },
+      },
+    },
+    responses: {
+      success: {
+        status: 200,
+        description: 'Lista de mangas obtenida exitosamente.',
+        schema: {
+          example: {
+            data: [
+              {
+                id: 'manga-uuid',
+                originalName: 'Attack on Titan',
+                slugName: 'attack-on-titan',
+                chapters: 139,
+                publicationStatus: 'FINISHED',
+                rating: 95,
+                coverImage: 'https://example.com/cover.jpg',
+                active: true,
+              },
+            ],
+            meta: {
+              pagination: {
+                page: 1,
+                limit: 10,
+                totalItems: 100,
+                totalPages: 10,
+              },
+            },
+          },
+        },
+      },
+    },
+  },
   listChapters: {
     param: {
       name: 'mangaId',
