@@ -13,6 +13,7 @@ import {
   ApiBearerAuth,
   ApiBody,
   ApiOperation,
+  ApiParam,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger'
@@ -51,6 +52,7 @@ export class GenreManagementController {
   @ApiBody(GenreManagementSwagger.create.body)
   @ApiResponse(GenreManagementSwagger.create.responses.created)
   @ApiResponse(GenreManagementSwagger.create.responses.conflict)
+  @ApiResponse(GenreManagementSwagger.create.responses.badRequest)
   @ApiBearerAuth()
   async create(@Body() createGenreDto: CreateGenreDto) {
     try {
@@ -99,6 +101,13 @@ export class GenreManagementController {
     description:
       'Actualiza un género existente. Solo accesible por usuarios ADMIN.',
   })
+  @ApiParam(GenreManagementSwagger.update.param)
+  @ApiBody(GenreManagementSwagger.update.body)
+  @ApiResponse(GenreManagementSwagger.update.responses.success)
+  @ApiResponse(GenreManagementSwagger.update.responses.notFound)
+  @ApiResponse(GenreManagementSwagger.update.responses.conflict)
+  @ApiResponse(GenreManagementSwagger.update.responses.badRequest)
+  @ApiBearerAuth()
   async update(
     @Body() updateGenreDto: UpdateGenreDto,
     @Param('id') id: string,
