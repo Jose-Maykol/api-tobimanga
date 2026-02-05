@@ -289,30 +289,69 @@ export const MangaManagementSwagger = {
       description: 'ID del manga',
       example: 'f7b3c1a0-1234-5678-9abc-def012345678',
     },
+    queries: {
+      page: {
+        name: 'page',
+        required: false,
+        type: Number,
+        description: 'Número de página (por defecto: 1)',
+        example: 1,
+      },
+      limit: {
+        name: 'limit',
+        required: false,
+        type: Number,
+        description: 'Cantidad de capítulos por página (por defecto: 30)',
+        example: 30,
+      },
+      order: {
+        name: 'order',
+        required: false,
+        enum: ['asc', 'desc'],
+        description:
+          'Orden de los capítulos por número. "asc" ordena de menor a mayor, "desc" de mayor a menor (por defecto: desc)',
+        examples: {
+          ascending: {
+            summary: 'Orden ascendente',
+            value: 'asc',
+          },
+          descending: {
+            summary: 'Orden descendente',
+            value: 'desc',
+          },
+        },
+      },
+    },
     responses: {
       success: {
         status: 200,
-        description: 'Lista de capítulos obtenida exitosamente.',
+        description: 'Lista de capítulos obtenida exitosamente con paginación.',
         schema: {
           example: {
             message: 'Capítulos obtenidos exitosamente',
-            data: {
-              chapters: [
-                {
-                  id: 'chapter-uuid-1',
-                  chapterNumber: 1,
-                  releaseDate: '2024-01-15',
-                  createdAt: '2024-01-01T00:00:00.000Z',
-                  updatedAt: null,
-                },
-                {
-                  id: 'chapter-uuid-2',
-                  chapterNumber: 2,
-                  releaseDate: '2024-01-22',
-                  createdAt: '2024-01-01T00:00:00.000Z',
-                  updatedAt: null,
-                },
-              ],
+            data: [
+              {
+                id: 'chapter-uuid-1',
+                chapterNumber: 10,
+                releaseDate: '2024-01-22',
+                createdAt: '2024-01-01T00:00:00.000Z',
+                updatedAt: null,
+              },
+              {
+                id: 'chapter-uuid-2',
+                chapterNumber: 9,
+                releaseDate: '2024-01-15',
+                createdAt: '2024-01-01T00:00:00.000Z',
+                updatedAt: null,
+              },
+            ],
+            meta: {
+              pagination: {
+                page: 1,
+                limit: 30,
+                totalItems: 139,
+                totalPages: 5,
+              },
             },
           },
         },

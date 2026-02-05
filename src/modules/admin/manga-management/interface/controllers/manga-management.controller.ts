@@ -156,18 +156,32 @@ export class MangaManagementController {
   @ApiOperation({
     summary: 'Listar capítulos de un manga',
     description:
-      'Obtiene todos los capítulos de un manga específico. Solo accesible por usuarios ADMIN.',
+      'Obtiene los capítulos de un manga específico con paginación. Solo accesible por usuarios ADMIN.',
   })
   @ApiParam(MangaManagementSwagger.listChapters.param)
+  @ApiQuery(MangaManagementSwagger.listChapters.queries.page)
+  @ApiQuery(MangaManagementSwagger.listChapters.queries.limit)
+  @ApiQuery(MangaManagementSwagger.listChapters.queries.order)
   @ApiResponse(MangaManagementSwagger.listChapters.responses.success)
   @ApiResponse(MangaManagementSwagger.listChapters.responses.notFound)
   @ApiBearerAuth()
-  async getChaptersByMangaId(@Param('mangaId') mangaId: string) {
+  async getChaptersByMangaId(
+    @Param('mangaId') mangaId: string,
+    @Query('page') page = 1,
+    @Query('limit') limit = 30,
+    @Query('order') order: 'asc' | 'desc' = 'desc',
+  ) {
     try {
-      const chapters = await this.listChaptersByMangaUseCase.execute(mangaId)
+      const result = await this.listChaptersByMangaUseCase.execute({
+        mangaId,
+        page: Number(page),
+        limit: Number(limit),
+        order,
+      })
       return ResponseBuilder.success({
         message: 'Capítulos obtenidos exitosamente',
-        data: { chapters },
+        data: result.chapters,
+        meta: result.meta,
       })
     } catch (error) {
       throw error
