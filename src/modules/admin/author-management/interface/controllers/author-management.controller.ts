@@ -13,6 +13,7 @@ import {
   ApiBearerAuth,
   ApiBody,
   ApiOperation,
+  ApiParam,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger'
@@ -51,6 +52,7 @@ export class AuthorManagementController {
   @ApiBody(AuthorManagementSwagger.create.body)
   @ApiResponse(AuthorManagementSwagger.create.responses.created)
   @ApiResponse(AuthorManagementSwagger.create.responses.conflict)
+  @ApiResponse(AuthorManagementSwagger.create.responses.badRequest)
   @ApiBearerAuth()
   async create(@Body() createAuthorDto: CreateAuthorDto) {
     try {
@@ -99,6 +101,13 @@ export class AuthorManagementController {
     description:
       'Actualiza los datos de un autor existente. Solo accesible por usuarios ADMIN.',
   })
+  @ApiParam(AuthorManagementSwagger.update.param)
+  @ApiBody(AuthorManagementSwagger.update.body)
+  @ApiResponse(AuthorManagementSwagger.update.responses.success)
+  @ApiResponse(AuthorManagementSwagger.update.responses.notFound)
+  @ApiResponse(AuthorManagementSwagger.update.responses.conflict)
+  @ApiResponse(AuthorManagementSwagger.update.responses.badRequest)
+  @ApiBearerAuth()
   async update(
     @Body() updateAuthorDto: UpdateAuthorDto,
     @Param('id') id: string,
