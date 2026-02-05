@@ -154,4 +154,36 @@ export const AuthorManagementSwagger = {
       },
     },
   },
+  delete: {
+    param: {
+      name: 'id',
+      type: String,
+      description: 'ID del autor a eliminar',
+      example: 'author-uuid-1',
+    },
+    responses: {
+      success: {
+        status: 200,
+        description: 'Autor eliminado exitosamente.',
+        schema: {
+          example: {
+            success: true,
+            message: 'Autor eliminado exitosamente',
+            data: null,
+          },
+        },
+      },
+      notFound: {
+        status: 404,
+        description: 'Autor no encontrado con el ID proporcionado.',
+        schema: {
+          example: {
+            statusCode: 404,
+            message: 'Author not found',
+            error: 'AUTHOR_NOT_FOUND',
+          },
+        },
+      },
+    },
+  },
 }

@@ -7,4 +7,5 @@ export interface AuthorRepository {
   findByName(name: string): Promise<Author | null>
   save(author: Author): Promise<Author>
   update(id: string, author: Partial<Author>): Promise<Author | null>
+  delete(id: string): Promise<boolean>
 }

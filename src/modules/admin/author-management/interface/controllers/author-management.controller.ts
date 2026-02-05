@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpException,
   HttpStatus,
@@ -29,6 +30,7 @@ import { RolesGuard } from '@/modules/auth/interface/guards/roles.guard'
 import { CreateAuthorDto } from '../../application/dtos/create-author.dto'
 import { UpdateAuthorDto } from '../../application/dtos/update-author.dto'
 import { CreateAuthorUseCase } from '../../application/use-cases/create-author.use-case'
+import { DeleteAuthorUseCase } from '../../application/use-cases/delete-author.use-case'
 import { GetAllAuthorsUseCase } from '../../application/use-cases/get-all-authors.use-case'
 import { UpdateAuthorUseCase } from '../../application/use-cases/update-author.use-case'
 import { AuthorManagementSwagger } from '../swagger/author-management.swagger'
@@ -42,6 +44,7 @@ export class AuthorManagementController {
     private readonly createAuthorUseCase: CreateAuthorUseCase,
     private readonly getAllAuthorsUseCase: GetAllAuthorsUseCase,
     private readonly updateAuthorUseCase: UpdateAuthorUseCase,
+    private readonly deleteAuthorUseCase: DeleteAuthorUseCase,
   ) {}
 
   @Post()
@@ -130,6 +133,38 @@ export class AuthorManagementController {
           HttpStatus.CONFLICT,
         )
       }
+      if (error instanceof AuthorNotFoundException) {
+        throw new HttpException(
+          ResponseBuilder.error(
+            error.message,
+            error.code,
+            HttpStatus.NOT_FOUND,
+          ),
+          HttpStatus.NOT_FOUND,
+        )
+      }
+      throw error
+    }
+  }
+
+  @Delete(':id')
+  @ApiOperation({
+    summary: 'Eliminar un autor',
+    description:
+      'Elimina un autor existente. Solo accesible por usuarios ADMIN.',
+  })
+  @ApiParam(AuthorManagementSwagger.delete.param)
+  @ApiResponse(AuthorManagementSwagger.delete.responses.success)
+  @ApiResponse(AuthorManagementSwagger.delete.responses.notFound)
+  @ApiBearerAuth()
+  async delete(@Param('id') id: string) {
+    try {
+      await this.deleteAuthorUseCase.execute(id)
+      return ResponseBuilder.success({
+        message: 'Autor eliminado exitosamente',
+        data: null,
+      })
+    } catch (error) {
       if (error instanceof AuthorNotFoundException) {
         throw new HttpException(
           ResponseBuilder.error(

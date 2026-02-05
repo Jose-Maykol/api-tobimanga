@@ -75,4 +75,13 @@ export class AuthorRepositoryImpl implements AuthorRepository {
 
     return updatedAuthor.length ? (updatedAuthor[0] as Author) : null
   }
+
+  async delete(id: string): Promise<boolean> {
+    const deletedAuthor = await this.db.client
+      .delete(authors)
+      .where(eq(authors.id, id))
+      .returning()
+
+    return deletedAuthor.length > 0
+  }
 }
