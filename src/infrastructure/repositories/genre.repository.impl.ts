@@ -75,4 +75,13 @@ export class GenreRepositoryImpl implements GenreRepository {
 
     return updatedGenre[0] ? (updatedGenre[0] as Genre) : null
   }
+
+  async delete(id: string): Promise<boolean> {
+    const deletedGenre = await this.db.client
+      .delete(genres)
+      .where(eq(genres.id, id))
+      .returning()
+
+    return deletedGenre.length > 0
+  }
 }

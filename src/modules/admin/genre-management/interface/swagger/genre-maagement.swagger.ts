@@ -154,4 +154,36 @@ export const GenreManagementSwagger = {
       },
     },
   },
+  delete: {
+    param: {
+      name: 'id',
+      type: String,
+      description: 'ID del género a eliminar',
+      example: 'genre-uuid-1',
+    },
+    responses: {
+      success: {
+        status: 200,
+        description: 'Género eliminado exitosamente.',
+        schema: {
+          example: {
+            success: true,
+            message: 'Género eliminado exitosamente',
+            data: null,
+          },
+        },
+      },
+      notFound: {
+        status: 404,
+        description: 'Género no encontrado con el ID proporcionado.',
+        schema: {
+          example: {
+            statusCode: 404,
+            message: 'Genre not found',
+            error: 'GENRE_NOT_FOUND',
+          },
+        },
+      },
+    },
+  },
 }

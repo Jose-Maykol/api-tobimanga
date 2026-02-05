@@ -7,4 +7,5 @@ export interface GenreRepository {
   findByName(name: string): Promise<Genre | null>
   save(genre: Genre): Promise<Genre>
   update(id: string, genre: Partial<Genre>): Promise<Genre | null>
+  delete(id: string): Promise<boolean>
 }

@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   HttpException,
   HttpStatus,
@@ -29,6 +30,7 @@ import { RolesGuard } from '@/modules/auth/interface/guards/roles.guard'
 import { CreateGenreDto } from '../../application/dtos/create-genre.dto'
 import { UpdateGenreDto } from '../../application/dtos/update-genre.dto'
 import { CreateGenreUseCase } from '../../application/use-cases/create-genre.use-case'
+import { DeleteGenreUseCase } from '../../application/use-cases/delete-genre.use-case'
 import { GetAllGenresUseCase } from '../../application/use-cases/get-all-genres.use-case'
 import { UpdateGenreUseCase } from '../../application/use-cases/update-genre.use-case'
 import { GenreManagementSwagger } from '../swagger/genre-maagement.swagger'
@@ -42,6 +44,7 @@ export class GenreManagementController {
     private readonly createGenreUseCase: CreateGenreUseCase,
     private readonly getAllGenresUseCase: GetAllGenresUseCase,
     private readonly updateGenreUseCase: UpdateGenreUseCase,
+    private readonly deleteGenreUseCase: DeleteGenreUseCase,
   ) {}
 
   @Post()
@@ -131,6 +134,38 @@ export class GenreManagementController {
           HttpStatus.CONFLICT,
         )
       }
+      if (error instanceof GenreNotFoundException) {
+        throw new HttpException(
+          ResponseBuilder.error(
+            error.message,
+            error.code,
+            HttpStatus.NOT_FOUND,
+          ),
+          HttpStatus.NOT_FOUND,
+        )
+      }
+      throw error
+    }
+  }
+
+  @Delete(':id')
+  @ApiOperation({
+    summary: 'Eliminar un género',
+    description:
+      'Elimina un género existente. Solo accesible por usuarios ADMIN.',
+  })
+  @ApiParam(GenreManagementSwagger.delete.param)
+  @ApiResponse(GenreManagementSwagger.delete.responses.success)
+  @ApiResponse(GenreManagementSwagger.delete.responses.notFound)
+  @ApiBearerAuth()
+  async delete(@Param('id') id: string) {
+    try {
+      await this.deleteGenreUseCase.execute(id)
+      return ResponseBuilder.success({
+        message: 'Género eliminado exitosamente',
+        data: null,
+      })
+    } catch (error) {
       if (error instanceof GenreNotFoundException) {
         throw new HttpException(
           ResponseBuilder.error(
