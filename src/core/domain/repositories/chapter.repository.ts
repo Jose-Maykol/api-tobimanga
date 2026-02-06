@@ -15,5 +15,6 @@ export interface ChapterRepository {
   getLastChapterNumber(mangaId: string): Promise<number | null>
   countAllByMangaId(mangaId: string): Promise<number>
   save(chapter: Chapter): Promise<Chapter>
+  update(chapter: Chapter): Promise<Chapter>
   saveMany(mangaId: string, chapterCount: number): Promise<void>
 }

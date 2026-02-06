@@ -118,6 +118,22 @@ export class ChapterRepositoryImpl implements ChapterRepository {
     return row ? row.chapterNumber : null
   }
 
+  async update(chapter: Chapter): Promise<Chapter> {
+    await this.db.client
+      .update(chapters)
+      .set({
+        title: chapter.title,
+        releaseDate: chapter.releaseDate?.toISOString() ?? null,
+        updatedAt: new Date(),
+      })
+      .where(eq(chapters.id, chapter.id))
+
+    return {
+      ...chapter,
+      updatedAt: new Date(),
+    }
+  }
+
   async countAllByMangaId(mangaId: string): Promise<number> {
     const result = await this.db.client
       .select({ count: count() })

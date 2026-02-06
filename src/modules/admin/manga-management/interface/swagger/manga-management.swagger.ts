@@ -445,4 +445,74 @@ export const MangaManagementSwagger = {
       },
     },
   },
+  updateChapterTitle: {
+    paramManga: {
+      name: 'mangaId',
+      type: String,
+      description: 'ID del manga',
+      example: 'f7b3c1a0-1234-5678-9abc-def012345678',
+    },
+    paramChapter: {
+      name: 'chapterId',
+      type: String,
+      description: 'ID del capítulo a actualizar',
+      example: 'a1b2c3d4-5678-90ab-cdef-1234567890ab',
+    },
+    body: {
+      description: 'Nuevo título para el capítulo.',
+      type: 'UpdateChapterTitleDto',
+      examples: {
+        updateTitle: {
+          summary: 'Actualizar título',
+          value: {
+            title: 'El gran tesoro escondido',
+          },
+        },
+      },
+    },
+    responses: {
+      success: {
+        status: 200,
+        description:
+          'Título del capítulo actualizado exitosamente. El campo updatedAt se actualiza automáticamente.',
+        schema: {
+          example: {
+            message: 'Título del capítulo actualizado exitosamente',
+            data: {
+              id: 'a1b2c3d4-5678-90ab-cdef-1234567890ab',
+              mangaId: 'f7b3c1a0-1234-5678-9abc-def012345678',
+              chapterNumber: 202,
+              title: 'El gran tesoro escondido',
+              releaseDate: '2026-02-05',
+              createdAt: '2026-02-05T20:00:00.000Z',
+              updatedAt: '2026-02-05T21:47:00.000Z',
+            },
+          },
+        },
+      },
+      notFound: {
+        status: 404,
+        description: 'El manga o el capítulo no existe.',
+        schema: {
+          example: {
+            statusCode: 404,
+            message: 'Capítulo con ID xxx no encontrado',
+            error: 'chapter_not_found',
+          },
+        },
+      },
+      badRequest: {
+        status: 400,
+        description:
+          'El capítulo no pertenece al manga especificado o datos de entrada inválidos.',
+        schema: {
+          example: {
+            statusCode: 400,
+            message: 'El capítulo no pertenece a este manga',
+            error: 'chapter_does_not_belong_to_manga',
+          },
+        },
+      },
+    },
+  },
 }

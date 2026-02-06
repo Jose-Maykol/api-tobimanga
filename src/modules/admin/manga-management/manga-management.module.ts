@@ -15,6 +15,7 @@ import { CreateChapterUseCase } from './application/use-cases/create-chapter.use
 import { CreateMangaUseCase } from './application/use-cases/create-manga.use-case'
 import { ListChaptersByMangaUseCase } from './application/use-cases/list-chapters-by-manga.use-case'
 import { ListMangasUseCase } from './application/use-cases/list-mangas.use-case'
+import { UpdateChapterUseCase } from './application/use-cases/update-chapter.use-case'
 import { UpdateMangaUseCase } from './application/use-cases/update-manga.use-case'
 import { MangaManagementController } from './interface/controllers/manga-management.controller'
 
@@ -35,6 +36,7 @@ import { MangaManagementController } from './interface/controllers/manga-managem
     UpdateMangaUseCase,
     ListChaptersByMangaUseCase,
     CreateChapterUseCase,
+    UpdateChapterUseCase,
     MangaFactory,
     ChapterFactory,
   ],
