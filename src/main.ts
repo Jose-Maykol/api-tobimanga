@@ -10,6 +10,7 @@ import { AppModule } from './app.module'
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule)
+  app.setGlobalPrefix('api')
 
   const config = new DocumentBuilder()
     .setTitle('Tobimanga API')
@@ -33,7 +34,6 @@ async function bootstrap() {
 
   app.use(cookieParser())
   app.use(bodyParser.json({ limit: '15mb' }))
-  app.setGlobalPrefix('api')
 
   app.use(
     '/api/docs',

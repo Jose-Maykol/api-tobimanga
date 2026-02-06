@@ -54,9 +54,6 @@ const modules = [
             module: UploadModule,
             path: 'uploads',
           },
-          /* { path: 'authors', module: AuthorManagementModule },
-          { path: 'genres', module: GenreManagementModule },
-          { path: 'users', module: UserManagementModule }, */
         ],
       },
       {
@@ -64,28 +61,10 @@ const modules = [
         path: 'auth',
       },
     ]),
-    /* RouterModule.register([
-      {
-        path: 'admin',
-        module: AdminModule,
-        children: [
-          { path: 'mangas', module: MangaManagementModule },
-          { path: 'authors', module: AuthorManagementModule },
-          { path: 'genres', module: GenreManagementModule },
-          { path: 'users', module: UserManagementModule },
-        ],
-      },
-    ]), */
   ],
   controllers: [AppController],
   providers: [AppService],
 })
 export class AppModule implements NestModule {
-  configure(/* consumer: MiddlewareConsumer */) {
-    //* Middleware desactivado temporalmente
-    /* consumer.apply(SnakeCaseMiddleware).forRoutes({
-      path: '*',
-      method: RequestMethod.ALL,
-    }) */
-  }
+  configure() {}
 }
