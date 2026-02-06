@@ -1,5 +1,5 @@
-import { PublicationStatus } from '../../../modules/manga/application/enums/publication-status.enum'
 import { Manga } from '../entities/manga.entity'
+import { PublicationStatus } from '../value-objects/publication-status.vo'
 
 export interface MangaRepository {
   findAll(

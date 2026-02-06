@@ -29,12 +29,12 @@ import { ChapterDoesNotBelongToMangaException } from '@/core/domain/exceptions/c
 import { ChapterNotFoundException } from '@/core/domain/exceptions/chapter/chapter-not-found.exception'
 import { MangaAlreadyExistsException } from '@/core/domain/exceptions/manga/manga-already-exists'
 import { MangaNotFoundException } from '@/core/domain/exceptions/manga/manga-not-found'
+import { PublicationStatus } from '@/core/domain/value-objects/publication-status.vo'
 import { CreateChapterDto } from '@/modules/admin/manga-management/application/dtos/create-chapter.dto'
 import { CreateMangaDto } from '@/modules/admin/manga-management/application/dtos/create-manga.dto'
 import { Roles } from '@/modules/auth/interface/decorators/roles.decorator'
 import { JwtAuthGuard } from '@/modules/auth/interface/guards/jwt-auth.guard'
 import { RolesGuard } from '@/modules/auth/interface/guards/roles.guard'
-import { PublicationStatus } from '@/modules/manga/application/enums/publication-status.enum'
 
 import { UpdateChapterDto } from '../../application/dtos/update-chapter.dto'
 import { UpdateMangaDto } from '../../application/dtos/update-manga.dto'

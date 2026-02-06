@@ -9,7 +9,7 @@ import { mangaGenres } from '@/core/database/schemas/manga-genre.schema'
 import { DatabaseService } from '@/core/database/services/database.service'
 import { Manga } from '@/core/domain/entities/manga.entity'
 import { MangaRepository } from '@/core/domain/repositories/manga.repository'
-import { PublicationStatus } from '@/modules/manga/application/enums/publication-status.enum'
+import { PublicationStatus } from '@/core/domain/value-objects/publication-status.vo'
 
 @Injectable()
 export class MangaRepositoryImpl implements MangaRepository {

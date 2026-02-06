@@ -11,14 +11,12 @@ import { GenreManagementModule } from './modules/admin/genre-management/genre-ma
 import { MangaManagementModule } from './modules/admin/manga-management/manga-management.module'
 import { UploadModule } from './modules/admin/upload/upload.module'
 import { AuthModule } from './modules/auth/auth.module'
-import { MangaModule } from './modules/manga/manga.module'
 import { UserModule } from './modules/user/user.module'
 
 const modules = [
   AuthModule,
   UserModule,
   AdminModule,
-  MangaModule,
   MangaManagementModule,
   GenreManagementModule,
   DemographicManagementModule,
@@ -64,10 +62,6 @@ const modules = [
       {
         module: AuthModule,
         path: 'auth',
-      },
-      {
-        module: MangaModule,
-        path: 'mangas',
       },
     ]),
     /* RouterModule.register([

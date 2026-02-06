@@ -1,4 +1,4 @@
-import { PublicationStatus } from '@/modules/manga/application/enums/publication-status.enum'
+import { PublicationStatus } from '@/core/domain/value-objects/publication-status.vo'
 
 export interface ListMangasDto {
   page: number
