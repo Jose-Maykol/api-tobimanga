@@ -100,7 +100,7 @@ export class GenreManagementController {
 
   @Put(':id')
   @ApiOperation({
-    summary: 'Actualizar un género existente',
+    summary: 'Actualizar un género',
     description:
       'Actualiza un género existente. Solo accesible por usuarios ADMIN.',
   })

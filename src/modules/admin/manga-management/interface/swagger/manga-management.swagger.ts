@@ -369,4 +369,80 @@ export const MangaManagementSwagger = {
       },
     },
   },
+  createChapter: {
+    param: {
+      name: 'mangaId',
+      type: String,
+      description: 'ID del manga al que pertenece el capítulo',
+      example: 'f7b3c1a0-1234-5678-9abc-def012345678',
+    },
+    body: {
+      description:
+        'Datos opcionales para la creación del capítulo. El sistema calcula automáticamente el siguiente número de capítulo (último + 1).',
+      type: 'CreateChapterDto',
+      examples: {
+        withTitle: {
+          summary: 'Capítulo con título',
+          value: {
+            title: 'El tesoro de los piratas',
+            releaseDate: '2026-02-05',
+          },
+        },
+        onlyTitle: {
+          summary: 'Solo título',
+          value: {
+            title: 'La batalla final',
+          },
+        },
+        empty: {
+          summary: 'Sin datos (ambos opcionales)',
+          value: {},
+        },
+      },
+    },
+    responses: {
+      created: {
+        status: 201,
+        description:
+          'Capítulo creado exitosamente. El número de capítulo se calcula automáticamente y el contador del manga se incrementa.',
+        schema: {
+          example: {
+            message: 'Capítulo creado exitosamente',
+            data: {
+              id: 'chapter-uuid',
+              mangaId: 'f7b3c1a0-1234-5678-9abc-def012345678',
+              chapterNumber: 202,
+              title: 'El tesoro de los piratas',
+              releaseDate: '2026-02-05',
+              createdAt: '2026-02-05T20:00:00.000Z',
+              updatedAt: null,
+            },
+          },
+        },
+      },
+      notFound: {
+        status: 404,
+        description: 'El manga con el ID proporcionado no existe.',
+        schema: {
+          example: {
+            statusCode: 404,
+            message: 'Manga not found',
+            error: 'MANGA_NOT_FOUND',
+          },
+        },
+      },
+      conflict: {
+        status: 409,
+        description:
+          'El capítulo calculado ya existe (caso muy raro, indica un problema de concurrencia).',
+        schema: {
+          example: {
+            statusCode: 409,
+            message: 'El capítulo 202 ya existe para este manga',
+            error: 'chapter_already_exists',
+          },
+        },
+      },
+    },
+  },
 }

@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common'
 
 import { DatabaseModule } from '@/core/database/database.module'
+import { ChapterFactory } from '@/core/domain/factories/chapter/chapter.factory'
 import { MangaFactory } from '@/core/domain/factories/manga/manga.factory'
 import { StorageModule } from '@/core/storage/storage.module'
 import { InfrastructureModule } from '@/infrastructure/infraestructure.module'
@@ -10,6 +11,7 @@ import { AuthModule } from '@/modules/auth/auth.module'
 import { DemographicManagementModule } from '../demographic-management/demographic-management.module'
 import { GenreManagementModule } from '../genre-management/genre-management.module'
 import { UploadModule } from '../upload/upload.module'
+import { CreateChapterUseCase } from './application/use-cases/create-chapter.use-case'
 import { CreateMangaUseCase } from './application/use-cases/create-manga.use-case'
 import { ListChaptersByMangaUseCase } from './application/use-cases/list-chapters-by-manga.use-case'
 import { ListMangasUseCase } from './application/use-cases/list-mangas.use-case'
@@ -32,7 +34,9 @@ import { MangaManagementController } from './interface/controllers/manga-managem
     ListMangasUseCase,
     UpdateMangaUseCase,
     ListChaptersByMangaUseCase,
+    CreateChapterUseCase,
     MangaFactory,
+    ChapterFactory,
   ],
   controllers: [MangaManagementController],
   exports: [CreateMangaUseCase, ListMangasUseCase, UpdateMangaUseCase],

@@ -6,6 +6,7 @@ import {
   smallint,
   timestamp,
   uuid,
+  varchar,
 } from 'drizzle-orm/pg-core'
 
 import { mangas } from './manga.schema'
@@ -20,6 +21,7 @@ export const chapters = pgTable(
       .notNull()
       .references(() => mangas.id, { onDelete: 'cascade' }),
     chapterNumber: smallint('chapter_number').notNull(),
+    title: varchar('title', { length: 255 }),
     releaseDate: date('release_date'),
     createdAt: timestamp('created_at').defaultNow().notNull(),
     updatedAt: timestamp('updated_at').$onUpdate(() => new Date()),

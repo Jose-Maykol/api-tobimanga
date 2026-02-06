@@ -23,8 +23,10 @@ import {
 
 import { ROLES } from '@/common/constants/roles.const'
 import { ResponseBuilder } from '@/common/utils/response.util'
+import { ChapterAlreadyExistsException } from '@/core/domain/exceptions/chapter/chapter-already-exists.exception'
 import { MangaAlreadyExistsException } from '@/core/domain/exceptions/manga/manga-already-exists'
 import { MangaNotFoundException } from '@/core/domain/exceptions/manga/manga-not-found'
+import { CreateChapterDto } from '@/modules/admin/manga-management/application/dtos/create-chapter.dto'
 import { CreateMangaDto } from '@/modules/admin/manga-management/application/dtos/create-manga.dto'
 import { Roles } from '@/modules/auth/interface/decorators/roles.decorator'
 import { JwtAuthGuard } from '@/modules/auth/interface/guards/jwt-auth.guard'
@@ -32,6 +34,7 @@ import { RolesGuard } from '@/modules/auth/interface/guards/roles.guard'
 import { PublicationStatus } from '@/modules/manga/application/enums/publication-status.enum'
 
 import { UpdateMangaDto } from '../../application/dtos/update-manga.dto'
+import { CreateChapterUseCase } from '../../application/use-cases/create-chapter.use-case'
 import { CreateMangaUseCase } from '../../application/use-cases/create-manga.use-case'
 import { ListChaptersByMangaUseCase } from '../../application/use-cases/list-chapters-by-manga.use-case'
 import { ListMangasUseCase } from '../../application/use-cases/list-mangas.use-case'
@@ -52,6 +55,8 @@ export class MangaManagementController {
     private readonly updateMangaUseCase: UpdateMangaUseCase,
     @Inject()
     private readonly listChaptersByMangaUseCase: ListChaptersByMangaUseCase,
+    @Inject()
+    private readonly createChapterUseCase: CreateChapterUseCase,
   ) {}
 
   @Post()
@@ -146,6 +151,52 @@ export class MangaManagementController {
             HttpStatus.NOT_FOUND,
           ),
           HttpStatus.NOT_FOUND,
+        )
+      }
+      throw error
+    }
+  }
+
+  @Post(':mangaId/chapters')
+  @ApiOperation({
+    summary: 'Crear un nuevo capítulo',
+    description:
+      'Crea un nuevo capítulo para un manga específico. El sistema calcula automáticamente el siguiente número de capítulo (último + 1). Solo accesible por ADMIN.',
+  })
+  @ApiParam(MangaManagementSwagger.createChapter.param)
+  @ApiBody(MangaManagementSwagger.createChapter.body)
+  @ApiResponse(MangaManagementSwagger.createChapter.responses.created)
+  @ApiResponse(MangaManagementSwagger.createChapter.responses.notFound)
+  @ApiResponse(MangaManagementSwagger.createChapter.responses.conflict)
+  @ApiBearerAuth()
+  async createChapter(
+    @Param('mangaId') mangaId: string,
+    @Body() createChapterDto: CreateChapterDto,
+  ) {
+    try {
+      const result = await this.createChapterUseCase.execute(
+        mangaId,
+        createChapterDto,
+      )
+      return ResponseBuilder.success({
+        message: 'Capítulo creado exitosamente',
+        data: result,
+      })
+    } catch (error) {
+      if (error instanceof MangaNotFoundException) {
+        throw new HttpException(
+          ResponseBuilder.error(
+            error.message,
+            error.code,
+            HttpStatus.NOT_FOUND,
+          ),
+          HttpStatus.NOT_FOUND,
+        )
+      }
+      if (error instanceof ChapterAlreadyExistsException) {
+        throw new HttpException(
+          ResponseBuilder.error(error.message, error.code, HttpStatus.CONFLICT),
+          HttpStatus.CONFLICT,
         )
       }
       throw error

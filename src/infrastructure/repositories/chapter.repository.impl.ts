@@ -1,4 +1,4 @@
-import { asc, count, desc, eq } from 'drizzle-orm'
+import { and, asc, count, desc, eq } from 'drizzle-orm'
 
 import { Inject, Injectable } from '@nestjs/common'
 
@@ -18,8 +18,10 @@ export class ChapterRepositoryImpl implements ChapterRepository {
 
   async save(chapter: Chapter): Promise<Chapter> {
     await this.db.client.insert(chapters).values({
+      id: chapter.id,
       mangaId: chapter.mangaId,
       chapterNumber: chapter.chapterNumber,
+      title: chapter.title,
       releaseDate: chapter.releaseDate?.toISOString() ?? null,
       createdAt: chapter.createdAt,
       updatedAt: chapter.updatedAt ? chapter.updatedAt : null,
@@ -73,6 +75,47 @@ export class ChapterRepositoryImpl implements ChapterRepository {
     }))
 
     return chaptersList
+  }
+
+  async findByMangaIdAndChapterNumber(
+    mangaId: string,
+    chapterNumber: number,
+  ): Promise<Chapter | null> {
+    const rows = await this.db.client
+      .select()
+      .from(chapters)
+      .where(
+        and(
+          eq(chapters.mangaId, mangaId),
+          eq(chapters.chapterNumber, chapterNumber),
+        ),
+      )
+
+    const row = rows[0]
+
+    if (!row) return null
+
+    const result: Chapter = {
+      ...row,
+      releaseDate: row.releaseDate ? new Date(row.releaseDate) : null,
+      createdAt: row.createdAt ? new Date(row.createdAt) : row.createdAt,
+      updatedAt: row.updatedAt ? new Date(row.updatedAt) : null,
+    }
+
+    return result
+  }
+
+  async getLastChapterNumber(mangaId: string): Promise<number | null> {
+    const rows = await this.db.client
+      .select()
+      .from(chapters)
+      .where(eq(chapters.mangaId, mangaId))
+      .orderBy(desc(chapters.chapterNumber))
+      .limit(1)
+
+    const row = rows[0]
+
+    return row ? row.chapterNumber : null
   }
 
   async countAllByMangaId(mangaId: string): Promise<number> {

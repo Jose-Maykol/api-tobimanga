@@ -255,4 +255,17 @@ export class MangaRepositoryImpl implements MangaRepository {
       updatedAt: manga.updatedAt,
     }
   }
+
+  async incrementChapterCount(mangaId: string): Promise<void> {
+    const manga = await this.findById(mangaId)
+    if (!manga) return
+
+    await this.db.client
+      .update(mangas)
+      .set({
+        chapters: manga.chapters + 1,
+        updatedAt: new Date(),
+      })
+      .where(eq(mangas.id, mangaId))
+  }
 }
