@@ -18,15 +18,6 @@ export class UpdateUploadStatusUseCase {
     private readonly uploadRepository: UploadRepository,
   ) {}
 
-  /**
-   * Updates the status of an upload.
-   * If the status is ACTIVE and usedAt is not provided, sets usedAt to the current date.
-   * @param params - Object containing:
-   *   - id: string - The identifier of the upload.
-   *   - status: UploadStatus - The new status to set.
-   *   - usedAt?: Date - Optional date when the upload was used.
-   * @returns Promise<Upload> - The updated upload entity.
-   */
   async execute(params: UpdateUploadStatusParams): Promise<Upload> {
     if (params.status === UploadStatus.ACTIVE && !params.usedAt) {
       params.usedAt = new Date()
@@ -34,7 +25,7 @@ export class UpdateUploadStatusUseCase {
 
     const upload = await this.uploadRepository.findById(params.id)
 
-    if (upload === null) throw new UploadNotFoundException()
+    if (upload === null) throw new UploadNotFoundException(params.id)
 
     const result = await this.uploadRepository.updateStatus(
       params.id,

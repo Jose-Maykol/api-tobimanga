@@ -4,6 +4,9 @@ import { ErrorCodes } from './error-codes.enum'
 
 export class GenreNotFoundException extends BaseException {
   constructor(id: string) {
-    super(`No se encontró el género con id "${id}"`, ErrorCodes.GENRE_NOT_FOUND)
+    super(
+      `El género con el identificador "${id}" no fue encontrado`,
+      ErrorCodes.GENRE_NOT_FOUND,
+    )
   }
 }

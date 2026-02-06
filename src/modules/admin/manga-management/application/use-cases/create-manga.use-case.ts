@@ -54,7 +54,7 @@ export class CreateMangaUseCase {
     const exists = await this.mangaRepository.existBySlugName(slugName)
 
     if (exists) {
-      throw new MangaAlreadyExistsException()
+      throw new MangaAlreadyExistsException(params.originalName)
     }
 
     const authorsEntities = await Promise.all(

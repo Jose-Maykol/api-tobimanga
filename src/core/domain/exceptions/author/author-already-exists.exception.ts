@@ -4,6 +4,9 @@ import { ErrorCodes } from '../../../../core/domain/exceptions/author/error-code
 
 export class AuthorAlreadyExistsException extends BaseException {
   constructor(name: string) {
-    super(`El autor ${name} ya existe`, ErrorCodes.AUTHOR_ALREADY_EXISTS)
+    super(
+      `El autor con el nombre "${name}" ya se encuentra registrado`,
+      ErrorCodes.AUTHOR_ALREADY_EXISTS,
+    )
   }
 }

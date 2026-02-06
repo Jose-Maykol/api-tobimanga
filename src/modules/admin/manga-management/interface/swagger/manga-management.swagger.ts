@@ -83,7 +83,8 @@ export const MangaManagementSwagger = {
         schema: {
           example: {
             statusCode: 409,
-            message: 'Manga already exists',
+            message:
+              'El manga con el nombre "Attack on Titan" ya se encuentra registrado',
             error: 'MANGA_ALREADY_EXISTS',
           },
         },
@@ -263,7 +264,8 @@ export const MangaManagementSwagger = {
         schema: {
           example: {
             statusCode: 404,
-            message: 'Manga not found',
+            message:
+              'El manga con el identificador "880e8400-e29b-41d4-a716-446655440001" no fue encontrado',
             error: 'MANGA_NOT_FOUND',
           },
         },
@@ -275,7 +277,8 @@ export const MangaManagementSwagger = {
         schema: {
           example: {
             statusCode: 409,
-            message: 'Manga already exists',
+            message:
+              'El manga con el nombre "Attack on Titan - Final Season" ya se encuentra registrado',
             error: 'MANGA_ALREADY_EXISTS',
           },
         },
@@ -362,7 +365,8 @@ export const MangaManagementSwagger = {
         schema: {
           example: {
             statusCode: 404,
-            message: 'Manga not found',
+            message:
+              'El manga con el identificador "f7b3c1a0-1234-5678-9abc-def012345678" no fue encontrado',
             error: 'MANGA_NOT_FOUND',
           },
         },
@@ -426,7 +430,8 @@ export const MangaManagementSwagger = {
         schema: {
           example: {
             statusCode: 404,
-            message: 'Manga not found',
+            message:
+              'El manga con el identificador "f7b3c1a0-1234-5678-9abc-def012345678" no fue encontrado',
             error: 'MANGA_NOT_FOUND',
           },
         },
@@ -497,7 +502,7 @@ export const MangaManagementSwagger = {
           example: {
             statusCode: 404,
             message: 'Capítulo con ID xxx no encontrado',
-            error: 'chapter_not_found',
+            error: 'CHAPTER_NOT_FOUND',
           },
         },
       },
@@ -509,7 +514,7 @@ export const MangaManagementSwagger = {
           example: {
             statusCode: 400,
             message: 'El capítulo no pertenece a este manga',
-            error: 'chapter_does_not_belong_to_manga',
+            error: 'CHAPTER_DOES_NOT_BELONG_TO_MANGA',
           },
         },
       },

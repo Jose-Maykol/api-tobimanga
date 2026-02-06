@@ -5,7 +5,7 @@ import { ErrorCodes } from './error-codes.enum'
 export class GenreAlreadyExistsException extends BaseException {
   constructor(name: string) {
     super(
-      `Ya existe un género con el nombre ${name}`,
+      `El género con el nombre "${name}" ya se encuentra registrado`,
       ErrorCodes.GENRE_ALREADY_EXISTS,
     )
   }

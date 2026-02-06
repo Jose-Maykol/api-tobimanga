@@ -5,7 +5,7 @@ import { ErrorCodes } from './error-keys.enum'
 export class ChapterDoesNotBelongToMangaException extends BaseException {
   constructor(chapterId: string, mangaId: string) {
     super(
-      `El capítulo ${chapterId} no pertenece al manga ${mangaId}`,
+      `El capítulo con identificador "${chapterId}" no pertenece al manga con identificador "${mangaId}"`,
       ErrorCodes.CHAPTER_DOES_NOT_BELONG_TO_MANGA,
     )
   }

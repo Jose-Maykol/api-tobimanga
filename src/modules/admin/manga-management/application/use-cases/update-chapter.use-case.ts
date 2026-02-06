@@ -21,7 +21,7 @@ export class UpdateChapterUseCase {
     const manga = await this.mangaRepository.findById(mangaId)
 
     if (!manga) {
-      throw new MangaNotFoundException()
+      throw new MangaNotFoundException(mangaId)
     }
 
     const chapter = await this.chapterRepository.findById(chapterId)

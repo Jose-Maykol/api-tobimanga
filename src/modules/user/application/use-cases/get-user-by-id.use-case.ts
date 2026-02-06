@@ -20,7 +20,7 @@ export class GetUserByIdUseCase {
     const user = await this.userRepository.findById(id)
     if (!user) {
       this.logger.warn(`User not found for id: ${id}`)
-      throw new UserNotFoundException()
+      throw new UserNotFoundException(id)
     }
 
     this.logger.log(`User found for id: ${id}, email: ${user.email}`)

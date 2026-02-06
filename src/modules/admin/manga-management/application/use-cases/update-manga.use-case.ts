@@ -36,7 +36,7 @@ export class UpdateMangaUseCase {
   async execute(id: string, params: UpdateMangaDto) {
     const manga = await this.mangaRepository.findById(id)
     if (!manga) {
-      throw new MangaNotFoundException()
+      throw new MangaNotFoundException(id)
     }
 
     const slugName: string =
@@ -53,7 +53,7 @@ export class UpdateMangaUseCase {
       const exists: boolean =
         await this.mangaRepository.existBySlugName(slugName)
       if (exists && slugName !== manga.slugName) {
-        throw new MangaAlreadyExistsException()
+        throw new MangaAlreadyExistsException(params.originalName)
       }
     }
 

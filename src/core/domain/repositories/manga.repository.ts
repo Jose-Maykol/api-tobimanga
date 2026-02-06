@@ -2,9 +2,6 @@ import { PublicationStatus } from '../../../modules/manga/application/enums/publ
 import { Manga } from '../entities/manga.entity'
 
 export interface MangaRepository {
-  /* findByTitle(title: string): Promise<Manga | null>
-  findById(id: string): Promise<Manga | null>
-  findAll(): Promise<Manga[]> */
   findAll(
     page: number,
     limit: number,

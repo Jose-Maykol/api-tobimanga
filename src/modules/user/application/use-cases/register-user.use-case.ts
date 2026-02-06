@@ -40,7 +40,7 @@ export class RegisterUserUseCase {
 
     if (user) {
       this.logger.warn(`User already exists for email: ${email}`)
-      throw new UserAlreadyExistsException()
+      throw new UserAlreadyExistsException(email)
     }
 
     const hashedPassword = await this.hashPassword(password)

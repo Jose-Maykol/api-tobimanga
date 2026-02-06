@@ -20,7 +20,7 @@ export class GetUserByEmailUseCase {
     const user = await this.userRepository.findByEmail(email)
     if (!user) {
       this.logger.warn(`User not found for email: ${email}`)
-      throw new UserNotFoundException()
+      throw new UserNotFoundException(email)
     }
 
     this.logger.log(`User found for email: ${email}, userId: ${user.id}`)

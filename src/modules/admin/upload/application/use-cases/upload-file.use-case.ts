@@ -15,11 +15,6 @@ export class UploadFileUseCase {
     private readonly uploadRepository: UploadRepository,
   ) {}
 
-  /**
-   * Uploads a file, persists its metadata, and returns its storage data.
-   * @param params Object containing file and entityType
-   * @returns Object with url, contentType, and objectKey
-   */
   async execute(params: {
     file: Express.Multer.File
     entityType?: string

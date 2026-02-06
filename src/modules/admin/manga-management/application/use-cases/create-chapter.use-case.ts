@@ -26,7 +26,7 @@ export class CreateChapterUseCase {
     const manga = await this.mangaRepository.findById(mangaId)
 
     if (!manga) {
-      throw new MangaNotFoundException()
+      throw new MangaNotFoundException(mangaId)
     }
 
     const lastChapterNumber =
@@ -40,10 +40,7 @@ export class CreateChapterUseCase {
       )
 
     if (existingChapter) {
-      throw new ChapterAlreadyExistsException(
-        nextChapterNumber,
-        manga.originalName,
-      )
+      throw new ChapterAlreadyExistsException(nextChapterNumber, manga.id)
     }
 
     const newChapter = this.chapterFactory.create({

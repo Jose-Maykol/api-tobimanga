@@ -12,16 +12,11 @@ export class FindUploadByUrlUseCase {
     private readonly uploadRepository: UploadRepository,
   ) {}
 
-  /**
-   * Find an upload by its URL.
-   * @param params Object containing the URL to search for.
-   * @returns The found Upload entity.
-   * @throws UploadNotFoundException if no upload is found for the given URL.
-   */
+  //TODO: Se tiene que redisenar esta funcion, deberia buscar por id y no por url
   async execute({ url }: { url: string }): Promise<Upload> {
     const upload = await this.uploadRepository.findByUrl(url)
 
-    if (upload === null) throw new UploadNotFoundException()
+    if (upload === null) throw new UploadNotFoundException(url)
 
     return upload
   }

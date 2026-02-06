@@ -5,7 +5,7 @@ import { ErrorCodes } from './error-keys.enum'
 export class ChapterNotFoundException extends BaseException {
   constructor(chapterId: string) {
     super(
-      `Capítulo con ID ${chapterId} no encontrado`,
+      `El capítulo con el identificador "${chapterId}" no fue encontrado`,
       ErrorCodes.CHAPTER_NOT_FOUND,
     )
   }
