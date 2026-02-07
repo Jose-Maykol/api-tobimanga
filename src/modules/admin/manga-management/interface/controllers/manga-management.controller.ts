@@ -40,6 +40,7 @@ import { UpdateChapterDto } from '../../application/dtos/update-chapter.dto'
 import { UpdateMangaDto } from '../../application/dtos/update-manga.dto'
 import { CreateChapterUseCase } from '../../application/use-cases/create-chapter.use-case'
 import { CreateMangaUseCase } from '../../application/use-cases/create-manga.use-case'
+import { FindMangaByIdUseCase } from '../../application/use-cases/find-manga-by-id.use-case'
 import { ListChaptersByMangaUseCase } from '../../application/use-cases/list-chapters-by-manga.use-case'
 import { ListMangasUseCase } from '../../application/use-cases/list-mangas.use-case'
 import { UpdateChapterUseCase } from '../../application/use-cases/update-chapter.use-case'
@@ -54,6 +55,8 @@ export class MangaManagementController {
   constructor(
     @Inject()
     private readonly createMangaUseCase: CreateMangaUseCase,
+    @Inject()
+    private readonly findMangaByIdUseCase: FindMangaByIdUseCase,
     @Inject()
     private readonly listMangasUseCase: ListMangasUseCase,
     @Inject()
@@ -119,6 +122,37 @@ export class MangaManagementController {
       data: mangas.items,
       meta: mangas.meta,
     })
+  }
+
+  @Get(':id')
+  @ApiOperation({
+    summary: 'Obtener detalle de un manga',
+    description:
+      'Obtiene todos los detalles de un manga específico por su ID, incluyendo autores, géneros y demografía.',
+  })
+  @ApiParam(MangaManagementSwagger.getMangaById.param)
+  @ApiResponse(MangaManagementSwagger.getMangaById.responses.success)
+  @ApiResponse(MangaManagementSwagger.getMangaById.responses.notFound)
+  @ApiBearerAuth()
+  async getMangaById(@Param('id') id: string) {
+    try {
+      const manga = await this.findMangaByIdUseCase.execute(id)
+      return ResponseBuilder.success({
+        data: manga,
+      })
+    } catch (error) {
+      if (error instanceof MangaNotFoundException) {
+        throw new HttpException(
+          ResponseBuilder.error(
+            error.message,
+            error.code,
+            HttpStatus.NOT_FOUND,
+          ),
+          HttpStatus.NOT_FOUND,
+        )
+      }
+      throw error
+    }
   }
 
   @Put(':id')

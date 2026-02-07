@@ -179,6 +179,75 @@ export const MangaManagementSwagger = {
       },
     },
   },
+  getMangaById: {
+    param: {
+      name: 'id',
+      type: String,
+      description: 'ID del manga a consultar',
+      example: '880e8400-e29b-41d4-a716-446655440001',
+    },
+    responses: {
+      success: {
+        status: 200,
+        description: 'Manga obtenido exitosamente con todos sus detalles.',
+        schema: {
+          example: {
+            data: {
+              id: '880e8400-e29b-41d4-a716-446655440001',
+              originalName: 'Attack on Titan',
+              slugName: 'attack-on-titan',
+              scrappingName: 'attack-on-titan',
+              alternativeNames: ['Shingeki no Kyojin', '進撃の巨人'],
+              sinopsis:
+                'In a world where humanity lives inside cities surrounded by enormous walls as a defense against the Titans...',
+              chapters: 139,
+              releaseDate: '2009-09-09T00:00:00.000Z',
+              coverImage: 'https://storage.example.com/uploads/cover-12345.jpg',
+              bannerImage:
+                'https://storage.example.com/uploads/banner-12345.jpg',
+              publicationStatus: 'FINISHED',
+              rating: 95,
+              active: true,
+              authors: [
+                {
+                  id: '550e8400-e29b-41d4-a716-446655440001',
+                  name: 'Hajime Isayama',
+                },
+              ],
+              genres: [
+                {
+                  id: '660e8400-e29b-41d4-a716-446655440001',
+                  name: 'Action',
+                },
+                {
+                  id: '660e8400-e29b-41d4-a716-446655440002',
+                  name: 'Drama',
+                },
+              ],
+              demographic: {
+                id: '770e8400-e29b-41d4-a716-446655440001',
+                name: 'Shounen',
+              },
+              createdAt: '2024-01-01T00:00:00.000Z',
+              updatedAt: null,
+            },
+          },
+        },
+      },
+      notFound: {
+        status: 404,
+        description: 'Manga no encontrado con el ID proporcionado.',
+        schema: {
+          example: {
+            statusCode: 404,
+            message:
+              'El manga con el identificador "880e8400-e29b-41d4-a716-446655440001" no fue encontrado',
+            error: 'MANGA_NOT_FOUND',
+          },
+        },
+      },
+    },
+  },
   update: {
     param: {
       name: 'id',

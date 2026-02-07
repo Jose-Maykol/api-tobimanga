@@ -13,6 +13,7 @@ import { GenreManagementModule } from '../genre-management/genre-management.modu
 import { UploadModule } from '../upload/upload.module'
 import { CreateChapterUseCase } from './application/use-cases/create-chapter.use-case'
 import { CreateMangaUseCase } from './application/use-cases/create-manga.use-case'
+import { FindMangaByIdUseCase } from './application/use-cases/find-manga-by-id.use-case'
 import { ListChaptersByMangaUseCase } from './application/use-cases/list-chapters-by-manga.use-case'
 import { ListMangasUseCase } from './application/use-cases/list-mangas.use-case'
 import { UpdateChapterUseCase } from './application/use-cases/update-chapter.use-case'
@@ -32,6 +33,7 @@ import { MangaManagementController } from './interface/controllers/manga-managem
   ],
   providers: [
     CreateMangaUseCase,
+    FindMangaByIdUseCase,
     ListMangasUseCase,
     UpdateMangaUseCase,
     ListChaptersByMangaUseCase,
