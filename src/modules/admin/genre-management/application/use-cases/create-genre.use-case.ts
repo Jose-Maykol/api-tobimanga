@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common'
+import { Inject, Injectable, Logger } from '@nestjs/common'
 
 import { Genre } from '@/core/domain/entities/genre.entity'
 import { GenreAlreadyExistsException } from '@/core/domain/exceptions/genre/genre-already-exists.exception'
@@ -9,20 +9,19 @@ import { CreateGenreDto } from '../dtos/create-genre.dto'
 
 @Injectable()
 export class CreateGenreUseCase {
+  private readonly logger = new Logger(CreateGenreUseCase.name)
+
   constructor(
     @Inject(GENRE_REPOSITORY)
     private readonly genreRepository: GenreRepository,
   ) {}
 
-  /**
-   * Create a new genre if it does not already exist.
-   * @param params Data required to create a genre
-   * @returns The created Genre entity
-   * @throws GenreAlreadyExistsException if a genre with the same name exists
-   */
   async execute(params: CreateGenreDto): Promise<Genre> {
     const existingGenre = await this.genreRepository.findByName(params.name)
     if (existingGenre) {
+      this.logger.warn(
+        `Creation failed: Genre name already exists: ${params.name}`,
+      )
       throw new GenreAlreadyExistsException(params.name)
     }
 
@@ -33,6 +32,10 @@ export class CreateGenreUseCase {
       updatedAt: null,
     }
 
-    return this.genreRepository.save(genre)
+    const createdGenre = await this.genreRepository.save(genre)
+    this.logger.log(
+      `Genre created successfully. Name: ${createdGenre.name}, ID: ${createdGenre.id}`,
+    )
+    return createdGenre
   }
 }
