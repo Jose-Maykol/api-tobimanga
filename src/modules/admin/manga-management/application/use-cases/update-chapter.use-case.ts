@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common'
+import { Inject, Injectable, Logger } from '@nestjs/common'
 
 import { ChapterDoesNotBelongToMangaException } from '@/core/domain/exceptions/chapter/chapter-does-not-belong-to-manga.exception'
 import { ChapterNotFoundException } from '@/core/domain/exceptions/chapter/chapter-not-found.exception'
@@ -10,6 +10,8 @@ import { UpdateChapterDto } from '../dtos/update-chapter.dto'
 
 @Injectable()
 export class UpdateChapterUseCase {
+  private readonly logger = new Logger(UpdateChapterUseCase.name)
+
   constructor(
     @Inject('ChapterRepository')
     private readonly chapterRepository: ChapterRepository,
@@ -21,16 +23,25 @@ export class UpdateChapterUseCase {
     const manga = await this.mangaRepository.findById(mangaId)
 
     if (!manga) {
+      this.logger.warn(
+        `Chapter update failed, manga not found with ID ${mangaId}`,
+      )
       throw new MangaNotFoundException(mangaId)
     }
 
     const chapter = await this.chapterRepository.findById(chapterId)
 
     if (!chapter) {
+      this.logger.warn(
+        `Chapter update failed, chapter not found with ID ${chapterId}`,
+      )
       throw new ChapterNotFoundException(chapterId)
     }
 
     if (chapter.mangaId !== mangaId) {
+      this.logger.warn(
+        `Chapter update failed, chapter ${chapterId} does not belong to manga ${mangaId}`,
+      )
       throw new ChapterDoesNotBelongToMangaException(chapterId, mangaId)
     }
 
@@ -38,6 +49,10 @@ export class UpdateChapterUseCase {
     chapter.updatedAt = new Date()
 
     const updatedChapter = await this.chapterRepository.update(chapter)
+
+    this.logger.log(
+      `Chapter ${chapter.chapterNumber} updated successfully for manga ID ${mangaId}`,
+    )
 
     return updatedChapter
   }

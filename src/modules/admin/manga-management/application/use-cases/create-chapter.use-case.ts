@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common'
+import { Inject, Injectable, Logger } from '@nestjs/common'
 
 import { ChapterAlreadyExistsException } from '@/core/domain/exceptions/chapter/chapter-already-exists.exception'
 import { MangaNotFoundException } from '@/core/domain/exceptions/manga/manga-not-found'
@@ -14,6 +14,8 @@ import { CreateChapterDto } from '../dtos/create-chapter.dto'
 
 @Injectable()
 export class CreateChapterUseCase {
+  private readonly logger = new Logger(CreateChapterUseCase.name)
+
   constructor(
     @Inject(MANGA_REPOSITORY)
     private readonly mangaRepository: MangaRepository,
@@ -26,6 +28,9 @@ export class CreateChapterUseCase {
     const manga = await this.mangaRepository.findById(mangaId)
 
     if (!manga) {
+      this.logger.warn(
+        `Chapter creation failed, manga not found with ID ${mangaId}`,
+      )
       throw new MangaNotFoundException(mangaId)
     }
 
@@ -40,6 +45,9 @@ export class CreateChapterUseCase {
       )
 
     if (existingChapter) {
+      this.logger.warn(
+        `Chapter creation failed, chapter ${nextChapterNumber} already exists for manga ID ${mangaId}`,
+      )
       throw new ChapterAlreadyExistsException(nextChapterNumber, manga.id)
     }
 
@@ -53,6 +61,10 @@ export class CreateChapterUseCase {
     const savedChapter = await this.chapterRepository.save(newChapter)
 
     await this.mangaRepository.incrementChapterCount(mangaId)
+
+    this.logger.log(
+      `Chapter ${nextChapterNumber} created successfully for manga ID: ${mangaId}`,
+    )
 
     return savedChapter
   }

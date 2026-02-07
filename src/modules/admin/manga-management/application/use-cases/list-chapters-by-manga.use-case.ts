@@ -37,6 +37,10 @@ export class ListChaptersByMangaUseCase {
       params.limit,
     )
 
+    this.logger.log(
+      `Retrieved ${chapters.length} chapters for manga ID ${params.mangaId} (page ${params.page}, total ${totalChapters})`,
+    )
+
     return {
       chapters,
       meta: pagination,

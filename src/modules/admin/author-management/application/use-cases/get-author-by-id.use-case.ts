@@ -17,7 +17,7 @@ export class GetAuthorByIdUseCase {
   async execute(id: string): Promise<Author> {
     const author = await this.authorRepository.findById(id)
     if (!author) {
-      this.logger.warn(`Author not found with ID: ${id}`)
+      this.logger.warn(`Author not found with ID ${id}`)
       throw new AuthorNotFoundException(id)
     }
     return author

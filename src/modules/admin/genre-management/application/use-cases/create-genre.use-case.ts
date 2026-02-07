@@ -20,7 +20,7 @@ export class CreateGenreUseCase {
     const existingGenre = await this.genreRepository.findByName(params.name)
     if (existingGenre) {
       this.logger.warn(
-        `Creation failed: Genre name already exists: ${params.name}`,
+        `Creation failed, genre with name ${params.name} already exists`,
       )
       throw new GenreAlreadyExistsException(params.name)
     }
@@ -34,7 +34,7 @@ export class CreateGenreUseCase {
 
     const createdGenre = await this.genreRepository.save(genre)
     this.logger.log(
-      `Genre created successfully. Name: ${createdGenre.name}, ID: ${createdGenre.id}`,
+      `Genre created successfully with name ${createdGenre.name} and ID ${createdGenre.id}`,
     )
     return createdGenre
   }

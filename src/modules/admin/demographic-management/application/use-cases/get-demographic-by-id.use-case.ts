@@ -18,7 +18,7 @@ export class GetDemographicByIdUseCase {
   async execute(id: string): Promise<Demographic> {
     const demographic = await this.demographicRepository.findById(id)
     if (!demographic) {
-      this.logger.warn(`Demographic not found with ID: ${id}`)
+      this.logger.warn(`Demographic not found with ID ${id}`)
       throw new DemographicNotFoundException(id)
     }
     return demographic

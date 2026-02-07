@@ -17,19 +17,19 @@ export class DeleteAuthorUseCase {
     const author = await this.authorRepository.findById(id)
 
     if (!author) {
-      this.logger.warn(`Author not found with ID: ${id}`)
+      this.logger.warn(`Author not found with ID ${id}`)
       throw new AuthorNotFoundException(id)
     }
 
     const deleted = await this.authorRepository.delete(id)
 
     if (!deleted) {
-      this.logger.error(`Failed to delete author with ID: ${id}`)
+      this.logger.error(`Failed to delete author with ID ${id}`)
       throw new AuthorNotFoundException(id)
     }
 
     this.logger.log(
-      `Author with name ${author.name} and ID ${id} deleted successfully.`,
+      `Author with name ${author.name} and ID ${id} deleted successfully`,
     )
   }
 }

@@ -15,7 +15,7 @@ export class GetAllAuthorsUseCase {
 
   async execute(): Promise<Author[]> {
     const authors = await this.authorRepository.findAll()
-    this.logger.log(`Retrieved ${authors.length} authors from database`)
+    this.logger.log(`Retrieved ${authors.length} authors`)
     return authors
   }
 }

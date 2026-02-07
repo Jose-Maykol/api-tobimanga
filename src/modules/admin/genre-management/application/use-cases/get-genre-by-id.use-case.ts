@@ -17,7 +17,7 @@ export class GetGenreByIdUseCase {
   async execute(id: string): Promise<Genre> {
     const genre = await this.genreRepository.findById(id)
     if (!genre) {
-      this.logger.warn(`Genre not found with ID: ${id}`)
+      this.logger.warn(`Genre not found with ID ${id}`)
       throw new GenreNotFoundException(id)
     }
     return genre

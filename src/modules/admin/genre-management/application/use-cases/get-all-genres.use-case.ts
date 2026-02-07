@@ -15,7 +15,7 @@ export class GetAllGenresUseCase {
 
   async execute(): Promise<Genre[]> {
     const genres = await this.genreRepository.findAll()
-    this.logger.log(`Retrieved ${genres.length} genres from database`)
+    this.logger.log(`Retrieved ${genres.length} genres `)
     return genres
   }
 }

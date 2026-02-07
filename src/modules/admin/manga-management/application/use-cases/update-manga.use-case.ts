@@ -1,6 +1,6 @@
 import slugify from 'slugify'
 
-import { Inject, Injectable } from '@nestjs/common'
+import { Inject, Injectable, Logger } from '@nestjs/common'
 
 import { Manga } from '@/core/domain/entities/manga.entity'
 import { UploadStatus } from '@/core/domain/entities/upload.entity'
@@ -18,6 +18,8 @@ import { UpdateMangaDto } from '../dtos/update-manga.dto'
 
 @Injectable()
 export class UpdateMangaUseCase {
+  private readonly logger = new Logger(UpdateMangaUseCase.name)
+
   constructor(
     @Inject(MANGA_REPOSITORY)
     private readonly mangaRepository: MangaRepository,
@@ -36,6 +38,7 @@ export class UpdateMangaUseCase {
   async execute(id: string, params: UpdateMangaDto) {
     const manga = await this.mangaRepository.findById(id)
     if (!manga) {
+      this.logger.warn(`Update failed manga not found with ID: ${id}`)
       throw new MangaNotFoundException(id)
     }
 
@@ -53,6 +56,9 @@ export class UpdateMangaUseCase {
       const exists: boolean =
         await this.mangaRepository.existBySlugName(slugName)
       if (exists && slugName !== manga.slugName) {
+        this.logger.warn(
+          `Update failed manga name already exists: ${params.originalName}`,
+        )
         throw new MangaAlreadyExistsException(params.originalName)
       }
     }
@@ -119,6 +125,10 @@ export class UpdateMangaUseCase {
     }
 
     const savedManga = await this.mangaRepository.update(updatedManga)
+
+    this.logger.log(
+      `Manga updated successfully with name ${savedManga.originalName} and ID ${id}`,
+    )
 
     return savedManga
   }

@@ -17,19 +17,17 @@ export class DeleteGenreUseCase {
     const genre = await this.genreRepository.findById(id)
 
     if (!genre) {
-      this.logger.warn(`Genre not found with ID: ${id}`)
+      this.logger.warn(`Genre not found with ID ${id}`)
       throw new GenreNotFoundException(id)
     }
 
     const deleted = await this.genreRepository.delete(id)
 
     if (!deleted) {
-      this.logger.error(`Failed to delete genre with ID: ${id}`)
+      this.logger.error(`Failed to delete genre with name ${genre.name}`)
       throw new GenreNotFoundException(id)
     }
 
-    this.logger.log(
-      `Genre with name ${genre.name} and ID ${id} deleted successfully.`,
-    )
+    this.logger.log(`Genre with ID ${id} deleted successfully`)
   }
 }

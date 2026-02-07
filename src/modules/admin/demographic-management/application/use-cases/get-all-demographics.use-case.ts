@@ -16,9 +16,7 @@ export class GetAllDemographicsUseCase {
 
   async execute(): Promise<Demographic[]> {
     const demographics = await this.demographicRepository.findAll()
-    this.logger.log(
-      `Retrieved ${demographics.length} demographics from database`,
-    )
+    this.logger.log(`Retrieved ${demographics.length} demographics`)
     return demographics
   }
 }

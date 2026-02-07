@@ -21,7 +21,7 @@ export class UpdateAuthorUseCase {
     const currentAuthor = await this.authorRepository.findById(id)
 
     if (!currentAuthor) {
-      this.logger.warn(`Update failed: Author not found with ID: ${id}`)
+      this.logger.warn(`Update failed, author not found with ID ${id}`)
       throw new AuthorNotFoundException(id)
     }
 
@@ -29,7 +29,7 @@ export class UpdateAuthorUseCase {
       const nameExists = await this.authorRepository.findByName(params.name)
       if (nameExists) {
         this.logger.warn(
-          `Update failed: Author name already exists: ${params.name}`,
+          `Update failed, author name already exists ${params.name}`,
         )
         throw new AuthorAlreadyExistsException(params.name)
       }
@@ -41,13 +41,13 @@ export class UpdateAuthorUseCase {
 
     if (!updatedAuthor) {
       this.logger.error(
-        `Unexpected error: Author not found after update attempt [ID: ${id}]`,
+        `Unexpected error, author not found after update attempt ID ${id}`,
       )
       throw new AuthorNotFoundException(id)
     }
 
     this.logger.log(
-      `Author updated successfully. Name: ${updatedAuthor.name}, ID: ${id}`,
+      `Author updated successfully with name ${updatedAuthor.name} and ID ${id}`,
     )
     return updatedAuthor
   }

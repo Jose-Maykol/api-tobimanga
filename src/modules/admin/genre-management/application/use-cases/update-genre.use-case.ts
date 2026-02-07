@@ -21,7 +21,7 @@ export class UpdateGenreUseCase {
     const currentGenre = await this.genreRepository.findById(id)
 
     if (!currentGenre) {
-      this.logger.warn(`Update failed: Genre not found with ID: ${id}`)
+      this.logger.warn(`Update failed, genre not found with ID ${id}`)
       throw new GenreNotFoundException(id)
     }
 
@@ -29,7 +29,7 @@ export class UpdateGenreUseCase {
       const nameExists = await this.genreRepository.findByName(params.name)
       if (nameExists) {
         this.logger.warn(
-          `Update failed: Genre name already exists: ${params.name}`,
+          `Update failed, genre with name ${params.name} already exists`,
         )
         throw new GenreAlreadyExistsException(params.name)
       }
@@ -41,14 +41,12 @@ export class UpdateGenreUseCase {
 
     if (!updatedGenre) {
       this.logger.error(
-        `Unexpected error: Genre not found after update attempt ID: ${id}`,
+        `Unexpected error, genre not found after update attempt ID ${id}`,
       )
       throw new GenreNotFoundException(id)
     }
 
-    this.logger.log(
-      `Genre updated successfully with name: ${updatedGenre.name} and ID: ${id}`,
-    )
+    this.logger.log(`Genre with ID ${id} updated successfully`)
     return updatedGenre
   }
 }

@@ -1,6 +1,6 @@
 import slugify from 'slugify'
 
-import { Inject, Injectable } from '@nestjs/common'
+import { Inject, Injectable, Logger } from '@nestjs/common'
 
 import { UploadStatus } from '@/core/domain/entities/upload.entity'
 import { MangaAlreadyExistsException } from '@/core/domain/exceptions/manga/manga-already-exists'
@@ -20,6 +20,8 @@ import { UpdateUploadStatusUseCase } from '@/modules/admin/upload/application/us
 
 @Injectable()
 export class CreateMangaUseCase {
+  private readonly logger = new Logger(CreateMangaUseCase.name)
+
   constructor(
     @Inject(MANGA_REPOSITORY)
     private readonly mangaRepository: MangaRepository,
@@ -54,6 +56,9 @@ export class CreateMangaUseCase {
     const exists = await this.mangaRepository.existBySlugName(slugName)
 
     if (exists) {
+      this.logger.warn(
+        `Creation failed: Manga already exists with name: ${params.originalName}`,
+      )
       throw new MangaAlreadyExistsException(params.originalName)
     }
 
@@ -104,6 +109,10 @@ export class CreateMangaUseCase {
     ])
 
     await this.chapterRepository.saveMany(savedManga.id, savedManga.chapters)
+
+    this.logger.log(
+      `Manga created successfully with name ${savedManga.originalName} and ID ${savedManga.id}`,
+    )
 
     return savedManga
   }

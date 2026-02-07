@@ -20,7 +20,7 @@ export class CreateAuthorUseCase {
     const existingAuthor = await this.authorRepository.findByName(params.name)
     if (existingAuthor) {
       this.logger.warn(
-        `Creation failed: Author name already exists: ${params.name}`,
+        `Creation failed, author name already exists with name ${params.name}`,
       )
       throw new AuthorAlreadyExistsException(params.name)
     }
@@ -34,7 +34,7 @@ export class CreateAuthorUseCase {
 
     const createdAuthor = await this.authorRepository.save(author)
     this.logger.log(
-      `Author created successfully. Name: ${createdAuthor.name}, ID: ${createdAuthor.id}`,
+      `Author created successfully with name ${createdAuthor.name} and ID ${createdAuthor.id}`,
     )
 
     return createdAuthor
