@@ -8,6 +8,13 @@
       "when": 1764218547209,
       "tag": "0000_tobimanga",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1770485667120,
+      "tag": "0001_breezy_bloodstrike",
+      "breakpoints": true
     }
   ]
 }
