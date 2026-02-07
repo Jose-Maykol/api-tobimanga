@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common'
+import { Inject, Injectable, Logger } from '@nestjs/common'
 
 import { Author } from '@/core/domain/entities/author.entity'
 import { AuthorAlreadyExistsException } from '@/core/domain/exceptions/author/author-already-exists.exception'
@@ -9,6 +9,8 @@ import { CreateAuthorDto } from '../dtos/create-author.dto'
 
 @Injectable()
 export class CreateAuthorUseCase {
+  private readonly logger = new Logger(CreateAuthorUseCase.name)
+
   constructor(
     @Inject(AUTHOR_REPOSITORY)
     private readonly authorRepository: AuthorRepository,
@@ -17,6 +19,9 @@ export class CreateAuthorUseCase {
   async execute(params: CreateAuthorDto): Promise<Author> {
     const existingAuthor = await this.authorRepository.findByName(params.name)
     if (existingAuthor) {
+      this.logger.warn(
+        `Creation failed: Author name already exists: ${params.name}`,
+      )
       throw new AuthorAlreadyExistsException(params.name)
     }
 
@@ -27,6 +32,11 @@ export class CreateAuthorUseCase {
       updatedAt: null,
     }
 
-    return this.authorRepository.save(author)
+    const createdAuthor = await this.authorRepository.save(author)
+    this.logger.log(
+      `Author created successfully. Name: ${createdAuthor.name}, ID: ${createdAuthor.id}`,
+    )
+
+    return createdAuthor
   }
 }

@@ -26,7 +26,6 @@ export class UpdateAuthorUseCase {
     }
 
     if (params.name !== currentAuthor.name) {
-      this.logger.debug(`Checking for duplicate author name: ${params.name}`)
       const nameExists = await this.authorRepository.findByName(params.name)
       if (nameExists) {
         this.logger.warn(
@@ -34,8 +33,6 @@ export class UpdateAuthorUseCase {
         )
         throw new AuthorAlreadyExistsException(params.name)
       }
-    } else {
-      this.logger.debug(`Author name unchanged for [ID: ${id}]`)
     }
 
     const updatedAuthor = await this.authorRepository.update(id, {
