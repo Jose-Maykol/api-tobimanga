@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common'
+import { Inject, Injectable, Logger } from '@nestjs/common'
 
 import { Upload, UploadStatus } from '@/core/domain/entities/upload.entity'
 import { UploadNotFoundException } from '@/core/domain/exceptions/upload/upload-not-found'
@@ -13,6 +13,8 @@ export type UpdateUploadStatusParams = {
 
 @Injectable()
 export class UpdateUploadStatusUseCase {
+  private readonly logger = new Logger(UpdateUploadStatusUseCase.name)
+
   constructor(
     @Inject(UPLOAD_REPOSITORY)
     private readonly uploadRepository: UploadRepository,
@@ -25,12 +27,19 @@ export class UpdateUploadStatusUseCase {
 
     const upload = await this.uploadRepository.findById(params.id)
 
-    if (upload === null) throw new UploadNotFoundException(params.id)
+    if (upload === null) {
+      this.logger.warn(`Upload not found with ID ${params.id}`)
+      throw new UploadNotFoundException(params.id)
+    }
 
     const result = await this.uploadRepository.updateStatus(
       params.id,
       params.status,
       params.usedAt,
+    )
+
+    this.logger.log(
+      `Upload status updated to ${params.status} for ID ${params.id}`,
     )
 
     return result

@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common'
+import { Inject, Injectable, Logger } from '@nestjs/common'
 
 import { Upload, UploadStatus } from '@/core/domain/entities/upload.entity'
 import { UploadRepository } from '@/core/domain/repositories/upload.repository'
@@ -8,6 +8,8 @@ import { UPLOAD_REPOSITORY } from '@/infrastructure/tokens/repositories'
 
 @Injectable()
 export class UploadFileUseCase {
+  private readonly logger = new Logger(UploadFileUseCase.name)
+
   constructor(
     @Inject(IMAGE_STORAGE_SERVICE)
     private readonly imageStorageService: StorageService,
@@ -42,6 +44,10 @@ export class UploadFileUseCase {
     }
 
     await this.uploadRepository.save(upload)
+
+    this.logger.log(
+      `File uploaded successfully with name ${file.originalname} and ID ${upload.id} (${file.mimetype})`,
+    )
 
     return {
       id: upload.id,
