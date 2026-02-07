@@ -11,6 +11,8 @@ import { GenreManagementModule } from './modules/admin/genre-management/genre-ma
 import { MangaManagementModule } from './modules/admin/manga-management/manga-management.module'
 import { UploadModule } from './modules/admin/upload/upload.module'
 import { AuthModule } from './modules/auth/auth.module'
+import { CatalogModule } from './modules/catalog/catalog.module'
+import { MangaCatalogModule } from './modules/catalog/manga-catalog/manga-catalog.module'
 import { UserModule } from './modules/user/user.module'
 
 const modules = [
@@ -22,6 +24,8 @@ const modules = [
   DemographicManagementModule,
   AuthorManagementModule,
   UploadModule,
+  CatalogModule,
+  MangaCatalogModule,
 ]
 @Module({
   imports: [
@@ -59,6 +63,16 @@ const modules = [
       {
         module: AuthModule,
         path: 'auth',
+      },
+      {
+        module: CatalogModule,
+        path: '',
+        children: [
+          {
+            module: MangaCatalogModule,
+            path: 'mangas',
+          },
+        ],
       },
     ]),
   ],
