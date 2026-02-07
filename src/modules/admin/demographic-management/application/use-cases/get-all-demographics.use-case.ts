@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common'
+import { Inject, Injectable, Logger } from '@nestjs/common'
 
 import { DEMOGRAPHIC_REPOSITORY } from '@/infrastructure/tokens/repositories'
 
@@ -7,6 +7,8 @@ import { DemographicRepository } from '../../../../../core/domain/repositories/d
 
 @Injectable()
 export class GetAllDemographicsUseCase {
+  private readonly logger = new Logger(GetAllDemographicsUseCase.name)
+
   constructor(
     @Inject(DEMOGRAPHIC_REPOSITORY)
     private readonly demographicRepository: DemographicRepository,
@@ -14,6 +16,9 @@ export class GetAllDemographicsUseCase {
 
   async execute(): Promise<Demographic[]> {
     const demographics = await this.demographicRepository.findAll()
+    this.logger.log(
+      `Retrieved ${demographics.length} demographics from database`,
+    )
     return demographics
   }
 }
