@@ -10,6 +10,7 @@ import {
 import { ResponseBuilder } from '@/common/utils/response.util'
 
 import { FindMangaBySlugUseCase } from '../../application/use-cases/find-manga-by-slug.use-case'
+import { ListChaptersByMangaSlugUseCase } from '../../application/use-cases/list-chapters-by-manga-slug.use-case'
 import { ListPublicMangasUseCase } from '../../application/use-cases/list-public-mangas.use-case'
 import { MangaCatalogSwagger } from '../swagger/manga-catalog.swagger'
 
@@ -21,6 +22,8 @@ export class MangaCatalogController {
     private readonly listPublicMangasUseCase: ListPublicMangasUseCase,
     @Inject()
     private readonly findMangaBySlugUseCase: FindMangaBySlugUseCase,
+    @Inject()
+    private readonly listChaptersByMangaSlugUseCase: ListChaptersByMangaSlugUseCase,
   ) {}
 
   @Get()
@@ -65,6 +68,36 @@ export class MangaCatalogController {
 
     return ResponseBuilder.success({
       data: manga,
+    })
+  }
+
+  @Get(':slug/chapters')
+  @ApiOperation({
+    summary: 'Listar capítulos de un manga por slug',
+    description:
+      'Obtiene la lista de capítulos de un manga específico con paginación y ordenamiento. Ideal para la vista de lectura o detalle del manga.',
+  })
+  @ApiParam(MangaCatalogSwagger.getMangaBySlug.param)
+  @ApiQuery(MangaCatalogSwagger.listChapters.queries.page)
+  @ApiQuery(MangaCatalogSwagger.listChapters.queries.limit)
+  @ApiQuery(MangaCatalogSwagger.listChapters.queries.order)
+  @ApiResponse(MangaCatalogSwagger.listChapters.responses.success)
+  @ApiResponse(MangaCatalogSwagger.getMangaBySlug.responses.notFound)
+  async getChaptersByMangaSlug(
+    @Param('slug') slug: string,
+    @Query('page') page = 1,
+    @Query('limit') limit = 20,
+    @Query('order') order: 'ASC' | 'DESC' = 'DESC',
+  ) {
+    const chapters = await this.listChaptersByMangaSlugUseCase.execute(slug, {
+      page: Number(page),
+      limit: Number(limit),
+      order,
+    })
+
+    return ResponseBuilder.success({
+      data: chapters.items,
+      meta: chapters.meta,
     })
   }
 }

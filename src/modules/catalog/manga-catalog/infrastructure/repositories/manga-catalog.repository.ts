@@ -83,6 +83,7 @@ export class MangaCatalogRepository {
         bannerImageUrl: true,
         rating: true,
         publicationStatus: true,
+        coverImageUrl: true,
       },
       with: {
         authors: {
@@ -130,11 +131,67 @@ export class MangaCatalogRepository {
       chapters: result.chapters,
       releaseDate: new Date(result.releaseDate),
       bannerImage: result.bannerImageUrl,
+      coverImage: result.coverImageUrl,
       rating: result.rating,
       publicationStatus: result.publicationStatus,
       authors: result.authors.map((ma) => ma.author),
       genres: result.genres.map((mg) => mg.genre),
       demographic: result.demographic,
     }
+  }
+
+  async findMangaIdBySlug(slug: string): Promise<string | null> {
+    const result = await this.db.client.query.mangas.findFirst({
+      columns: {
+        id: true,
+      },
+      where: (mangas, { eq, and }) =>
+        and(eq(mangas.slugName, slug), eq(mangas.active, true)),
+    })
+
+    return result ? result.id : null
+  }
+
+  async findChaptersByMangaId(
+    mangaId: string,
+    page: number,
+    limit: number,
+    order: 'ASC' | 'DESC',
+  ) {
+    const offset = (page - 1) * limit
+
+    const results = await this.db.client.query.chapters.findMany({
+      columns: {
+        id: true,
+        chapterNumber: true,
+        title: true,
+        releaseDate: true,
+      },
+      where: (chapters, { eq }) => eq(chapters.mangaId, mangaId),
+      orderBy: (chapters, { asc, desc }) =>
+        order === 'ASC'
+          ? asc(chapters.chapterNumber)
+          : desc(chapters.chapterNumber),
+      limit,
+      offset,
+    })
+
+    return results.map((chapter) => ({
+      id: chapter.id,
+      chapterNumber: chapter.chapterNumber,
+      title: chapter.title,
+      releaseDate: chapter.releaseDate ? new Date(chapter.releaseDate) : null,
+    }))
+  }
+
+  async countChaptersByMangaId(mangaId: string): Promise<number> {
+    const results = await this.db.client.query.chapters.findMany({
+      columns: {
+        id: true,
+      },
+      where: (chapters, { eq }) => eq(chapters.mangaId, mangaId),
+    })
+
+    return results.length
   }
 }

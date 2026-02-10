@@ -124,4 +124,63 @@ export const MangaCatalogSwagger = {
       },
     },
   },
+  listChapters: {
+    queries: {
+      page: {
+        name: 'page',
+        required: false,
+        type: Number,
+        description: 'Número de página (por defecto: 1)',
+        example: 1,
+      },
+      limit: {
+        name: 'limit',
+        required: false,
+        type: Number,
+        description: 'Cantidad de capítulos por página (por defecto: 20)',
+        example: 20,
+      },
+      order: {
+        name: 'order',
+        required: false,
+        enum: ['ASC', 'DESC'],
+        description:
+          'Orden de los capítulos por número (ASC: ascendente, DESC: descendente). Por defecto: DESC',
+        example: 'DESC',
+      },
+    },
+    responses: {
+      success: {
+        status: 200,
+        description:
+          'Lista de capítulos obtenida exitosamente. Incluye paginación y ordenamiento.',
+        schema: {
+          example: {
+            data: [
+              {
+                id: '123e4567-e89b-12d3-a456-426614174000',
+                chapterNumber: 139,
+                title: 'Available',
+                releaseDate: '2021-04-09',
+              },
+              {
+                id: '123e4567-e89b-12d3-a456-426614174001',
+                chapterNumber: 138,
+                title: 'A Long Dream',
+                releaseDate: '2021-03-09',
+              },
+            ],
+            meta: {
+              pagination: {
+                page: 1,
+                limit: 20,
+                totalItems: 139,
+                totalPages: 7,
+              },
+            },
+          },
+        },
+      },
+    },
+  },
 }
