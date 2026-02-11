@@ -35,10 +35,21 @@ export class MangaCatalogController {
   @ApiQuery(MangaCatalogSwagger.listMangas.queries.page)
   @ApiQuery(MangaCatalogSwagger.listMangas.queries.limit)
   @ApiResponse(MangaCatalogSwagger.listMangas.responses.success)
-  async getAll(@Query('page') page = 1, @Query('limit') limit = 10) {
+  async getAll(
+    @Query('page') page = 1,
+    @Query('limit') limit = 10,
+    @Query('genreId') genreId?: string,
+    @Query('authorId') authorId?: string,
+    @Query('rating') rating?: number,
+    @Query('search') search?: string,
+  ) {
     const mangas = await this.listPublicMangasUseCase.execute({
       page: Number(page),
       limit: Number(limit),
+      genreId,
+      authorId,
+      rating: rating ? Number(rating) : undefined,
+      search,
     })
     return ResponseBuilder.success({
       data: mangas.items,

@@ -18,8 +18,8 @@ export class ListPublicMangasUseCase {
     const { page, limit } = params
 
     const [mangas, totalMangas] = await Promise.all([
-      this.mangaCatalogRepository.findMangas(page, limit),
-      this.mangaCatalogRepository.countMangas(),
+      this.mangaCatalogRepository.findMangas(params),
+      this.mangaCatalogRepository.countMangas(params),
     ])
 
     const meta = calculatePagination(totalMangas, page, limit)

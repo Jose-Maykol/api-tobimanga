@@ -1,9 +1,16 @@
+import { and, eq, exists, gte, ilike } from 'drizzle-orm'
+
 import { Inject, Injectable } from '@nestjs/common'
 
 import { DATABASE_SERVICE } from '@/core/database/constants/database.constants'
+import { mangaAuthors } from '@/core/database/schemas/manga-author.schema'
+import { mangaGenres } from '@/core/database/schemas/manga-genre.schema'
 import { DatabaseService } from '@/core/database/services/database.service'
 
-import { MangaListItemDto } from '../../application/dtos/manga-list.dto'
+import {
+  ListPublicMangasDto,
+  MangaListItemDto,
+} from '../../application/dtos/manga-list.dto'
 
 @Injectable()
 export class MangaCatalogRepository {
@@ -12,7 +19,8 @@ export class MangaCatalogRepository {
     private readonly db: DatabaseService,
   ) {}
 
-  async findMangas(page: number, limit: number): Promise<MangaListItemDto[]> {
+  async findMangas(params: ListPublicMangasDto): Promise<MangaListItemDto[]> {
+    const { page, limit, search, rating, genreId, authorId } = params
     const offset = (page - 1) * limit
 
     const results = await this.db.client.query.mangas.findMany({
@@ -43,7 +51,51 @@ export class MangaCatalogRepository {
           },
         },
       },
-      where: (mangas, { eq }) => eq(mangas.active, true),
+      where: (mangas) => {
+        const conditions = [eq(mangas.active, true)]
+
+        if (search) {
+          conditions.push(ilike(mangas.originalName, `%${search}%`))
+        }
+
+        if (rating) {
+          conditions.push(gte(mangas.rating, rating))
+        }
+
+        if (genreId) {
+          conditions.push(
+            exists(
+              this.db.client
+                .select()
+                .from(mangaGenres)
+                .where(
+                  and(
+                    eq(mangaGenres.mangaId, mangas.id),
+                    eq(mangaGenres.genreId, genreId),
+                  ),
+                ),
+            ),
+          )
+        }
+
+        if (authorId) {
+          conditions.push(
+            exists(
+              this.db.client
+                .select()
+                .from(mangaAuthors)
+                .where(
+                  and(
+                    eq(mangaAuthors.mangaId, mangas.id),
+                    eq(mangaAuthors.authorId, authorId),
+                  ),
+                ),
+            ),
+          )
+        }
+
+        return and(...conditions)
+      },
       limit,
       offset,
     })
@@ -60,12 +112,58 @@ export class MangaCatalogRepository {
     }))
   }
 
-  async countMangas(): Promise<number> {
+  async countMangas(params: ListPublicMangasDto): Promise<number> {
+    const { search, rating, genreId, authorId } = params
+
     const results = await this.db.client.query.mangas.findMany({
       columns: {
         id: true,
       },
-      where: (mangas, { eq }) => eq(mangas.active, true),
+      where: (mangas) => {
+        const conditions = [eq(mangas.active, true)]
+
+        if (search) {
+          conditions.push(ilike(mangas.originalName, `%${search}%`))
+        }
+
+        if (rating) {
+          conditions.push(gte(mangas.rating, rating))
+        }
+
+        if (genreId) {
+          conditions.push(
+            exists(
+              this.db.client
+                .select()
+                .from(mangaGenres)
+                .where(
+                  and(
+                    eq(mangaGenres.mangaId, mangas.id),
+                    eq(mangaGenres.genreId, genreId),
+                  ),
+                ),
+            ),
+          )
+        }
+
+        if (authorId) {
+          conditions.push(
+            exists(
+              this.db.client
+                .select()
+                .from(mangaAuthors)
+                .where(
+                  and(
+                    eq(mangaAuthors.mangaId, mangas.id),
+                    eq(mangaAuthors.authorId, authorId),
+                  ),
+                ),
+            ),
+          )
+        }
+
+        return and(...conditions)
+      },
     })
 
     return results.length

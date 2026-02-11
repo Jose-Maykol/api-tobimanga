@@ -15,6 +15,34 @@ export const MangaCatalogSwagger = {
         description: 'Cantidad de items por página (por defecto: 10)',
         example: 10,
       },
+      search: {
+        name: 'search',
+        required: false,
+        type: String,
+        description: 'Buscar por nombre del manga',
+        example: 'Attack on Titan',
+      },
+      genreId: {
+        name: 'genreId',
+        required: false,
+        type: String,
+        description: 'Filtrar por ID de género',
+        example: 'uuid-del-genero',
+      },
+      authorId: {
+        name: 'authorId',
+        required: false,
+        type: String,
+        description: 'Filtrar por ID de autor',
+        example: 'uuid-del-autor',
+      },
+      rating: {
+        name: 'rating',
+        required: false,
+        type: Number,
+        description: 'Filtrar por calificación mínima (1-5)',
+        example: 4,
+      },
     },
     responses: {
       success: {

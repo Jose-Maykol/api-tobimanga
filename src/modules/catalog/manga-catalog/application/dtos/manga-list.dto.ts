@@ -27,4 +27,8 @@ export interface MangaDetailDto {
 export interface ListPublicMangasDto {
   page: number
   limit: number
+  genreId?: string
+  authorId?: string
+  rating?: number
+  search?: string
 }
