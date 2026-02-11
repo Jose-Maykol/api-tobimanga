@@ -6,15 +6,15 @@ import { DATABASE_SERVICE } from '@/core/database/constants/database.constants'
 import { chapters } from '@/core/database/schemas/chapter.schema'
 import { DatabaseService } from '@/core/database/services/database.service'
 
-import { Chapter } from '../../core/domain/entities/chapter.entity'
-import { ChapterRepository } from '../../core/domain/repositories/chapter.repository'
+import { Chapter } from '../../modules/admin/manga-management/domain/entities/chapter.entity'
+import { ChapterRepository } from '../../modules/admin/manga-management/domain/repositories/chapter.repository'
 
 @Injectable()
 export class ChapterRepositoryImpl implements ChapterRepository {
   constructor(
     @Inject(DATABASE_SERVICE)
     private readonly db: DatabaseService,
-  ) {}
+  ) { }
 
   async save(chapter: Chapter): Promise<Chapter> {
     await this.db.client.insert(chapters).values({

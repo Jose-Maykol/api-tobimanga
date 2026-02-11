@@ -3,7 +3,7 @@ import { Inject, Injectable, Logger } from '@nestjs/common'
 import { Author } from '@/core/domain/entities/author.entity'
 import { AuthorAlreadyExistsException } from '@/core/domain/exceptions/author/author-already-exists.exception'
 import { AuthorNotFoundException } from '@/core/domain/exceptions/author/author-not-found.exception'
-import { AuthorRepository } from '@/core/domain/repositories/author.repository'
+import { AuthorRepository } from '../../domain/repositories/author.repository'
 import { AUTHOR_REPOSITORY } from '@/infrastructure/tokens/repositories'
 
 import { UpdateAuthorDto } from '../dtos/update-author.dto'
@@ -15,7 +15,7 @@ export class UpdateAuthorUseCase {
   constructor(
     @Inject(AUTHOR_REPOSITORY)
     private readonly authorRepository: AuthorRepository,
-  ) {}
+  ) { }
 
   async execute(id: string, params: UpdateAuthorDto): Promise<Author> {
     const currentAuthor = await this.authorRepository.findById(id)

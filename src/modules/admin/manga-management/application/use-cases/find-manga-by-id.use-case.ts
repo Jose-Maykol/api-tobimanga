@@ -1,7 +1,8 @@
 import { Inject, Injectable, Logger } from '@nestjs/common'
 
+import { Manga } from '../../domain/entities/manga.entity'
 import { MangaNotFoundException } from '@/core/domain/exceptions/manga/manga-not-found'
-import { MangaRepository } from '@/core/domain/repositories/manga.repository'
+import { MangaRepository } from '../../domain/repositories/manga.repository'
 import { MANGA_REPOSITORY } from '@/infrastructure/tokens/repositories'
 
 @Injectable()
@@ -11,7 +12,7 @@ export class FindMangaByIdUseCase {
   constructor(
     @Inject(MANGA_REPOSITORY)
     private readonly mangaRepository: MangaRepository,
-  ) {}
+  ) { }
 
   async execute(id: string) {
     const manga = await this.mangaRepository.findById(id)
@@ -20,7 +21,7 @@ export class FindMangaByIdUseCase {
       throw new MangaNotFoundException(id)
     }
 
-    this.logger.log(`Retrieved manga with ID: ${id}`)
+    this.logger.log(`Retrieved manga with ID: ${id} `)
 
     return manga
   }

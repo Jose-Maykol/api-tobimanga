@@ -6,15 +6,15 @@ import { DATABASE_SERVICE } from '@/core/database/constants/database.constants'
 import { demographics } from '@/core/database/schemas/demographic.schema'
 import { DatabaseService } from '@/core/database/services/database.service'
 
-import { Demographic } from '../../core/domain/entities/demographic.entity'
-import { DemographicRepository } from '../../core/domain/repositories/demographic.repository'
+import { Demographic } from '../../modules/admin/demographic-management/domain/entities/demographic.entity'
+import { DemographicRepository } from '../../modules/admin/demographic-management/domain/repositories/demographic.repository'
 
 @Injectable()
 export class DemographicRepositoryImpl implements DemographicRepository {
   constructor(
     @Inject(DATABASE_SERVICE)
     private readonly db: DatabaseService,
-  ) {}
+  ) { }
 
   async findAll(): Promise<Demographic[]> {
     const demographicList = await this.db.client

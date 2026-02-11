@@ -3,7 +3,7 @@ import { Inject, Injectable, Logger } from '@nestjs/common'
 import { Genre } from '@/core/domain/entities/genre.entity'
 import { GenreAlreadyExistsException } from '@/core/domain/exceptions/genre/genre-already-exists.exception'
 import { GenreNotFoundException } from '@/core/domain/exceptions/genre/genre-not-found.exception'
-import { GenreRepository } from '@/core/domain/repositories/genre.repository'
+import { GenreRepository } from '../../domain/repositories/genre.repository'
 import { GENRE_REPOSITORY } from '@/infrastructure/tokens/repositories'
 
 import { UpdateGenreDto } from '../dtos/update-genre.dto'
@@ -15,7 +15,7 @@ export class UpdateGenreUseCase {
   constructor(
     @Inject(GENRE_REPOSITORY)
     private readonly genreRepository: GenreRepository,
-  ) {}
+  ) { }
 
   async execute(id: string, params: UpdateGenreDto): Promise<Genre> {
     const currentGenre = await this.genreRepository.findById(id)

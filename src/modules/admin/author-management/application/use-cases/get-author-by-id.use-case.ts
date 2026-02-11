@@ -2,7 +2,7 @@ import { Inject, Injectable, Logger } from '@nestjs/common'
 
 import { Author } from '@/core/domain/entities/author.entity'
 import { AuthorNotFoundException } from '@/core/domain/exceptions/author/author-not-found.exception'
-import { AuthorRepository } from '@/core/domain/repositories/author.repository'
+import { AuthorRepository } from '../../domain/repositories/author.repository'
 import { AUTHOR_REPOSITORY } from '@/infrastructure/tokens/repositories'
 
 @Injectable()
@@ -12,7 +12,7 @@ export class GetAuthorByIdUseCase {
   constructor(
     @Inject(AUTHOR_REPOSITORY)
     private readonly authorRepository: AuthorRepository,
-  ) {}
+  ) { }
 
   async execute(id: string): Promise<Author> {
     const author = await this.authorRepository.findById(id)

@@ -6,14 +6,14 @@ import { DATABASE_SERVICE } from '@/core/database/constants/database.constants'
 import { genres } from '@/core/database/schemas/genres.schema'
 import { DatabaseService } from '@/core/database/services/database.service'
 import { Genre } from '@/core/domain/entities/genre.entity'
-import { GenreRepository } from '@/core/domain/repositories/genre.repository'
+import { GenreRepository } from '../../modules/admin/genre-management/domain/repositories/genre.repository'
 
 @Injectable()
 export class GenreRepositoryImpl implements GenreRepository {
   constructor(
     @Inject(DATABASE_SERVICE)
     private readonly db: DatabaseService,
-  ) {}
+  ) { }
 
   async findAll(): Promise<Genre[]> {
     const genreList = await this.db.client

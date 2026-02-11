@@ -5,7 +5,7 @@ import { Inject, Injectable } from '@nestjs/common'
 import { DATABASE_SERVICE } from '@/core/database/constants/database.constants'
 import { authors } from '@/core/database/schemas/author.schema'
 import { DatabaseService } from '@/core/database/services/database.service'
-import { AuthorRepository } from '@/core/domain/repositories/author.repository'
+import { AuthorRepository } from '../../modules/admin/author-management/domain/repositories/author.repository'
 
 import { Author } from '../../core/domain/entities/author.entity'
 
@@ -14,7 +14,7 @@ export class AuthorRepositoryImpl implements AuthorRepository {
   constructor(
     @Inject(DATABASE_SERVICE)
     private readonly db: DatabaseService,
-  ) {}
+  ) { }
 
   async findAll(): Promise<Author[]> {
     const authorList = await this.db.client

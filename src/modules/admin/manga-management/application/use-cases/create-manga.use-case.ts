@@ -3,10 +3,11 @@ import slugify from 'slugify'
 import { Inject, Injectable, Logger } from '@nestjs/common'
 
 import { UploadStatus } from '@/core/domain/entities/upload.entity'
-import { MangaAlreadyExistsException } from '@/core/domain/exceptions/manga/manga-already-exists'
+import { Manga } from '../../domain/entities/manga.entity'
+import { MangaAlreadyExistsException } from '@/core/domain/exceptions/manga/manga-already-exists.exception'
 import { MangaFactory } from '@/core/domain/factories/manga/manga.factory'
 import { ChapterRepository } from '@/core/domain/repositories/chapter.repository'
-import { MangaRepository } from '@/core/domain/repositories/manga.repository'
+import { MangaRepository } from '../../domain/repositories/manga.repository'
 import {
   CHAPTER_REPOSITORY,
   MANGA_REPOSITORY,
@@ -38,7 +39,7 @@ export class CreateMangaUseCase {
     @Inject()
     private readonly getDemographicByIdUseCase: GetDemographicByIdUseCase,
     private readonly mangaFactory: MangaFactory,
-  ) {}
+  ) { }
 
   async execute(params: CreateMangaDto) {
     const { authors, genres, demographic } = params

@@ -2,8 +2,9 @@ import { Inject, Injectable, Logger } from '@nestjs/common'
 
 import { Pagination } from '@/common/interfaces/pagination.interface'
 import { calculatePagination } from '@/common/utils/pagination.util'
-import { Chapter } from '@/core/domain/entities/chapter.entity'
-import { ChapterRepository } from '@/core/domain/repositories/chapter.repository'
+import { Chapter } from '../../domain/entities/chapter.entity'
+import { ChapterRepository } from '../../domain/repositories/chapter.repository'
+import { MangaRepository } from '../../domain/repositories/manga.repository'
 import { CHAPTER_REPOSITORY } from '@/infrastructure/tokens/repositories'
 
 import { ListChaptersDto } from '../dtos/list-chapters.dto'
@@ -15,7 +16,7 @@ export class ListChaptersByMangaUseCase {
   constructor(
     @Inject(CHAPTER_REPOSITORY)
     private readonly chapterRepository: ChapterRepository,
-  ) {}
+  ) { }
 
   async execute(params: ListChaptersDto): Promise<{
     chapters: Chapter[]

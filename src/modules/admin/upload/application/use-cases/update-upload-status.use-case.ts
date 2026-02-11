@@ -1,8 +1,8 @@
 import { Inject, Injectable, Logger } from '@nestjs/common'
 
-import { Upload, UploadStatus } from '@/core/domain/entities/upload.entity'
+import { Upload, UploadStatus } from '../../domain/entities/upload.entity'
 import { UploadNotFoundException } from '@/core/domain/exceptions/upload/upload-not-found'
-import { UploadRepository } from '@/core/domain/repositories/upload.repository'
+import { UploadRepository } from '../../domain/repositories/upload.repository'
 import { UPLOAD_REPOSITORY } from '@/infrastructure/tokens/repositories'
 
 export type UpdateUploadStatusParams = {
@@ -18,7 +18,7 @@ export class UpdateUploadStatusUseCase {
   constructor(
     @Inject(UPLOAD_REPOSITORY)
     private readonly uploadRepository: UploadRepository,
-  ) {}
+  ) { }
 
   async execute(params: UpdateUploadStatusParams): Promise<Upload> {
     if (params.status === UploadStatus.ACTIVE && !params.usedAt) {
