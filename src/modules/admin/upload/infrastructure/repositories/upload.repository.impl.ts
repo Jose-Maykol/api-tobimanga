@@ -5,16 +5,16 @@ import { Inject, Injectable } from '@nestjs/common'
 import { DATABASE_SERVICE } from '@/core/database/constants/database.constants'
 import { uploads } from '@/core/database/schemas/upload.schema'
 import { DatabaseService } from '@/core/database/services/database.service'
-import { Upload } from '../../modules/admin/upload/domain/entities/upload.entity'
-import { UploadRepository } from '../../modules/admin/upload/domain/repositories/upload.repository'
-import { UploadStatus } from '@/core/domain/entities/upload.entity' // Keeping UploadStatus as it's used and not explicitly moved in the instruction
+
+import { Upload, UploadStatus } from '../../domain/entities/upload.entity'
+import { UploadRepository } from '../../domain/repositories/upload.repository'
 
 @Injectable()
 export class UploadRepositoryImpl implements UploadRepository {
   constructor(
     @Inject(DATABASE_SERVICE)
     private readonly db: DatabaseService,
-  ) { }
+  ) {}
 
   async save(upload: Upload): Promise<Upload> {
     await this.db.client.insert(uploads).values({
@@ -49,8 +49,9 @@ export class UploadRepositoryImpl implements UploadRepository {
       .update(uploads)
       .set(updateData)
       .where(eq(uploads.id, id))
+      .returning()
 
-    return result[0]
+    return result[0] as Upload
   }
 
   async findByUrl(url: string): Promise<Upload | null> {

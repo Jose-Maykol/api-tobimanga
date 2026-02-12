@@ -4,7 +4,7 @@ import { Upload, UploadStatus } from '../../domain/entities/upload.entity'
 import { UploadRepository } from '../../domain/repositories/upload.repository'
 import { IMAGE_STORAGE_SERVICE } from '@/core/storage/constants/storage.constants'
 import { StorageService } from '@/core/storage/interfaces/storage.service'
-import { UPLOAD_REPOSITORY } from '@/infrastructure/tokens/repositories'
+import { UPLOAD_REPOSITORY } from '../../infrastructure/tokens'
 
 @Injectable()
 export class UploadFileUseCase {

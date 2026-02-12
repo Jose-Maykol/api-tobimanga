@@ -2,22 +2,23 @@ import slugify from 'slugify'
 
 import { Inject, Injectable, Logger } from '@nestjs/common'
 
-import { UploadStatus } from '@/core/domain/entities/upload.entity'
-import { Manga } from '../../domain/entities/manga.entity'
+// Manga entity import removed
 import { MangaAlreadyExistsException } from '@/core/domain/exceptions/manga/manga-already-exists.exception'
-import { MangaFactory } from '@/core/domain/factories/manga/manga.factory'
-import { ChapterRepository } from '@/core/domain/repositories/chapter.repository'
-import { MangaRepository } from '../../domain/repositories/manga.repository'
-import {
-  CHAPTER_REPOSITORY,
-  MANGA_REPOSITORY,
-} from '@/infrastructure/tokens/repositories'
 import { GetAuthorByIdUseCase } from '@/modules/admin/author-management/application/use-cases/get-author-by-id.use-case'
 import { GetDemographicByIdUseCase } from '@/modules/admin/demographic-management/application/use-cases/get-demographic-by-id.use-case'
 import { GetGenreByIdUseCase } from '@/modules/admin/genre-management/application/use-cases/get-genre-by-id.use-case'
 import { CreateMangaDto } from '@/modules/admin/manga-management/application/dtos/create-manga.dto'
 import { FindUploadByUrlUseCase } from '@/modules/admin/upload/application/use-cases/find-upload-by-url.use-case'
 import { UpdateUploadStatusUseCase } from '@/modules/admin/upload/application/use-cases/update-upload-status.use-case'
+import { UploadStatus } from '@/modules/admin/upload/domain/entities/upload.entity'
+
+import { MangaFactory } from '../../domain/factories/manga.factory'
+import { ChapterRepository } from '../../domain/repositories/chapter.repository'
+import { MangaRepository } from '../../domain/repositories/manga.repository'
+import {
+  CHAPTER_REPOSITORY,
+  MANGA_REPOSITORY,
+} from '../../infrastructure/tokens'
 
 @Injectable()
 export class CreateMangaUseCase {
@@ -39,7 +40,7 @@ export class CreateMangaUseCase {
     @Inject()
     private readonly getDemographicByIdUseCase: GetDemographicByIdUseCase,
     private readonly mangaFactory: MangaFactory,
-  ) { }
+  ) {}
 
   async execute(params: CreateMangaDto) {
     const { authors, genres, demographic } = params

@@ -7,16 +7,17 @@ import { mangas } from '@/core/database/schemas/manga.schema'
 import { mangaAuthors } from '@/core/database/schemas/manga-author.schema'
 import { mangaGenres } from '@/core/database/schemas/manga-genre.schema'
 import { DatabaseService } from '@/core/database/services/database.service'
-import { Manga } from '../../modules/admin/manga-management/domain/entities/manga.entity'
-import { MangaRepository } from '../../modules/admin/manga-management/domain/repositories/manga.repository'
-import { PublicationStatus } from '@/core/domain/value-objects/publication-status.vo'
+
+import { Manga } from '../../domain/entities/manga.entity'
+import { MangaRepository } from '../../domain/repositories/manga.repository'
+import { PublicationStatus } from '../../domain/value-objects/publication-status.vo'
 
 @Injectable()
 export class MangaRepositoryImpl implements MangaRepository {
   constructor(
     @Inject(DATABASE_SERVICE)
     private readonly db: DatabaseService,
-  ) { }
+  ) {}
 
   async save(manga: Manga): Promise<Manga> {
     await this.db.client.insert(mangas).values({

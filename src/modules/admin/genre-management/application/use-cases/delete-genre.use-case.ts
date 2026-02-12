@@ -2,7 +2,7 @@ import { Inject, Injectable, Logger } from '@nestjs/common'
 
 import { GenreNotFoundException } from '@/core/domain/exceptions/genre/genre-not-found.exception'
 import { GenreRepository } from '../../domain/repositories/genre.repository'
-import { GENRE_REPOSITORY } from '@/infrastructure/tokens/repositories'
+import { GENRE_REPOSITORY } from '../../infrastructure/tokens'
 
 @Injectable()
 export class DeleteGenreUseCase {

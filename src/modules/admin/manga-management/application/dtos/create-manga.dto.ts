@@ -15,7 +15,7 @@ import {
   ValidateNested,
 } from 'class-validator'
 
-import { PublicationStatus } from '@/core/domain/value-objects/publication-status.vo'
+import { PublicationStatus } from '../../domain/value-objects/publication-status.vo'
 
 export class SaveMangaAuthorDto {
   @IsString({ message: 'El campo id del autor debe ser un string' })

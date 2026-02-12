@@ -1,10 +1,10 @@
 import { Inject, Injectable, Logger } from '@nestjs/common'
 
 import { calculatePagination } from '@/common/utils/pagination.util'
-import { Manga } from '../../domain/entities/manga.entity'
-import { MangaRepository } from '../../domain/repositories/manga.repository'
-import { MANGA_REPOSITORY } from '@/infrastructure/tokens/repositories'
 
+// Manga entity import removed
+import { MangaRepository } from '../../domain/repositories/manga.repository'
+import { MANGA_REPOSITORY } from '../../infrastructure/tokens'
 import { ListMangasDto } from '../dtos/list-mangas.dto'
 
 @Injectable()
@@ -14,7 +14,7 @@ export class ListMangasUseCase {
   constructor(
     @Inject(MANGA_REPOSITORY)
     private readonly mangaRepository: MangaRepository,
-  ) { }
+  ) {}
 
   async execute(params: ListMangasDto) {
     const { page, limit, publicationStatus } = params

@@ -1,10 +1,10 @@
 import { Inject, Injectable, Logger } from '@nestjs/common'
 
 import { DemographicNotFoundException } from '@/core/domain/exceptions/demographic/demographic-not-found.exception'
-import { DEMOGRAPHIC_REPOSITORY } from '@/infrastructure/tokens/repositories'
 
 import { Demographic } from '../../domain/entities/demographic.entity'
 import { DemographicRepository } from '../../domain/repositories/demographic.repository'
+import { DEMOGRAPHIC_REPOSITORY } from '../../infrastructure/tokens'
 
 @Injectable()
 export class GetDemographicByIdUseCase {

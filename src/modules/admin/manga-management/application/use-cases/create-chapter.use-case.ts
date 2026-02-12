@@ -1,16 +1,16 @@
 import { Inject, Injectable, Logger } from '@nestjs/common'
 
 import { ChapterAlreadyExistsException } from '@/core/domain/exceptions/chapter/chapter-already-exists.exception'
-import { MangaNotFoundException } from '@/core/domain/exceptions/manga/manga-not-found'
-import { Chapter } from '../../domain/entities/chapter.entity'
-import { ChapterFactory } from '@/core/domain/factories/chapter/chapter.factory'
+import { MangaNotFoundException } from '@/core/domain/exceptions/manga/manga-not-found.exception'
+import { ChapterFactory } from '../../domain/factories/chapter.factory'
+
+// Chapter entity import removed
 import { ChapterRepository } from '../../domain/repositories/chapter.repository'
 import { MangaRepository } from '../../domain/repositories/manga.repository'
 import {
   CHAPTER_REPOSITORY,
   MANGA_REPOSITORY,
-} from '@/infrastructure/tokens/repositories'
-
+} from '../../infrastructure/tokens'
 import { CreateChapterDto } from '../dtos/create-chapter.dto'
 
 @Injectable()
@@ -23,7 +23,7 @@ export class CreateChapterUseCase {
     @Inject(CHAPTER_REPOSITORY)
     private readonly chapterRepository: ChapterRepository,
     private readonly chapterFactory: ChapterFactory,
-  ) { }
+  ) {}
 
   async execute(mangaId: string, dto: CreateChapterDto) {
     const manga = await this.mangaRepository.findById(mangaId)

@@ -2,7 +2,8 @@ import { Inject, Injectable, Logger, NotFoundException } from '@nestjs/common'
 
 import { calculatePagination } from '@/common/utils/pagination.util'
 
-import { MangaCatalogRepository } from '../../infrastructure/repositories/manga-catalog.repository'
+import { IMangaCatalogRepository } from '../../domain/repositories/manga-catalog.repository'
+import { MANGA_CATALOG_REPOSITORY } from '../../infrastructure/tokens'
 import { ListChaptersDto } from '../dtos/chapter-list.dto'
 
 @Injectable()
@@ -10,8 +11,8 @@ export class ListChaptersByMangaSlugUseCase {
   private readonly logger = new Logger(ListChaptersByMangaSlugUseCase.name)
 
   constructor(
-    @Inject()
-    private readonly mangaCatalogRepository: MangaCatalogRepository,
+    @Inject(MANGA_CATALOG_REPOSITORY)
+    private readonly mangaCatalogRepository: IMangaCatalogRepository,
   ) {}
 
   async execute(slug: string, params: ListChaptersDto) {

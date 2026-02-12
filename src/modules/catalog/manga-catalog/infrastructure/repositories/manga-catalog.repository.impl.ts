@@ -7,13 +7,16 @@ import { mangaAuthors } from '@/core/database/schemas/manga-author.schema'
 import { mangaGenres } from '@/core/database/schemas/manga-genre.schema'
 import { DatabaseService } from '@/core/database/services/database.service'
 
+import { ChapterListItemDto } from '../../application/dtos/chapter-list.dto'
 import {
   ListPublicMangasDto,
+  MangaDetailDto,
   MangaListItemDto,
 } from '../../application/dtos/manga-list.dto'
+import { IMangaCatalogRepository } from '../../domain/repositories/manga-catalog.repository'
 
 @Injectable()
-export class MangaCatalogRepository {
+export class MangaCatalogRepositoryImpl implements IMangaCatalogRepository {
   constructor(
     @Inject(DATABASE_SERVICE)
     private readonly db: DatabaseService,
@@ -169,7 +172,7 @@ export class MangaCatalogRepository {
     return results.length
   }
 
-  async findBySlug(slugName: string) {
+  async findBySlug(slugName: string): Promise<MangaDetailDto | null> {
     const result = await this.db.client.query.mangas.findFirst({
       columns: {
         id: true,
@@ -255,7 +258,7 @@ export class MangaCatalogRepository {
     page: number,
     limit: number,
     order: 'ASC' | 'DESC',
-  ) {
+  ): Promise<ChapterListItemDto[]> {
     const offset = (page - 1) * limit
 
     const results = await this.db.client.query.chapters.findMany({

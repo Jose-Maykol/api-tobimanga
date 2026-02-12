@@ -2,7 +2,8 @@ import { Inject, Injectable, Logger } from '@nestjs/common'
 
 import { calculatePagination } from '@/common/utils/pagination.util'
 
-import { MangaCatalogRepository } from '../../infrastructure/repositories/manga-catalog.repository'
+import { IMangaCatalogRepository } from '../../domain/repositories/manga-catalog.repository'
+import { MANGA_CATALOG_REPOSITORY } from '../../infrastructure/tokens'
 import { ListPublicMangasDto } from '../dtos/manga-list.dto'
 
 @Injectable()
@@ -10,8 +11,8 @@ export class ListPublicMangasUseCase {
   private readonly logger = new Logger(ListPublicMangasUseCase.name)
 
   constructor(
-    @Inject()
-    private readonly mangaCatalogRepository: MangaCatalogRepository,
+    @Inject(MANGA_CATALOG_REPOSITORY)
+    private readonly mangaCatalogRepository: IMangaCatalogRepository,
   ) {}
 
   async execute(params: ListPublicMangasDto) {

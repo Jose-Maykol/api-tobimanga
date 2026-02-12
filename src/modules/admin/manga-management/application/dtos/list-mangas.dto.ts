@@ -1,4 +1,4 @@
-import { PublicationStatus } from '@/core/domain/value-objects/publication-status.vo'
+import { PublicationStatus } from '../../domain/value-objects/publication-status.vo'
 
 export interface ListMangasDto {
   page: number

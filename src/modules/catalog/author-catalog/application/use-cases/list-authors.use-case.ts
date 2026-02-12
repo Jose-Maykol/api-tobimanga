@@ -1,12 +1,14 @@
 import { Inject, Injectable } from '@nestjs/common'
 
-import { AuthorCatalogRepository } from '../../infrastructure/repositories/author-catalog.repository'
+import { IAuthorCatalogRepository } from '../../domain/repositories/author-catalog.repository'
+import { AUTHOR_CATALOG_REPOSITORY } from '../../infrastructure/tokens'
 
 @Injectable()
 export class ListAuthorsUseCase {
   constructor(
     @Inject()
-    private readonly authorCatalogRepository: AuthorCatalogRepository,
+    @Inject(AUTHOR_CATALOG_REPOSITORY)
+    private readonly authorCatalogRepository: IAuthorCatalogRepository,
   ) {}
 
   async execute() {

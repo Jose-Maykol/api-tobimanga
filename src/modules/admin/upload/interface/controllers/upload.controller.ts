@@ -22,15 +22,15 @@ import {
 
 import { ROLES } from '@/common/constants/roles.const'
 import { ResponseBuilder } from '@/common/utils/response.util'
-import { UploadNotFoundException } from '@/core/domain/exceptions/upload/upload-not-found'
+import { UploadNotFoundException } from '@/core/domain/exceptions/upload/upload-not-found.exception'
 import { Roles } from '@/modules/auth/interface/decorators/roles.decorator'
 import { JwtAuthGuard } from '@/modules/auth/interface/guards/jwt-auth.guard'
 import { RolesGuard } from '@/modules/auth/interface/guards/roles.guard'
 
 import { UpdateUploadStatusUseCase } from '../../application/use-cases/update-upload-status.use-case'
 import { UploadFileUseCase } from '../../application/use-cases/upload-file.use-case'
-import { UpdateStatusUploadDto } from '../dtos/update-status-upload.dto'
-import { UploadFileDto } from '../dtos/upload-file.dto'
+import { UpdateStatusUploadDto } from '../../application/dtos/update-status-upload.dto'
+import { UploadFileDto } from '../../application/dtos/upload-file.dto'
 import { FileValidationPipe } from '../pipes/file-validation.pipe'
 import { UploadSwagger } from '../swagger/upload.swagger'
 

@@ -1,6 +1,6 @@
-import { Author } from '@/core/domain/entities/author.entity'
-import { Demographic } from '@/core/domain/entities/demographic.entity'
-import { Genre } from '@/core/domain/entities/genre.entity'
+import { Author } from '@/modules/admin/author-management/domain/entities/author.entity'
+import { Demographic } from '@/modules/admin/demographic-management/domain/entities/demographic.entity'
+import { Genre } from '@/modules/admin/genre-management/domain/entities/genre.entity'
 
 import { PublicationStatus } from '../value-objects/publication-status.vo'
 

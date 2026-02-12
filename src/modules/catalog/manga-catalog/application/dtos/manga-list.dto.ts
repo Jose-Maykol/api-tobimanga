@@ -17,6 +17,7 @@ export interface MangaDetailDto {
   chapters: number
   releaseDate: Date
   bannerImage: string
+  coverImage: string
   rating: number
   publicationStatus: string
   authors: { id: string; name: string }[]

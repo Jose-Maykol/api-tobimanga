@@ -1,9 +1,9 @@
 import { Inject, Injectable, Logger } from '@nestjs/common'
 
-import { Author } from '@/core/domain/entities/author.entity'
+import { Author } from '../../domain/entities/author.entity'
 import { AuthorNotFoundException } from '@/core/domain/exceptions/author/author-not-found.exception'
 import { AuthorRepository } from '../../domain/repositories/author.repository'
-import { AUTHOR_REPOSITORY } from '@/infrastructure/tokens/repositories'
+import { AUTHOR_REPOSITORY } from '../../infrastructure/tokens'
 
 @Injectable()
 export class GetAuthorByIdUseCase {

@@ -1,9 +1,10 @@
 import { Inject, Injectable, Logger } from '@nestjs/common'
 
+import { UploadNotFoundException } from '@/core/domain/exceptions/upload/upload-not-found.exception'
+
 import { Upload } from '../../domain/entities/upload.entity'
-import { UploadNotFoundException } from '@/core/domain/exceptions/upload/upload-not-found'
 import { UploadRepository } from '../../domain/repositories/upload.repository'
-import { UPLOAD_REPOSITORY } from '@/infrastructure/tokens/repositories'
+import { UPLOAD_REPOSITORY } from '../../infrastructure/tokens'
 
 @Injectable()
 export class FindUploadByUrlUseCase {
@@ -12,7 +13,7 @@ export class FindUploadByUrlUseCase {
   constructor(
     @Inject(UPLOAD_REPOSITORY)
     private readonly uploadRepository: UploadRepository,
-  ) { }
+  ) {}
 
   //TODO: Se tiene que redisenar esta funcion, deberia buscar por id y no por url
   async execute({ url }: { url: string }): Promise<Upload> {

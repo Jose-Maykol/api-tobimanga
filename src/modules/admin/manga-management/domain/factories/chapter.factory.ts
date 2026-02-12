@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from 'uuid'
 
-import { Chapter } from '../../entities/chapter.entity'
+import { Chapter } from '../entities/chapter.entity'
 
 interface ChapterFactoryParams {
   mangaId: string
