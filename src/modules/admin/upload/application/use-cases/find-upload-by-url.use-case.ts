@@ -1,6 +1,6 @@
 import { Inject, Injectable, Logger } from '@nestjs/common'
 
-import { UploadNotFoundException } from '@/core/domain/exceptions/upload/upload-not-found.exception'
+import { UploadNotFoundException } from '@/modules/admin/upload/domain/exceptions/upload-not-found.exception'
 
 import { Upload } from '../../domain/entities/upload.entity'
 import { UploadRepository } from '../../domain/repositories/upload.repository'

@@ -6,7 +6,7 @@ import { DATABASE_SERVICE } from '@/core/database/constants/database.constants'
 import { users } from '@/core/database/schemas/user.schema'
 import { DatabaseService } from '@/core/database/services/database.service'
 import { User } from '@/core/domain/entities/user.entity'
-import { UserRepository } from '@/core/domain/repositories/user.repository'
+import { UserRepository } from '@/modules/user/domain/repositories/user.repository'
 
 @Injectable()
 export class UserRepositoryImpl implements UserRepository {

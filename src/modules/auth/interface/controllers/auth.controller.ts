@@ -25,12 +25,12 @@ import {
 import { SuccessResponse } from '@/common/interfaces/api-response'
 import { AuthenticatedUser } from '@/common/interfaces/authenticated-user.interface'
 import { ResponseBuilder } from '@/common/utils/response.util'
-import { UserAlreadyExistsException } from '@/core/domain/exceptions/user/user-already-exists.exception'
-import { UserNotFoundException } from '@/core/domain/exceptions/user/user-not-found.exception'
 import {
   RegisterUserUseCase,
   RegisterUserUseCaseResult,
 } from '@/modules/user/application/use-cases/register-user.use-case'
+import { UserAlreadyExistsException } from '@/modules/user/domain/exceptions/user-already-exists.exception'
+import { UserNotFoundException } from '@/modules/user/domain/exceptions/user-not-found.exception'
 
 import { LoginUserUseCase } from '../../application/use-cases/login-user.use-case'
 import { LogoutUserUseCase } from '../../application/use-cases/logout-user.use-case'

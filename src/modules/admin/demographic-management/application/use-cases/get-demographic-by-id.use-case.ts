@@ -1,6 +1,6 @@
 import { Inject, Injectable, Logger } from '@nestjs/common'
 
-import { DemographicNotFoundException } from '@/core/domain/exceptions/demographic/demographic-not-found.exception'
+import { DemographicNotFoundException } from '@/modules/admin/demographic-management/domain/exceptions/demographic-not-found.exception'
 
 import { Demographic } from '../../domain/entities/demographic.entity'
 import { DemographicRepository } from '../../domain/repositories/demographic.repository'
@@ -13,7 +13,7 @@ export class GetDemographicByIdUseCase {
   constructor(
     @Inject(DEMOGRAPHIC_REPOSITORY)
     private readonly demographicRepository: DemographicRepository,
-  ) { }
+  ) {}
 
   async execute(id: string): Promise<Demographic> {
     const demographic = await this.demographicRepository.findById(id)

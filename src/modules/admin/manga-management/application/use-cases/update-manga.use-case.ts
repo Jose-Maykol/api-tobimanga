@@ -2,14 +2,14 @@ import slugify from 'slugify'
 
 import { Inject, Injectable, Logger } from '@nestjs/common'
 
-import { UploadStatus } from '@/modules/admin/upload/domain/entities/upload.entity'
-import { MangaAlreadyExistsException } from '@/core/domain/exceptions/manga/manga-already-exists.exception'
-import { MangaNotFoundException } from '@/core/domain/exceptions/manga/manga-not-found.exception'
 import { GetAuthorByIdUseCase } from '@/modules/admin/author-management/application/use-cases/get-author-by-id.use-case'
 import { GetDemographicByIdUseCase } from '@/modules/admin/demographic-management/application/use-cases/get-demographic-by-id.use-case'
 import { GetGenreByIdUseCase } from '@/modules/admin/genre-management/application/use-cases/get-genre-by-id.use-case'
+import { MangaAlreadyExistsException } from '@/modules/admin/manga-management/domain/exceptions/manga-already-exists.exception'
+import { MangaNotFoundException } from '@/modules/admin/manga-management/domain/exceptions/manga-not-found.exception'
 import { FindUploadByUrlUseCase } from '@/modules/admin/upload/application/use-cases/find-upload-by-url.use-case'
 import { UpdateUploadStatusUseCase } from '@/modules/admin/upload/application/use-cases/update-upload-status.use-case'
+import { UploadStatus } from '@/modules/admin/upload/domain/entities/upload.entity'
 
 import { Manga } from '../../domain/entities/manga.entity'
 import { MangaRepository } from '../../domain/repositories/manga.repository'

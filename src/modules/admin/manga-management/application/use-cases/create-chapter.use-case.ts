@@ -1,9 +1,9 @@
 import { Inject, Injectable, Logger } from '@nestjs/common'
 
-import { ChapterAlreadyExistsException } from '@/core/domain/exceptions/chapter/chapter-already-exists.exception'
-import { MangaNotFoundException } from '@/core/domain/exceptions/manga/manga-not-found.exception'
-import { ChapterFactory } from '../../domain/factories/chapter.factory'
+import { ChapterAlreadyExistsException } from '@/modules/admin/manga-management/domain/exceptions/chapter-already-exists.exception'
+import { MangaNotFoundException } from '@/modules/admin/manga-management/domain/exceptions/manga-not-found.exception'
 
+import { ChapterFactory } from '../../domain/factories/chapter.factory'
 // Chapter entity import removed
 import { ChapterRepository } from '../../domain/repositories/chapter.repository'
 import { MangaRepository } from '../../domain/repositories/manga.repository'

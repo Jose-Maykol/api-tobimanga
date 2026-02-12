@@ -3,9 +3,9 @@ import * as bcrypt from 'bcrypt'
 import { Inject, Injectable, Logger } from '@nestjs/common'
 
 import { User } from '@/core/domain/entities/user.entity'
-import { UserAlreadyExistsException } from '@/core/domain/exceptions/user/user-already-exists.exception'
-import { createUserFactory } from '@/core/domain/factories/user/create-user.factory'
-import { UserRepository } from '@/core/domain/repositories/user.repository'
+import { UserAlreadyExistsException } from '@/modules/user/domain/exceptions/user-already-exists.exception'
+import { createUserFactory } from '@/modules/user/domain/factories/create-user.factory'
+import { UserRepository } from '@/modules/user/domain/repositories/user.repository'
 
 export interface RegisterUserUseCaseParams {
   email: string

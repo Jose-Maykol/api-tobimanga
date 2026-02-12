@@ -1,6 +1,6 @@
 import { Inject, Injectable, Logger } from '@nestjs/common'
 
-import { GenreAlreadyExistsException } from '@/core/domain/exceptions/genre/genre-already-exists.exception'
+import { GenreAlreadyExistsException } from '@/modules/admin/genre-management/domain/exceptions/genre-already-exists.exception'
 
 import { Genre } from '../../domain/entities/genre.entity'
 import { GenreRepository } from '../../domain/repositories/genre.repository'

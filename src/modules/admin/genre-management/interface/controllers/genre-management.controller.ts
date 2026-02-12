@@ -21,8 +21,8 @@ import {
 
 import { ROLES } from '@/common/constants/roles.const'
 import { ResponseBuilder } from '@/common/utils/response.util'
-import { GenreAlreadyExistsException } from '@/core/domain/exceptions/genre/genre-already-exists.exception'
-import { GenreNotFoundException } from '@/core/domain/exceptions/genre/genre-not-found.exception'
+import { GenreAlreadyExistsException } from '@/modules/admin/genre-management/domain/exceptions/genre-already-exists.exception'
+import { GenreNotFoundException } from '@/modules/admin/genre-management/domain/exceptions/genre-not-found.exception'
 import { Roles } from '@/modules/auth/interface/decorators/roles.decorator'
 import { JwtAuthGuard } from '@/modules/auth/interface/guards/jwt-auth.guard'
 import { RolesGuard } from '@/modules/auth/interface/guards/roles.guard'

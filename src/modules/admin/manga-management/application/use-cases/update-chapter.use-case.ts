@@ -1,8 +1,8 @@
 import { Inject, Injectable, Logger } from '@nestjs/common'
 
-import { ChapterDoesNotBelongToMangaException } from '@/core/domain/exceptions/chapter/chapter-does-not-belong-to-manga.exception'
-import { ChapterNotFoundException } from '@/core/domain/exceptions/chapter/chapter-not-found.exception'
-import { MangaNotFoundException } from '@/core/domain/exceptions/manga/manga-not-found.exception'
+import { ChapterDoesNotBelongToMangaException } from '@/modules/admin/manga-management/domain/exceptions/chapter-does-not-belong-to-manga.exception'
+import { ChapterNotFoundException } from '@/modules/admin/manga-management/domain/exceptions/chapter-not-found.exception'
+import { MangaNotFoundException } from '@/modules/admin/manga-management/domain/exceptions/manga-not-found.exception'
 
 // Chapter entity import removed
 import { ChapterRepository } from '../../domain/repositories/chapter.repository'

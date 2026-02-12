@@ -24,14 +24,13 @@ import {
 
 import { ROLES } from '@/common/constants/roles.const'
 import { ResponseBuilder } from '@/common/utils/response.util'
-import { ChapterAlreadyExistsException } from '@/core/domain/exceptions/chapter/chapter-already-exists.exception'
-import { ChapterDoesNotBelongToMangaException } from '@/core/domain/exceptions/chapter/chapter-does-not-belong-to-manga.exception'
-import { ChapterNotFoundException } from '@/core/domain/exceptions/chapter/chapter-not-found.exception'
-import { MangaAlreadyExistsException } from '@/core/domain/exceptions/manga/manga-already-exists.exception'
-import { MangaNotFoundException } from '@/core/domain/exceptions/manga/manga-not-found.exception'
-import { PublicationStatus } from '../../domain/value-objects/publication-status.vo'
 import { CreateChapterDto } from '@/modules/admin/manga-management/application/dtos/create-chapter.dto'
 import { CreateMangaDto } from '@/modules/admin/manga-management/application/dtos/create-manga.dto'
+import { ChapterAlreadyExistsException } from '@/modules/admin/manga-management/domain/exceptions/chapter-already-exists.exception'
+import { ChapterDoesNotBelongToMangaException } from '@/modules/admin/manga-management/domain/exceptions/chapter-does-not-belong-to-manga.exception'
+import { ChapterNotFoundException } from '@/modules/admin/manga-management/domain/exceptions/chapter-not-found.exception'
+import { MangaAlreadyExistsException } from '@/modules/admin/manga-management/domain/exceptions/manga-already-exists.exception'
+import { MangaNotFoundException } from '@/modules/admin/manga-management/domain/exceptions/manga-not-found.exception'
 import { Roles } from '@/modules/auth/interface/decorators/roles.decorator'
 import { JwtAuthGuard } from '@/modules/auth/interface/guards/jwt-auth.guard'
 import { RolesGuard } from '@/modules/auth/interface/guards/roles.guard'
@@ -45,6 +44,7 @@ import { ListChaptersByMangaUseCase } from '../../application/use-cases/list-cha
 import { ListMangasUseCase } from '../../application/use-cases/list-mangas.use-case'
 import { UpdateChapterUseCase } from '../../application/use-cases/update-chapter.use-case'
 import { UpdateMangaUseCase } from '../../application/use-cases/update-manga.use-case'
+import { PublicationStatus } from '../../domain/value-objects/publication-status.vo'
 import { MangaManagementSwagger } from '../swagger/manga-management.swagger'
 
 @UseGuards(JwtAuthGuard, RolesGuard)

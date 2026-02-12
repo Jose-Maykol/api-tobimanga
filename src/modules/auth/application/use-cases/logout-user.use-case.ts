@@ -1,9 +1,9 @@
 import { Inject, Injectable, Logger } from '@nestjs/common'
 
-import { UserRepository } from '@/core/domain/repositories/user.repository'
 import { InvalidRefreshTokenException } from '@/modules/auth/domain/exceptions/invalid-refresh-token.exception'
 import { RefreshTokenNotFoundException } from '@/modules/auth/domain/exceptions/refresh-token-not-found.exception'
 import { GetUserByIdUseCase } from '@/modules/user/application/use-cases/get-user-by-id.use-case'
+import { UserRepository } from '@/modules/user/domain/repositories/user.repository'
 
 import { RefreshTokenService } from '../../domain/services/refresh-token.service'
 
