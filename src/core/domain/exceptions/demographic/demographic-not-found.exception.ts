@@ -1,6 +1,6 @@
 import { BaseException } from '@/common/exceptions/base.exception'
 
-import { ErrorCodes } from './error-codes.enum'
+import { ErrorCodes } from './error-codes'
 
 export class DemographicNotFoundException extends BaseException {
   constructor(id: string) {

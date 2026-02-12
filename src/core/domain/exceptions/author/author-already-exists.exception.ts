@@ -1,6 +1,6 @@
 import { BaseException } from '@/common/exceptions/base.exception'
 
-import { ErrorCodes } from '../../../../core/domain/exceptions/author/error-codes.enum'
+import { ErrorCodes } from '../../../../core/domain/exceptions/author/error-codes'
 
 export class AuthorAlreadyExistsException extends BaseException {
   constructor(name: string) {

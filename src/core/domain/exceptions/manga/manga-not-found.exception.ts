@@ -1,6 +1,6 @@
 import { BaseException } from '@/common/exceptions/base.exception'
 
-import { ErrorCodes } from './error-keys.enum'
+import { ErrorCodes } from './error-codes'
 
 export class MangaNotFoundException extends BaseException {
   constructor(id: string) {
