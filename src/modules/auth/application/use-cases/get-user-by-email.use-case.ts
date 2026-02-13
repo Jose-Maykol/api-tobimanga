@@ -1,8 +1,8 @@
 import { Inject, Injectable, Logger } from '@nestjs/common'
 
-import { User } from '@/core/domain/entities/user.entity'
-import { UserNotFoundException } from '@/modules/user/domain/exceptions/user-not-found.exception'
-import { UserRepository } from '@/modules/user/domain/repositories/user.repository'
+import { User } from '../../domain/entities/auth-user.entity'
+import { UserNotFoundException } from '../../domain/exceptions/user-not-found.exception'
+import { UserRepository } from '../../domain/repositories/auth-user.repository'
 
 @Injectable()
 export class GetUserByEmailUseCase {

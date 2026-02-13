@@ -20,7 +20,7 @@ export class RefreshTokenServiceImpl implements RefreshTokenService {
       .replace(/=+$/, '') */
   }
 
-  compareTokens(token: string, hash: string): boolean {
+  verifyToken(token: string, hash: string): boolean {
     const hashedToken = this.hashToken(token)
     return crypto.timingSafeEqual(Buffer.from(hashedToken), Buffer.from(hash))
   }

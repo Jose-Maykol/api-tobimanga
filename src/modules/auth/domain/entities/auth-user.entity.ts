@@ -1,0 +1,13 @@
+export interface User {
+  id: string
+  email: string
+  password: string
+  username: string
+  profileImage: string | null
+  coverImage: string | null
+  role: 'USER' | 'ADMIN'
+  isActive: boolean
+  refreshToken: string | null
+  createdAt: Date
+  updatedAt: Date | null
+}

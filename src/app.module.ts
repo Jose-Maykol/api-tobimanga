@@ -13,11 +13,10 @@ import { UploadModule } from './modules/admin/upload/upload.module'
 import { AuthModule } from './modules/auth/auth.module'
 import { CatalogModule } from './modules/catalog/catalog.module'
 import { MangaCatalogModule } from './modules/catalog/manga-catalog/manga-catalog.module'
-import { UserModule } from './modules/user/user.module'
+import { UserContentModule } from './modules/user-content/user-content.module'
 
 const modules = [
   AuthModule,
-  UserModule,
   AdminModule,
   MangaManagementModule,
   GenreManagementModule,
@@ -26,6 +25,7 @@ const modules = [
   UploadModule,
   CatalogModule,
   MangaCatalogModule,
+  UserContentModule,
 ]
 @Module({
   imports: [
@@ -73,6 +73,11 @@ const modules = [
             path: 'mangas',
           },
         ],
+      },
+      {
+        module: UserContentModule,
+        path: 'user',
+        children: [],
       },
     ]),
   ],

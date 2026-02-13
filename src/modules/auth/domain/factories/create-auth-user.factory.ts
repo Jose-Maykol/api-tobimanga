@@ -1,19 +1,17 @@
-import { User } from '@/core/domain/entities/user.entity'
+import { User } from '../entities/auth-user.entity'
 
-interface CreateUserFactoryProps {
+export function createAuthUserFactory({
+  email,
+  password,
+}: {
   email: string
   password: string
-  username: string
-}
-
-export function createUserFactory(props: CreateUserFactoryProps): User {
-  const { email, password, username } = props
-
+}): User {
   return {
     id: crypto.randomUUID(),
     email,
     password,
-    username,
+    username: '',
     profileImage: null,
     coverImage: null,
     role: 'USER',

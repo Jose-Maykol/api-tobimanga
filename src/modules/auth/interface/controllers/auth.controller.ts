@@ -25,19 +25,19 @@ import {
 import { SuccessResponse } from '@/common/interfaces/api-response'
 import { AuthenticatedUser } from '@/common/interfaces/authenticated-user.interface'
 import { ResponseBuilder } from '@/common/utils/response.util'
-import {
-  RegisterUserUseCase,
-  RegisterUserUseCaseResult,
-} from '@/modules/user/application/use-cases/register-user.use-case'
-import { UserAlreadyExistsException } from '@/modules/user/domain/exceptions/user-already-exists.exception'
-import { UserNotFoundException } from '@/modules/user/domain/exceptions/user-not-found.exception'
 
 import { LoginUserUseCase } from '../../application/use-cases/login-user.use-case'
 import { LogoutUserUseCase } from '../../application/use-cases/logout-user.use-case'
 import { RefreshTokenUseCase } from '../../application/use-cases/refresh-token.use-case'
+import {
+  RegisterUserUseCase,
+  RegisterUserUseCaseResult,
+} from '../../application/use-cases/register-user.use-case'
 import { InvalidCredentialsException } from '../../domain/exceptions/invalid-credentials.exception'
 import { InvalidRefreshTokenException } from '../../domain/exceptions/invalid-refresh-token.exception'
 import { RefreshTokenNotFoundException } from '../../domain/exceptions/refresh-token-not-found.exception'
+import { UserAlreadyExistsException } from '../../domain/exceptions/user-already-exists.exception'
+import { UserNotFoundException } from '../../domain/exceptions/user-not-found.exception'
 import { User } from '../decorators/user.decorator'
 import { UserLoginDto } from '../dtos/login-user.dto'
 import { RegisterUserDto } from '../dtos/register-user.dto'
