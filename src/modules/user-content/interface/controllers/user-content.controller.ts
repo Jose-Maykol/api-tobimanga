@@ -1,0 +1,200 @@
+import {
+  Body,
+  Controller,
+  Delete,
+  HttpCode,
+  HttpException,
+  HttpStatus,
+  Param,
+  Patch,
+  Post,
+  UseGuards,
+} from '@nestjs/common'
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiOperation,
+  ApiParam,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger'
+
+import { AuthenticatedUser } from '@/common/interfaces/authenticated-user.interface'
+import { ResponseBuilder } from '@/common/utils/response.util'
+import { User } from '@/modules/auth/interface/decorators/user.decorator'
+import { JwtAuthGuard } from '@/modules/auth/interface/guards/jwt-auth.guard'
+
+import { FollowMangaDto } from '../../application/dtos/follow-manga.dto'
+import { UpdateReadingStatusDto } from '../../application/dtos/update-reading-status.dto'
+import { AddFavoriteUseCase } from '../../application/use-cases/add-favorite.use-case'
+import { FollowMangaUseCase } from '../../application/use-cases/follow-manga.use-case'
+import { RemoveFavoriteUseCase } from '../../application/use-cases/remove-favorite.use-case'
+import { UpdateReadingStatusUseCase } from '../../application/use-cases/update-reading-status.use-case'
+import { MangaNotFollowedException } from '../../domain/exceptions/manga-not-followed.exception'
+import { UserContentSwagger } from '../swagger/user-content.swagger'
+
+@ApiTags('Contenido de Usuario')
+@ApiBearerAuth()
+@UseGuards(JwtAuthGuard)
+@Controller('user/mangas')
+export class UserContentController {
+  constructor(
+    private readonly followMangaUseCase: FollowMangaUseCase,
+    private readonly updateReadingStatusUseCase: UpdateReadingStatusUseCase,
+    private readonly addFavoriteUseCase: AddFavoriteUseCase,
+    private readonly removeFavoriteUseCase: RemoveFavoriteUseCase,
+  ) { }
+
+  @Post()
+  @HttpCode(HttpStatus.CREATED)
+  @ApiOperation({
+    summary: 'Seguir un manga',
+    description:
+      'Permite a un usuario autenticado seguir un manga e indicar su estado de lectura inicial.',
+  })
+  @ApiBody(UserContentSwagger.followManga.body)
+  @ApiResponse(UserContentSwagger.followManga.responses.created)
+  @ApiResponse(UserContentSwagger.followManga.responses.badRequest)
+  async followManga(
+    @User() user: AuthenticatedUser,
+    @Body() followMangaDto: FollowMangaDto,
+  ) {
+    const result = await this.followMangaUseCase.execute({
+      userId: user.id,
+      mangaId: followMangaDto.mangaId,
+      initialStatus: followMangaDto.initialStatus,
+    })
+
+    return ResponseBuilder.success({
+      message: 'Manga seguido exitosamente',
+      data: {
+        userManga: result,
+      },
+    })
+  }
+
+  @Patch(':mangaId/status')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    summary: 'Actualizar estado de lectura',
+    description:
+      'Actualiza el estado de lectura de un manga que el usuario ya sigue.',
+  })
+  @ApiParam(UserContentSwagger.updateReadingStatus.param)
+  @ApiBody(UserContentSwagger.updateReadingStatus.body)
+  @ApiResponse(UserContentSwagger.updateReadingStatus.responses.success)
+  @ApiResponse(UserContentSwagger.updateReadingStatus.responses.notFound)
+  @ApiResponse(UserContentSwagger.updateReadingStatus.responses.badRequest)
+  async updateReadingStatus(
+    @User() user: AuthenticatedUser,
+    @Param('mangaId') mangaId: string,
+    @Body() updateReadingStatusDto: UpdateReadingStatusDto,
+  ) {
+    try {
+      const result = await this.updateReadingStatusUseCase.execute({
+        userId: user.id,
+        mangaId,
+        newStatus: updateReadingStatusDto.status,
+      })
+
+      return ResponseBuilder.success({
+        message: 'Estado de lectura actualizado exitosamente',
+        data: {
+          userManga: result,
+        },
+      })
+    } catch (error) {
+      if (error instanceof MangaNotFollowedException) {
+        throw new HttpException(
+          ResponseBuilder.error(
+            error.message,
+            error.code,
+            HttpStatus.NOT_FOUND,
+          ),
+          HttpStatus.NOT_FOUND,
+        )
+      }
+      throw error
+    }
+  }
+
+  @Post(':mangaId/favorite')
+  @HttpCode(HttpStatus.CREATED)
+  @ApiOperation({
+    summary: 'Marcar como favorito',
+    description: 'Marca un manga que el usuario sigue como favorito.',
+  })
+  @ApiParam(UserContentSwagger.addFavorite.param)
+  @ApiResponse(UserContentSwagger.addFavorite.responses.created)
+  @ApiResponse(UserContentSwagger.addFavorite.responses.notFound)
+  async addFavorite(
+    @User() user: AuthenticatedUser,
+    @Param('mangaId') mangaId: string,
+  ) {
+    try {
+      const result = await this.addFavoriteUseCase.execute({
+        userId: user.id,
+        mangaId,
+      })
+
+      return ResponseBuilder.success({
+        message: 'Manga marcado como favorito exitosamente',
+        data: {
+          userManga: result,
+        },
+      })
+    } catch (error) {
+      if (error instanceof MangaNotFollowedException) {
+        throw new HttpException(
+          ResponseBuilder.error(
+            error.message,
+            error.code,
+            HttpStatus.NOT_FOUND,
+          ),
+          HttpStatus.NOT_FOUND,
+        )
+      }
+      throw error
+    }
+  }
+
+  @Delete(':mangaId/favorite')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    summary: 'Desmarcar como favorito',
+    description: 'Desmarca un manga que el usuario sigue como favorito.',
+  })
+  @ApiParam(UserContentSwagger.removeFavorite.param)
+  @ApiResponse(UserContentSwagger.removeFavorite.responses.success)
+  @ApiResponse(UserContentSwagger.removeFavorite.responses.notFound)
+  async removeFavorite(
+    @User() user: AuthenticatedUser,
+    @Param('mangaId') mangaId: string,
+  ) {
+    try {
+      const result = await this.removeFavoriteUseCase.execute({
+        userId: user.id,
+        mangaId,
+      })
+
+      return ResponseBuilder.success({
+        message: 'Manga desmarcado como favorito exitosamente',
+        data: {
+          userManga: result,
+        },
+      })
+    } catch (error) {
+      if (error instanceof MangaNotFollowedException) {
+        throw new HttpException(
+          ResponseBuilder.error(
+            error.message,
+            error.code,
+            HttpStatus.NOT_FOUND,
+          ),
+          HttpStatus.NOT_FOUND,
+        )
+      }
+      throw error
+    }
+  }
+}

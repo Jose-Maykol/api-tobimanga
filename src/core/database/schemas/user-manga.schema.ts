@@ -1,5 +1,12 @@
 import { sql } from 'drizzle-orm'
-import { index, pgTable, smallint, timestamp, uuid } from 'drizzle-orm/pg-core'
+import {
+  boolean,
+  index,
+  pgTable,
+  smallint,
+  timestamp,
+  uuid,
+} from 'drizzle-orm/pg-core'
 
 import { mangas } from './manga.schema'
 import { readingStatusEnum } from './reading-status.schema'
@@ -20,6 +27,7 @@ export const userMangas = pgTable(
       .references(() => mangas.id, { onDelete: 'cascade' }),
     rating: smallint('rating'),
     readingStatus: readingStatusEnum('reading_status').notNull(),
+    isFavorite: boolean('is_favorite').default(false).notNull(),
     createdAt: timestamp('created_at').defaultNow().notNull(),
     updatedAt: timestamp('updated_at').$onUpdate(() => new Date()),
   },
