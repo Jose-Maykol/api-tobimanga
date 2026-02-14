@@ -205,4 +205,71 @@ export const UserContentSwagger = {
       },
     },
   },
+  getUserFavorites: {
+    queries: {
+      page: {
+        name: 'page',
+        required: false,
+        type: Number,
+        description: 'Número de página (por defecto: 1)',
+        example: 1,
+      },
+      pageSize: {
+        name: 'pageSize',
+        required: false,
+        type: Number,
+        description: 'Cantidad de items por página (por defecto: 20)',
+        example: 20,
+      },
+      sortBy: {
+        name: 'sortBy',
+        required: false,
+        enum: ['favoritedAt', 'title', 'rating'],
+        description: 'Campo por el cual ordenar',
+        example: 'favoritedAt',
+      },
+      sortOrder: {
+        name: 'sortOrder',
+        required: false,
+        enum: ['asc', 'desc'],
+        description: 'Orden ascendente o descendente',
+        example: 'desc',
+      },
+    },
+    responses: {
+      success: {
+        status: 200,
+        description: 'Lista de mangas favoritos obtenida exitosamente.',
+        schema: {
+          example: {
+            success: true,
+            message: 'Favoritos obtenidos exitosamente',
+            data: {
+              favorites: [
+                {
+                  id: 'manga-uuid-1',
+                  userMangaId: 'user-manga-uuid-1',
+                  title: 'One Piece',
+                  coverUrl: 'https://example.com/cover.jpg',
+                  synopsis: 'Un manga sobre piratas...',
+                  publicationStatus: 'ONGOING',
+                  readingStatus: 'READING',
+                  rating: 5,
+                  lastReadChapter: 42,
+                  favoritedAt: '2023-10-27T10:30:00Z',
+                  updatedAt: '2023-10-28T15:00:00Z',
+                },
+              ],
+              pagination: {
+                page: 1,
+                pageSize: 20,
+                total: 15,
+                totalPages: 1,
+              },
+            },
+          },
+        },
+      },
+    },
+  },
 }

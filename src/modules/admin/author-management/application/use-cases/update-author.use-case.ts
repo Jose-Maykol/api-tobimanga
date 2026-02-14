@@ -15,7 +15,7 @@ export class UpdateAuthorUseCase {
   constructor(
     @Inject(AUTHOR_REPOSITORY)
     private readonly authorRepository: AuthorRepository,
-  ) { }
+  ) {}
 
   async execute(id: string, params: UpdateAuthorDto): Promise<Author> {
     const currentAuthor = await this.authorRepository.findById(id)

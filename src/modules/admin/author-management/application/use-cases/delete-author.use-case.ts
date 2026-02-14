@@ -12,7 +12,7 @@ export class DeleteAuthorUseCase {
   constructor(
     @Inject(AUTHOR_REPOSITORY)
     private readonly authorRepository: AuthorRepository,
-  ) { }
+  ) {}
 
   async execute(id: string): Promise<void> {
     const author = await this.authorRepository.findById(id)

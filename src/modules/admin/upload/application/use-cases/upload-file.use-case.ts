@@ -1,9 +1,10 @@
 import { Inject, Injectable, Logger } from '@nestjs/common'
 
-import { Upload, UploadStatus } from '../../domain/entities/upload.entity'
-import { UploadRepository } from '../../domain/repositories/upload.repository'
 import { IMAGE_STORAGE_SERVICE } from '@/core/storage/constants/storage.constants'
 import { StorageService } from '@/core/storage/interfaces/storage.service'
+
+import { Upload, UploadStatus } from '../../domain/entities/upload.entity'
+import { UploadRepository } from '../../domain/repositories/upload.repository'
 import { UPLOAD_REPOSITORY } from '../../domain/tokens'
 
 @Injectable()
@@ -15,7 +16,7 @@ export class UploadFileUseCase {
     private readonly imageStorageService: StorageService,
     @Inject(UPLOAD_REPOSITORY)
     private readonly uploadRepository: UploadRepository,
-  ) { }
+  ) {}
 
   async execute(params: {
     file: Express.Multer.File

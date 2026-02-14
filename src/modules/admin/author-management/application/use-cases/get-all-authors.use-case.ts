@@ -11,7 +11,7 @@ export class GetAllAuthorsUseCase {
   constructor(
     @Inject(AUTHOR_REPOSITORY)
     private readonly authorRepository: AuthorRepository,
-  ) { }
+  ) {}
 
   async execute(): Promise<Author[]> {
     const authors = await this.authorRepository.findAll()

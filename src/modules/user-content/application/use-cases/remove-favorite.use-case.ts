@@ -15,7 +15,7 @@ export class RemoveFavoriteUseCase {
   constructor(
     @Inject(USER_CONTENT_REPOSITORY)
     private readonly userContentRepository: IUserContentRepository,
-  ) { }
+  ) {}
 
   async execute({
     userId,

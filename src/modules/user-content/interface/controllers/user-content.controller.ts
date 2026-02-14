@@ -2,12 +2,14 @@ import {
   Body,
   Controller,
   Delete,
+  Get,
   HttpCode,
   HttpException,
   HttpStatus,
   Param,
   Patch,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common'
 import {
@@ -15,6 +17,7 @@ import {
   ApiBody,
   ApiOperation,
   ApiParam,
+  ApiQuery,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger'
@@ -28,6 +31,7 @@ import { FollowMangaDto } from '../../application/dtos/follow-manga.dto'
 import { UpdateReadingStatusDto } from '../../application/dtos/update-reading-status.dto'
 import { AddFavoriteUseCase } from '../../application/use-cases/add-favorite.use-case'
 import { FollowMangaUseCase } from '../../application/use-cases/follow-manga.use-case'
+import { GetUserFavoritesUseCase } from '../../application/use-cases/get-user-favorites.use-case'
 import { RemoveFavoriteUseCase } from '../../application/use-cases/remove-favorite.use-case'
 import { UpdateReadingStatusUseCase } from '../../application/use-cases/update-reading-status.use-case'
 import { MangaNotFollowedException } from '../../domain/exceptions/manga-not-followed.exception'
@@ -43,7 +47,8 @@ export class UserContentController {
     private readonly updateReadingStatusUseCase: UpdateReadingStatusUseCase,
     private readonly addFavoriteUseCase: AddFavoriteUseCase,
     private readonly removeFavoriteUseCase: RemoveFavoriteUseCase,
-  ) { }
+    private readonly getUserFavoritesUseCase: GetUserFavoritesUseCase,
+  ) {}
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
@@ -196,5 +201,38 @@ export class UserContentController {
       }
       throw error
     }
+  }
+
+  @Get('favorites')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    summary: 'Obtener mangas favoritos del usuario',
+    description:
+      'Retorna una lista paginada de mangas marcados como favoritos con información completa del manga.',
+  })
+  @ApiQuery(UserContentSwagger.getUserFavorites.queries.page)
+  @ApiQuery(UserContentSwagger.getUserFavorites.queries.pageSize)
+  @ApiQuery(UserContentSwagger.getUserFavorites.queries.sortBy)
+  @ApiQuery(UserContentSwagger.getUserFavorites.queries.sortOrder)
+  @ApiResponse(UserContentSwagger.getUserFavorites.responses.success)
+  async getUserFavorites(
+    @User() user: AuthenticatedUser,
+    @Query('page') page?: string,
+    @Query('pageSize') pageSize?: string,
+    @Query('sortBy') sortBy?: 'favoritedAt' | 'title' | 'rating',
+    @Query('sortOrder') sortOrder?: 'asc' | 'desc',
+  ) {
+    const result = await this.getUserFavoritesUseCase.execute({
+      userId: user.id,
+      page: page ? parseInt(page, 10) : 1,
+      pageSize: pageSize ? parseInt(pageSize, 10) : 20,
+      sortBy,
+      sortOrder,
+    })
+
+    return ResponseBuilder.success({
+      message: 'Favoritos obtenidos exitosamente',
+      data: result,
+    })
   }
 }

@@ -15,7 +15,7 @@ export class UpdateGenreUseCase {
   constructor(
     @Inject(GENRE_REPOSITORY)
     private readonly genreRepository: GenreRepository,
-  ) { }
+  ) {}
 
   async execute(id: string, params: UpdateGenreDto): Promise<Genre> {
     const currentGenre = await this.genreRepository.findById(id)

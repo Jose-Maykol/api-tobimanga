@@ -12,7 +12,7 @@ export class DeleteGenreUseCase {
   constructor(
     @Inject(GENRE_REPOSITORY)
     private readonly genreRepository: GenreRepository,
-  ) { }
+  ) {}
 
   async execute(id: string): Promise<void> {
     const genre = await this.genreRepository.findById(id)

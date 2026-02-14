@@ -11,7 +11,7 @@ export class GetAllGenresUseCase {
   constructor(
     @Inject(GENRE_REPOSITORY)
     private readonly genreRepository: GenreRepository,
-  ) { }
+  ) {}
 
   async execute(): Promise<Genre[]> {
     const genres = await this.genreRepository.findAll()

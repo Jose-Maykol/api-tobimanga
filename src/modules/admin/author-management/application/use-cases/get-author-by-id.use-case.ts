@@ -13,7 +13,7 @@ export class GetAuthorByIdUseCase {
   constructor(
     @Inject(AUTHOR_REPOSITORY)
     private readonly authorRepository: AuthorRepository,
-  ) { }
+  ) {}
 
   async execute(id: string): Promise<Author> {
     const author = await this.authorRepository.findById(id)

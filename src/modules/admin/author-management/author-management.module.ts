@@ -8,8 +8,8 @@ import { DeleteAuthorUseCase } from './application/use-cases/delete-author.use-c
 import { GetAllAuthorsUseCase } from './application/use-cases/get-all-authors.use-case'
 import { GetAuthorByIdUseCase } from './application/use-cases/get-author-by-id.use-case'
 import { UpdateAuthorUseCase } from './application/use-cases/update-author.use-case'
-import { AuthorRepositoryImpl } from './infrastructure/repositories/author.repository.impl'
 import { AUTHOR_REPOSITORY } from './domain/tokens'
+import { AuthorRepositoryImpl } from './infrastructure/repositories/author.repository.impl'
 import { AuthorManagementController } from './interface/controllers/author-management.controller'
 
 @Module({
@@ -25,4 +25,4 @@ import { AuthorManagementController } from './interface/controllers/author-manag
   ],
   exports: [CreateAuthorUseCase, GetAllAuthorsUseCase, GetAuthorByIdUseCase],
 })
-export class AuthorManagementModule { }
+export class AuthorManagementModule {}

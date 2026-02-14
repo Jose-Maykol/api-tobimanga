@@ -1,9 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common'
 
 import { UserManga } from '../../domain/entities/user-manga.entity'
-import { ReadingStatus } from '../../domain/value-objects/reading-status.vo'
 import { IUserContentRepository } from '../../domain/repositories/user-content.repository'
 import { USER_CONTENT_REPOSITORY } from '../../domain/tokens'
+import { ReadingStatus } from '../../domain/value-objects/reading-status.vo'
 
 export interface FollowMangaUseCaseParams {
   userId: string
@@ -16,7 +16,7 @@ export class FollowMangaUseCase {
   constructor(
     @Inject(USER_CONTENT_REPOSITORY)
     private readonly userContentRepository: IUserContentRepository,
-  ) { }
+  ) {}
 
   async execute({
     userId,

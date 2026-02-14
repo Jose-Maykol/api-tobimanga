@@ -13,7 +13,7 @@ export class GetDemographicByIdUseCase {
   constructor(
     @Inject(DEMOGRAPHIC_REPOSITORY)
     private readonly demographicRepository: DemographicRepository,
-  ) { }
+  ) {}
 
   async execute(id: string): Promise<Demographic> {
     const demographic = await this.demographicRepository.findById(id)

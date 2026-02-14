@@ -13,7 +13,7 @@ export class GetGenreByIdUseCase {
   constructor(
     @Inject(GENRE_REPOSITORY)
     private readonly genreRepository: GenreRepository,
-  ) { }
+  ) {}
 
   async execute(id: string): Promise<Genre> {
     const genre = await this.genreRepository.findById(id)

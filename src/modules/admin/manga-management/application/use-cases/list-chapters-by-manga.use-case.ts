@@ -16,7 +16,7 @@ export class ListChaptersByMangaUseCase {
   constructor(
     @Inject(CHAPTER_REPOSITORY)
     private readonly chapterRepository: ChapterRepository,
-  ) { }
+  ) {}
 
   async execute(params: ListChaptersDto): Promise<{
     chapters: Chapter[]

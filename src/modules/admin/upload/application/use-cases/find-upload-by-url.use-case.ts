@@ -13,7 +13,7 @@ export class FindUploadByUrlUseCase {
   constructor(
     @Inject(UPLOAD_REPOSITORY)
     private readonly uploadRepository: UploadRepository,
-  ) { }
+  ) {}
 
   //TODO: Se tiene que redisenar esta funcion, deberia buscar por id y no por url
   async execute({ url }: { url: string }): Promise<Upload> {

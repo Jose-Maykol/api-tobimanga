@@ -14,7 +14,7 @@ export class ListMangasUseCase {
   constructor(
     @Inject(MANGA_REPOSITORY)
     private readonly mangaRepository: MangaRepository,
-  ) { }
+  ) {}
 
   async execute(params: ListMangasDto) {
     const { page, limit, publicationStatus } = params

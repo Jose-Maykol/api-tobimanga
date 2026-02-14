@@ -33,7 +33,7 @@ export class UpdateMangaUseCase {
     private readonly getGenreByIdUseCase: GetGenreByIdUseCase,
     @Inject()
     private readonly getDemographicByIdUseCase: GetDemographicByIdUseCase,
-  ) { }
+  ) {}
 
   async execute(id: string, params: UpdateMangaDto) {
     const manga = await this.mangaRepository.findById(id)
@@ -45,11 +45,11 @@ export class UpdateMangaUseCase {
     const slugName: string =
       params.originalName !== manga.originalName
         ? slugify(params.originalName, {
-          lower: true,
-          strict: true,
-          locale: 'es',
-          trim: true,
-        })
+            lower: true,
+            strict: true,
+            locale: 'es',
+            trim: true,
+          })
         : manga.slugName
 
     if (params.originalName !== manga.originalName) {

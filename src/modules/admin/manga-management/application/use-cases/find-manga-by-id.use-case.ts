@@ -13,7 +13,7 @@ export class FindMangaByIdUseCase {
   constructor(
     @Inject(MANGA_REPOSITORY)
     private readonly mangaRepository: MangaRepository,
-  ) { }
+  ) {}
 
   async execute(id: string) {
     const manga = await this.mangaRepository.findById(id)

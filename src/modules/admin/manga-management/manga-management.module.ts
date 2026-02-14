@@ -17,9 +17,9 @@ import { UpdateChapterUseCase } from './application/use-cases/update-chapter.use
 import { UpdateMangaUseCase } from './application/use-cases/update-manga.use-case'
 import { ChapterFactory } from './domain/factories/chapter.factory'
 import { MangaFactory } from './domain/factories/manga.factory'
+import { CHAPTER_REPOSITORY, MANGA_REPOSITORY } from './domain/tokens'
 import { ChapterRepositoryImpl } from './infrastructure/repositories/chapter.repository.impl'
 import { MangaRepositoryImpl } from './infrastructure/repositories/manga.repository.impl'
-import { CHAPTER_REPOSITORY, MANGA_REPOSITORY } from './domain/tokens'
 import { MangaManagementController } from './interface/controllers/manga-management.controller'
 
 @Module({
@@ -48,4 +48,4 @@ import { MangaManagementController } from './interface/controllers/manga-managem
   controllers: [MangaManagementController],
   exports: [CreateMangaUseCase, ListMangasUseCase, UpdateMangaUseCase],
 })
-export class MangaManagementModule { }
+export class MangaManagementModule {}

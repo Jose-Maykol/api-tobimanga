@@ -15,7 +15,7 @@ export class UserContentRepositoryImpl implements IUserContentRepository {
   constructor(
     @Inject(DATABASE_SERVICE)
     private readonly db: DatabaseService,
-  ) { }
+  ) {}
 
   async findByUserAndManga(
     userId: string,

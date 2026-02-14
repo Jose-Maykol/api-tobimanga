@@ -7,10 +7,7 @@ import { ChapterFactory } from '../../domain/factories/chapter.factory'
 // Chapter entity import removed
 import { ChapterRepository } from '../../domain/repositories/chapter.repository'
 import { MangaRepository } from '../../domain/repositories/manga.repository'
-import {
-  CHAPTER_REPOSITORY,
-  MANGA_REPOSITORY,
-} from '../../domain/tokens'
+import { CHAPTER_REPOSITORY, MANGA_REPOSITORY } from '../../domain/tokens'
 import { CreateChapterDto } from '../dtos/create-chapter.dto'
 
 @Injectable()
@@ -23,7 +20,7 @@ export class CreateChapterUseCase {
     @Inject(CHAPTER_REPOSITORY)
     private readonly chapterRepository: ChapterRepository,
     private readonly chapterFactory: ChapterFactory,
-  ) { }
+  ) {}
 
   async execute(mangaId: string, dto: CreateChapterDto) {
     const manga = await this.mangaRepository.findById(mangaId)

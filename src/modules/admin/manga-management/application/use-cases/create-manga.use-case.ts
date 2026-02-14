@@ -15,10 +15,7 @@ import { UploadStatus } from '@/modules/admin/upload/domain/entities/upload.enti
 import { MangaFactory } from '../../domain/factories/manga.factory'
 import { ChapterRepository } from '../../domain/repositories/chapter.repository'
 import { MangaRepository } from '../../domain/repositories/manga.repository'
-import {
-  CHAPTER_REPOSITORY,
-  MANGA_REPOSITORY,
-} from '../../domain/tokens'
+import { CHAPTER_REPOSITORY, MANGA_REPOSITORY } from '../../domain/tokens'
 
 @Injectable()
 export class CreateMangaUseCase {
@@ -40,7 +37,7 @@ export class CreateMangaUseCase {
     @Inject()
     private readonly getDemographicByIdUseCase: GetDemographicByIdUseCase,
     private readonly mangaFactory: MangaFactory,
-  ) { }
+  ) {}
 
   async execute(params: CreateMangaDto) {
     const { authors, genres, demographic } = params

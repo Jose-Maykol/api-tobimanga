@@ -19,7 +19,7 @@ export class UpdateUploadStatusUseCase {
   constructor(
     @Inject(UPLOAD_REPOSITORY)
     private readonly uploadRepository: UploadRepository,
-  ) { }
+  ) {}
 
   async execute(params: UpdateUploadStatusParams): Promise<Upload> {
     if (params.status === UploadStatus.ACTIVE && !params.usedAt) {

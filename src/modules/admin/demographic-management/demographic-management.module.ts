@@ -19,4 +19,4 @@ import { DemographicManagementController } from './interface/controllers/demogra
   controllers: [DemographicManagementController],
   exports: [GetDemographicByIdUseCase, GetAllDemographicsUseCase],
 })
-export class DemographicManagementModule { }
+export class DemographicManagementModule {}
