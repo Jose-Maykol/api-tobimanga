@@ -2,7 +2,7 @@ import { Inject, Injectable, Logger } from '@nestjs/common'
 
 import { Author } from '../../domain/entities/author.entity'
 import { AuthorRepository } from '../../domain/repositories/author.repository'
-import { AUTHOR_REPOSITORY } from '../../infrastructure/tokens'
+import { AUTHOR_REPOSITORY } from '../../domain/tokens'
 
 @Injectable()
 export class GetAllAuthorsUseCase {

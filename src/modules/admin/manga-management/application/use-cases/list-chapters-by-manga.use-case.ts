@@ -6,7 +6,7 @@ import { calculatePagination } from '@/common/utils/pagination.util'
 import { Chapter } from '../../domain/entities/chapter.entity'
 import { ChapterRepository } from '../../domain/repositories/chapter.repository'
 // MangaRepository import removed
-import { CHAPTER_REPOSITORY } from '../../infrastructure/tokens'
+import { CHAPTER_REPOSITORY } from '../../domain/tokens'
 import { ListChaptersDto } from '../dtos/list-chapters.dto'
 
 @Injectable()
@@ -16,7 +16,7 @@ export class ListChaptersByMangaUseCase {
   constructor(
     @Inject(CHAPTER_REPOSITORY)
     private readonly chapterRepository: ChapterRepository,
-  ) {}
+  ) { }
 
   async execute(params: ListChaptersDto): Promise<{
     chapters: Chapter[]

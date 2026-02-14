@@ -4,7 +4,7 @@ import { calculatePagination } from '@/common/utils/pagination.util'
 
 // Manga entity import removed
 import { MangaRepository } from '../../domain/repositories/manga.repository'
-import { MANGA_REPOSITORY } from '../../infrastructure/tokens'
+import { MANGA_REPOSITORY } from '../../domain/tokens'
 import { ListMangasDto } from '../dtos/list-mangas.dto'
 
 @Injectable()
@@ -14,7 +14,7 @@ export class ListMangasUseCase {
   constructor(
     @Inject(MANGA_REPOSITORY)
     private readonly mangaRepository: MangaRepository,
-  ) {}
+  ) { }
 
   async execute(params: ListMangasDto) {
     const { page, limit, publicationStatus } = params

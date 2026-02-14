@@ -4,7 +4,7 @@ import { UploadNotFoundException } from '@/modules/admin/upload/domain/exception
 
 import { Upload, UploadStatus } from '../../domain/entities/upload.entity'
 import { UploadRepository } from '../../domain/repositories/upload.repository'
-import { UPLOAD_REPOSITORY } from '../../infrastructure/tokens'
+import { UPLOAD_REPOSITORY } from '../../domain/tokens'
 
 export type UpdateUploadStatusParams = {
   id: string
@@ -19,7 +19,7 @@ export class UpdateUploadStatusUseCase {
   constructor(
     @Inject(UPLOAD_REPOSITORY)
     private readonly uploadRepository: UploadRepository,
-  ) {}
+  ) { }
 
   async execute(params: UpdateUploadStatusParams): Promise<Upload> {
     if (params.status === UploadStatus.ACTIVE && !params.usedAt) {

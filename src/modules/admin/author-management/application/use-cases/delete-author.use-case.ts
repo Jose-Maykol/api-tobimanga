@@ -3,7 +3,7 @@ import { Inject, Injectable, Logger } from '@nestjs/common'
 import { AuthorNotFoundException } from '@/modules/admin/author-management/domain/exceptions/author-not-found.exception'
 
 import { AuthorRepository } from '../../domain/repositories/author.repository'
-import { AUTHOR_REPOSITORY } from '../../infrastructure/tokens'
+import { AUTHOR_REPOSITORY } from '../../domain/tokens'
 
 @Injectable()
 export class DeleteAuthorUseCase {
@@ -12,7 +12,7 @@ export class DeleteAuthorUseCase {
   constructor(
     @Inject(AUTHOR_REPOSITORY)
     private readonly authorRepository: AuthorRepository,
-  ) {}
+  ) { }
 
   async execute(id: string): Promise<void> {
     const author = await this.authorRepository.findById(id)

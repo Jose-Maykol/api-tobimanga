@@ -4,7 +4,7 @@ import { GenreNotFoundException } from '@/modules/admin/genre-management/domain/
 
 import { Genre } from '../../domain/entities/genre.entity'
 import { GenreRepository } from '../../domain/repositories/genre.repository'
-import { GENRE_REPOSITORY } from '../../infrastructure/tokens'
+import { GENRE_REPOSITORY } from '../../domain/tokens'
 
 @Injectable()
 export class GetGenreByIdUseCase {
@@ -13,7 +13,7 @@ export class GetGenreByIdUseCase {
   constructor(
     @Inject(GENRE_REPOSITORY)
     private readonly genreRepository: GenreRepository,
-  ) {}
+  ) { }
 
   async execute(id: string): Promise<Genre> {
     const genre = await this.genreRepository.findById(id)

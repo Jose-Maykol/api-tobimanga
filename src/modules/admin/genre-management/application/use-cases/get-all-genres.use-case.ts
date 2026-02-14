@@ -2,7 +2,7 @@ import { Inject, Injectable, Logger } from '@nestjs/common'
 
 import { Genre } from '../../domain/entities/genre.entity'
 import { GenreRepository } from '../../domain/repositories/genre.repository'
-import { GENRE_REPOSITORY } from '../../infrastructure/tokens'
+import { GENRE_REPOSITORY } from '../../domain/tokens'
 
 @Injectable()
 export class GetAllGenresUseCase {
@@ -11,7 +11,7 @@ export class GetAllGenresUseCase {
   constructor(
     @Inject(GENRE_REPOSITORY)
     private readonly genreRepository: GenreRepository,
-  ) {}
+  ) { }
 
   async execute(): Promise<Genre[]> {
     const genres = await this.genreRepository.findAll()

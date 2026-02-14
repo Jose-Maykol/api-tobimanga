@@ -3,7 +3,7 @@ import { Inject, Injectable, Logger } from '@nestjs/common'
 import { GenreNotFoundException } from '@/modules/admin/genre-management/domain/exceptions/genre-not-found.exception'
 
 import { GenreRepository } from '../../domain/repositories/genre.repository'
-import { GENRE_REPOSITORY } from '../../infrastructure/tokens'
+import { GENRE_REPOSITORY } from '../../domain/tokens'
 
 @Injectable()
 export class DeleteGenreUseCase {
@@ -12,7 +12,7 @@ export class DeleteGenreUseCase {
   constructor(
     @Inject(GENRE_REPOSITORY)
     private readonly genreRepository: GenreRepository,
-  ) {}
+  ) { }
 
   async execute(id: string): Promise<void> {
     const genre = await this.genreRepository.findById(id)

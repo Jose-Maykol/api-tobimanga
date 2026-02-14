@@ -4,7 +4,7 @@ import { DemographicNotFoundException } from '@/modules/admin/demographic-manage
 
 import { Demographic } from '../../domain/entities/demographic.entity'
 import { DemographicRepository } from '../../domain/repositories/demographic.repository'
-import { DEMOGRAPHIC_REPOSITORY } from '../../infrastructure/tokens'
+import { DEMOGRAPHIC_REPOSITORY } from '../../domain/tokens'
 
 @Injectable()
 export class GetDemographicByIdUseCase {
@@ -13,7 +13,7 @@ export class GetDemographicByIdUseCase {
   constructor(
     @Inject(DEMOGRAPHIC_REPOSITORY)
     private readonly demographicRepository: DemographicRepository,
-  ) {}
+  ) { }
 
   async execute(id: string): Promise<Demographic> {
     const demographic = await this.demographicRepository.findById(id)

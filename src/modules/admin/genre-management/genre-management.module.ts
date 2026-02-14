@@ -9,7 +9,7 @@ import { GetAllGenresUseCase } from './application/use-cases/get-all-genres.use-
 import { GetGenreByIdUseCase } from './application/use-cases/get-genre-by-id.use-case'
 import { UpdateGenreUseCase } from './application/use-cases/update-genre.use-case'
 import { GenreRepositoryImpl } from './infrastructure/repositories/genre.repository.impl'
-import { GENRE_REPOSITORY } from './infrastructure/tokens'
+import { GENRE_REPOSITORY } from './domain/tokens'
 import { GenreManagementController } from './interface/controllers/genre-management.controller'
 
 @Module({
@@ -25,4 +25,4 @@ import { GenreManagementController } from './interface/controllers/genre-managem
   controllers: [GenreManagementController],
   exports: [GetAllGenresUseCase, GetGenreByIdUseCase],
 })
-export class GenreManagementModule {}
+export class GenreManagementModule { }

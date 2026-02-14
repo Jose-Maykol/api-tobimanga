@@ -10,7 +10,7 @@ import { MangaRepository } from '../../domain/repositories/manga.repository'
 import {
   CHAPTER_REPOSITORY,
   MANGA_REPOSITORY,
-} from '../../infrastructure/tokens'
+} from '../../domain/tokens'
 import { UpdateChapterDto } from '../dtos/update-chapter.dto'
 
 @Injectable()
@@ -22,7 +22,7 @@ export class UpdateChapterUseCase {
     private readonly chapterRepository: ChapterRepository,
     @Inject(MANGA_REPOSITORY)
     private readonly mangaRepository: MangaRepository,
-  ) {}
+  ) { }
 
   async execute(mangaId: string, chapterId: string, dto: UpdateChapterDto) {
     const manga = await this.mangaRepository.findById(mangaId)

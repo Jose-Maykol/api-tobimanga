@@ -4,7 +4,7 @@ import { MangaNotFoundException } from '@/modules/admin/manga-management/domain/
 
 // Manga entity import removed
 import { MangaRepository } from '../../domain/repositories/manga.repository'
-import { MANGA_REPOSITORY } from '../../infrastructure/tokens'
+import { MANGA_REPOSITORY } from '../../domain/tokens'
 
 @Injectable()
 export class FindMangaByIdUseCase {
@@ -13,7 +13,7 @@ export class FindMangaByIdUseCase {
   constructor(
     @Inject(MANGA_REPOSITORY)
     private readonly mangaRepository: MangaRepository,
-  ) {}
+  ) { }
 
   async execute(id: string) {
     const manga = await this.mangaRepository.findById(id)

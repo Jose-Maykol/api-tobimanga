@@ -4,7 +4,7 @@ import { AuthorAlreadyExistsException } from '@/modules/admin/author-management/
 
 import { Author } from '../../domain/entities/author.entity'
 import { AuthorRepository } from '../../domain/repositories/author.repository'
-import { AUTHOR_REPOSITORY } from '../../infrastructure/tokens'
+import { AUTHOR_REPOSITORY } from '../../domain/tokens'
 import { CreateAuthorDto } from '../dtos/create-author.dto'
 
 @Injectable()
@@ -14,7 +14,7 @@ export class CreateAuthorUseCase {
   constructor(
     @Inject(AUTHOR_REPOSITORY)
     private readonly authorRepository: AuthorRepository,
-  ) {}
+  ) { }
 
   async execute(params: CreateAuthorDto): Promise<Author> {
     const existingAuthor = await this.authorRepository.findByName(params.name)

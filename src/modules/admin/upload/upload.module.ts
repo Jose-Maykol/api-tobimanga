@@ -8,7 +8,7 @@ import { FindUploadByUrlUseCase } from './application/use-cases/find-upload-by-u
 import { UpdateUploadStatusUseCase } from './application/use-cases/update-upload-status.use-case'
 import { UploadFileUseCase } from './application/use-cases/upload-file.use-case'
 import { UploadRepositoryImpl } from './infrastructure/repositories/upload.repository.impl'
-import { UPLOAD_REPOSITORY } from './infrastructure/tokens'
+import { UPLOAD_REPOSITORY } from './domain/tokens'
 import { UploadController } from './interface/controllers/upload.controller'
 
 @Module({
@@ -22,4 +22,4 @@ import { UploadController } from './interface/controllers/upload.controller'
   controllers: [UploadController],
   exports: [UpdateUploadStatusUseCase, FindUploadByUrlUseCase],
 })
-export class UploadModule {}
+export class UploadModule { }

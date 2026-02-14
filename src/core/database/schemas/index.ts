@@ -13,7 +13,6 @@ import { publicationStatusEnum } from './publication-status.schema'
 import { readingStatusEnum } from './reading-status.schema'
 import { users } from './user.schema'
 import { userChapterProgress } from './user-chapter-progress.schema'
-import { userFavoriteMangas } from './user-favorite-manga.schema'
 import { userMangas } from './user-manga.schema'
 
 export const databaseSchema = {
@@ -28,7 +27,6 @@ export const databaseSchema = {
   publicationStatusEnum,
   readingStatusEnum,
   userChapterProgress,
-  userFavoriteMangas,
   users,
 
   mangaRelations,

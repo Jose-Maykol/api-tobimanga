@@ -4,7 +4,7 @@ import { UploadNotFoundException } from '@/modules/admin/upload/domain/exception
 
 import { Upload } from '../../domain/entities/upload.entity'
 import { UploadRepository } from '../../domain/repositories/upload.repository'
-import { UPLOAD_REPOSITORY } from '../../infrastructure/tokens'
+import { UPLOAD_REPOSITORY } from '../../domain/tokens'
 
 @Injectable()
 export class FindUploadByUrlUseCase {
@@ -13,7 +13,7 @@ export class FindUploadByUrlUseCase {
   constructor(
     @Inject(UPLOAD_REPOSITORY)
     private readonly uploadRepository: UploadRepository,
-  ) {}
+  ) { }
 
   //TODO: Se tiene que redisenar esta funcion, deberia buscar por id y no por url
   async execute({ url }: { url: string }): Promise<Upload> {

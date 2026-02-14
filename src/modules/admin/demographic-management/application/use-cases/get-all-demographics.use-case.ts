@@ -1,6 +1,6 @@
 import { Inject, Injectable, Logger } from '@nestjs/common'
 
-import { DEMOGRAPHIC_REPOSITORY } from '../../infrastructure/tokens'
+import { DEMOGRAPHIC_REPOSITORY } from '../../domain/tokens'
 
 import { Demographic } from '../../domain/entities/demographic.entity'
 import { DemographicRepository } from '../../domain/repositories/demographic.repository'

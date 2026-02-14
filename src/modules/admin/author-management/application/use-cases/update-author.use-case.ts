@@ -4,7 +4,7 @@ import { Author } from '@/modules/admin/author-management/domain/entities/author
 import { AuthorAlreadyExistsException } from '@/modules/admin/author-management/domain/exceptions/author-already-exists.exception'
 import { AuthorNotFoundException } from '@/modules/admin/author-management/domain/exceptions/author-not-found.exception'
 import { AuthorRepository } from '@/modules/admin/author-management/domain/repositories/author.repository'
-import { AUTHOR_REPOSITORY } from '@/modules/admin/author-management/infrastructure/tokens'
+import { AUTHOR_REPOSITORY } from '@/modules/admin/author-management/domain/tokens'
 
 import { UpdateAuthorDto } from '../dtos/update-author.dto'
 
@@ -15,7 +15,7 @@ export class UpdateAuthorUseCase {
   constructor(
     @Inject(AUTHOR_REPOSITORY)
     private readonly authorRepository: AuthorRepository,
-  ) {}
+  ) { }
 
   async execute(id: string, params: UpdateAuthorDto): Promise<Author> {
     const currentAuthor = await this.authorRepository.findById(id)

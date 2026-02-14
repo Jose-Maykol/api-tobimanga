@@ -4,7 +4,7 @@ import { GenreAlreadyExistsException } from '@/modules/admin/genre-management/do
 
 import { Genre } from '../../domain/entities/genre.entity'
 import { GenreRepository } from '../../domain/repositories/genre.repository'
-import { GENRE_REPOSITORY } from '../../infrastructure/tokens'
+import { GENRE_REPOSITORY } from '../../domain/tokens'
 import { CreateGenreDto } from '../dtos/create-genre.dto'
 
 @Injectable()
@@ -14,7 +14,7 @@ export class CreateGenreUseCase {
   constructor(
     @Inject(GENRE_REPOSITORY)
     private readonly genreRepository: GenreRepository,
-  ) {}
+  ) { }
 
   async execute(params: CreateGenreDto): Promise<Genre> {
     const existingGenre = await this.genreRepository.findByName(params.name)

@@ -5,8 +5,8 @@ import { AuthModule } from '@/modules/auth/auth.module'
 
 import { GetAllDemographicsUseCase } from './application/use-cases/get-all-demographics.use-case'
 import { GetDemographicByIdUseCase } from './application/use-cases/get-demographic-by-id.use-case'
+import { DEMOGRAPHIC_REPOSITORY } from './domain/tokens'
 import { DemographicRepositoryImpl } from './infrastructure/repositories/demographic.repository.impl'
-import { DEMOGRAPHIC_REPOSITORY } from './infrastructure/tokens'
 import { DemographicManagementController } from './interface/controllers/demographic-management.controller'
 
 @Module({
@@ -19,4 +19,4 @@ import { DemographicManagementController } from './interface/controllers/demogra
   controllers: [DemographicManagementController],
   exports: [GetDemographicByIdUseCase, GetAllDemographicsUseCase],
 })
-export class DemographicManagementModule {}
+export class DemographicManagementModule { }
