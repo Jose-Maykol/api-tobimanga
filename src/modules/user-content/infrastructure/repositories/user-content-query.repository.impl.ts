@@ -6,8 +6,10 @@ import { DATABASE_SERVICE } from '@/core/database/constants/database.constants'
 import { mangas } from '@/core/database/schemas/manga.schema'
 import { userMangas } from '@/core/database/schemas/user-manga.schema'
 import { DatabaseService } from '@/core/database/services/database.service'
+import { PublicationStatus } from '@/modules/admin/manga-management/domain/value-objects/publication-status.vo'
 
 import { UserFavoriteMangaReadModel } from '../../domain/read-models/user-favorite-manga.read-model'
+import { UserMangaDetailReadModel } from '../../domain/read-models/user-manga-detail.read-model'
 import {
   FindFavoritesOptions,
   FindFavoritesResult,
@@ -85,6 +87,69 @@ export class UserContentQueryRepositoryImpl
         }),
       ),
       total: countResult?.count ?? 0,
+    }
+  }
+
+  async findUserMangaDetailBySlug(
+    userId: string,
+    slug: string,
+  ): Promise<UserMangaDetailReadModel | null> {
+    const manga = await this.db.client.query.mangas.findFirst({
+      where: (mangas, { eq, and }) =>
+        and(eq(mangas.slugName, slug), eq(mangas.active, true)),
+      with: {
+        authors: {
+          with: {
+            author: true,
+          },
+        },
+        genres: {
+          with: {
+            genre: true,
+          },
+        },
+        demographic: true,
+      },
+    })
+
+    if (!manga) {
+      return null
+    }
+
+    const userManga = await this.db.client.query.userMangas.findFirst({
+      where: (userMangas, { eq, and }) =>
+        and(eq(userMangas.userId, userId), eq(userMangas.mangaId, manga.id)),
+    })
+
+    return {
+      id: manga.id,
+      title: manga.originalName,
+      slug: manga.slugName,
+      synopsis: manga.sinopsis,
+      coverUrl: manga.coverImageUrl,
+      bannerUrl: manga.bannerImageUrl,
+      publicationStatus: manga.publicationStatus as PublicationStatus,
+      authors: manga.authors.map((ma) => ({
+        id: ma.author.id,
+        name: ma.author.name,
+      })),
+      genres: manga.genres.map((mg) => ({
+        id: mg.genre.id,
+        name: mg.genre.name,
+      })),
+      demographic: manga.demographic
+        ? { id: manga.demographic.id, name: manga.demographic.name }
+        : null,
+
+      // User specific fields
+      isFavorite: userManga?.isFavorite ?? false,
+      readingStatus:
+        (userManga?.readingStatus as ReadingStatus) ??
+        ReadingStatus.PLANNING_TO_READ,
+      rating: userManga?.rating ?? null,
+      startedAt: null, // TODO: Implement if progress tracking exists
+      finishedAt: null, // TODO: Implement if progress tracking exists
+      updatedAt: userManga?.updatedAt ?? null,
     }
   }
 }
