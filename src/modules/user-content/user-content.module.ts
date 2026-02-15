@@ -5,6 +5,7 @@ import { DatabaseModule } from '@/core/database/database.module'
 import { AddFavoriteUseCase } from './application/use-cases/add-favorite.use-case'
 import { FollowMangaUseCase } from './application/use-cases/follow-manga.use-case'
 import { GetUserFavoritesUseCase } from './application/use-cases/get-user-favorites.use-case'
+import { GetUserMangaBySlugUseCase } from './application/use-cases/get-user-manga-by-slug.use-case'
 import { RemoveFavoriteUseCase } from './application/use-cases/remove-favorite.use-case'
 import { UpdateReadingStatusUseCase } from './application/use-cases/update-reading-status.use-case'
 import {
@@ -31,6 +32,7 @@ import { UserContentController } from './interface/controllers/user-content.cont
     AddFavoriteUseCase,
     RemoveFavoriteUseCase,
     GetUserFavoritesUseCase,
+    GetUserMangaBySlugUseCase,
   ],
   controllers: [UserContentController],
   exports: [],
