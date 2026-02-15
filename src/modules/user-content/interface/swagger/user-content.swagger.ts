@@ -272,4 +272,53 @@ export const UserContentSwagger = {
       },
     },
   },
+  getUserMangaBySlug: {
+    param: {
+      name: 'slug',
+      type: String,
+      description: 'Slug del manga a obtener',
+      example: 'one-piece',
+    },
+    responses: {
+      success: {
+        status: 200,
+        description: 'Detalle del manga obtenido exitosamente.',
+        schema: {
+          example: {
+            success: true,
+            message: 'Detalle del manga obtenido exitosamente',
+            data: {
+              id: 'manga-uuid-1',
+              title: 'One Piece',
+              slug: 'one-piece',
+              synopsis: 'Un manga sobre piratas...',
+              coverUrl: 'https://example.com/cover.jpg',
+              bannerUrl: 'https://example.com/banner.jpg',
+              publicationStatus: 'ONGOING',
+              authors: [{ id: 'author-1', name: 'Eiichiro Oda' }],
+              genres: [{ id: 'genre-1', name: 'Shonen' }],
+              demographic: { id: 'demographic-1', name: 'Seinen' },
+              isFavorite: true,
+              readingStatus: 'READING',
+              rating: 5,
+              startedAt: null,
+              finishedAt: null,
+              updatedAt: '2023-10-27T10:30:00Z',
+            },
+          },
+        },
+      },
+      notFound: {
+        status: 404,
+        description: 'Manga no encontrado.',
+        schema: {
+          example: {
+            statusCode: 404,
+            message: 'Manga not found for slug: one-piece',
+            error: 'Not Found',
+          },
+        },
+      },
+    },
+  },
 }

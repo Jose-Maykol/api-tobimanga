@@ -32,6 +32,7 @@ import { UpdateReadingStatusDto } from '../../application/dtos/update-reading-st
 import { AddFavoriteUseCase } from '../../application/use-cases/add-favorite.use-case'
 import { FollowMangaUseCase } from '../../application/use-cases/follow-manga.use-case'
 import { GetUserFavoritesUseCase } from '../../application/use-cases/get-user-favorites.use-case'
+import { GetUserMangaBySlugUseCase } from '../../application/use-cases/get-user-manga-by-slug.use-case'
 import { RemoveFavoriteUseCase } from '../../application/use-cases/remove-favorite.use-case'
 import { UpdateReadingStatusUseCase } from '../../application/use-cases/update-reading-status.use-case'
 import { MangaNotFollowedException } from '../../domain/exceptions/manga-not-followed.exception'
@@ -48,6 +49,7 @@ export class UserContentController {
     private readonly addFavoriteUseCase: AddFavoriteUseCase,
     private readonly removeFavoriteUseCase: RemoveFavoriteUseCase,
     private readonly getUserFavoritesUseCase: GetUserFavoritesUseCase,
+    private readonly getUserMangaBySlugUseCase: GetUserMangaBySlugUseCase,
   ) {}
 
   @Post()
@@ -232,6 +234,28 @@ export class UserContentController {
 
     return ResponseBuilder.success({
       message: 'Favoritos obtenidos exitosamente',
+      data: result,
+    })
+  }
+
+  @Get(':slug')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    summary: 'Obtener detalle de manga para usuario',
+    description:
+      'Retorna el detalle de un manga incluyendo el estado de seguimiento del usuario (favorito, estado de lectura, rating).',
+  })
+  @ApiParam(UserContentSwagger.getUserMangaBySlug.param)
+  @ApiResponse(UserContentSwagger.getUserMangaBySlug.responses.success)
+  @ApiResponse(UserContentSwagger.getUserMangaBySlug.responses.notFound)
+  async getUserMangaBySlug(
+    @User() user: AuthenticatedUser,
+    @Param('slug') slug: string,
+  ) {
+    const result = await this.getUserMangaBySlugUseCase.execute(user.id, slug)
+
+    return ResponseBuilder.success({
+      message: 'Detalle del manga obtenido exitosamente',
       data: result,
     })
   }
