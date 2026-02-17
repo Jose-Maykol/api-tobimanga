@@ -6,6 +6,7 @@ import { AddFavoriteUseCase } from './application/use-cases/add-favorite.use-cas
 import { FollowMangaUseCase } from './application/use-cases/follow-manga.use-case'
 import { GetUserFavoritesUseCase } from './application/use-cases/get-user-favorites.use-case'
 import { GetUserMangaBySlugUseCase } from './application/use-cases/get-user-manga-by-slug.use-case'
+import { ListChaptersByMangaSlugUseCase } from './application/use-cases/list-chapters-by-manga-slug.use-case'
 import { RemoveFavoriteUseCase } from './application/use-cases/remove-favorite.use-case'
 import { UpdateReadingStatusUseCase } from './application/use-cases/update-reading-status.use-case'
 import {
@@ -33,6 +34,7 @@ import { UserContentController } from './interface/controllers/user-content.cont
     RemoveFavoriteUseCase,
     GetUserFavoritesUseCase,
     GetUserMangaBySlugUseCase,
+    ListChaptersByMangaSlugUseCase,
   ],
   controllers: [UserContentController],
   exports: [],

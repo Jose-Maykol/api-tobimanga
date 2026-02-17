@@ -33,6 +33,7 @@ import { AddFavoriteUseCase } from '../../application/use-cases/add-favorite.use
 import { FollowMangaUseCase } from '../../application/use-cases/follow-manga.use-case'
 import { GetUserFavoritesUseCase } from '../../application/use-cases/get-user-favorites.use-case'
 import { GetUserMangaBySlugUseCase } from '../../application/use-cases/get-user-manga-by-slug.use-case'
+import { ListChaptersByMangaSlugUseCase } from '../../application/use-cases/list-chapters-by-manga-slug.use-case'
 import { RemoveFavoriteUseCase } from '../../application/use-cases/remove-favorite.use-case'
 import { UpdateReadingStatusUseCase } from '../../application/use-cases/update-reading-status.use-case'
 import { MangaNotFollowedException } from '../../domain/exceptions/manga-not-followed.exception'
@@ -50,6 +51,7 @@ export class UserContentController {
     private readonly removeFavoriteUseCase: RemoveFavoriteUseCase,
     private readonly getUserFavoritesUseCase: GetUserFavoritesUseCase,
     private readonly getUserMangaBySlugUseCase: GetUserMangaBySlugUseCase,
+    private readonly listChaptersByMangaSlugUseCase: ListChaptersByMangaSlugUseCase,
   ) {}
 
   @Post()
@@ -256,6 +258,40 @@ export class UserContentController {
 
     return ResponseBuilder.success({
       message: 'Detalle del manga obtenido exitosamente',
+      data: result,
+    })
+  }
+
+  @Get(':slug/chapters')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    summary: 'Listar capítulos de un manga con estado de lectura',
+    description:
+      'Retorna la lista de capítulos incluyendo si han sido leídos por el usuario.',
+  })
+  @ApiParam(UserContentSwagger.getUserMangaBySlug.param) // Reusing slug param doc
+  @ApiQuery({ name: 'page', required: false, type: Number })
+  @ApiQuery({ name: 'limit', required: false, type: Number })
+  @ApiQuery({ name: 'order', required: false, enum: ['ASC', 'DESC'] })
+  async listChapters(
+    @User() user: AuthenticatedUser,
+    @Param('slug') slug: string,
+    @Query('page') page?: number,
+    @Query('limit') limit?: number,
+    @Query('order') order?: 'ASC' | 'DESC',
+  ) {
+    const result = await this.listChaptersByMangaSlugUseCase.execute(
+      user.id,
+      slug,
+      {
+        page,
+        limit,
+        order,
+      },
+    )
+
+    return ResponseBuilder.success({
+      message: 'Capítulos listados exitosamente',
       data: result,
     })
   }
