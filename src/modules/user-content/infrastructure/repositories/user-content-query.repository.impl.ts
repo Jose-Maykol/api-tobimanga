@@ -3,14 +3,19 @@ import { and, desc, eq, sql } from 'drizzle-orm'
 import { Inject, Injectable } from '@nestjs/common'
 
 import { DATABASE_SERVICE } from '@/core/database/constants/database.constants'
+import { chapters } from '@/core/database/schemas/chapter.schema'
 import { mangas } from '@/core/database/schemas/manga.schema'
+import { userChapterProgress } from '@/core/database/schemas/user-chapter-progress.schema'
 import { userMangas } from '@/core/database/schemas/user-manga.schema'
 import { DatabaseService } from '@/core/database/services/database.service'
 import { PublicationStatus } from '@/modules/admin/manga-management/domain/value-objects/publication-status.vo'
 
+import { UserChapterListReadModel } from '../../domain/read-models/user-chapter-list.read-model'
 import { UserFavoriteMangaReadModel } from '../../domain/read-models/user-favorite-manga.read-model'
 import { UserMangaDetailReadModel } from '../../domain/read-models/user-manga-detail.read-model'
 import {
+  FindChaptersOptions,
+  FindChaptersResult,
   FindFavoritesOptions,
   FindFavoritesResult,
   IUserContentQueryRepository,
@@ -150,6 +155,65 @@ export class UserContentQueryRepositoryImpl
       startedAt: null, // TODO: Implement if progress tracking exists
       finishedAt: null, // TODO: Implement if progress tracking exists
       updatedAt: userManga?.updatedAt ?? null,
+    }
+  }
+
+  async findChaptersByMangaSlug(
+    userId: string,
+    slug: string,
+    options: FindChaptersOptions = {},
+  ): Promise<FindChaptersResult | null> {
+    const { limit = 20, offset = 0, sortOrder = 'desc' } = options
+
+    const manga = await this.db.client.query.mangas.findFirst({
+      where: (mangas, { eq }) => eq(mangas.slugName, slug),
+      columns: { id: true },
+    })
+
+    if (!manga) {
+      return null
+    }
+
+    const results = await this.db.client
+      .select({
+        id: chapters.id,
+        chapterNumber: chapters.chapterNumber,
+        title: chapters.title,
+        releaseDate: chapters.releaseDate,
+        readAt: userChapterProgress.readAt,
+      })
+      .from(chapters)
+      .leftJoin(
+        userChapterProgress,
+        and(
+          eq(userChapterProgress.chapterId, chapters.id),
+          eq(userChapterProgress.userId, userId),
+        ),
+      )
+      .where(eq(chapters.mangaId, manga.id))
+      .orderBy(
+        sortOrder === 'desc'
+          ? desc(chapters.chapterNumber)
+          : chapters.chapterNumber,
+      )
+      .limit(limit)
+      .offset(offset)
+
+    const [countResult] = await this.db.client
+      .select({ count: sql<number>`count(*)::int` })
+      .from(chapters)
+      .where(eq(chapters.mangaId, manga.id))
+
+    return {
+      items: results.map((r) => ({
+        id: r.id,
+        chapterNumber: r.chapterNumber,
+        title: r.title,
+        releaseDate: r.releaseDate ? new Date(r.releaseDate) : null,
+        isRead: !!r.readAt,
+        readAt: r.readAt,
+      })),
+      total: countResult?.count ?? 0,
     }
   }
 }
