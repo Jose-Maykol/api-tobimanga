@@ -63,12 +63,7 @@ export class GenreManagementController {
 
       return ResponseBuilder.success({
         message: 'Género creado exitosamente',
-        data: {
-          genre: {
-            id: result.id,
-            name: result.name,
-          },
-        },
+        data: result,
       })
     } catch (error) {
       if (error instanceof GenreAlreadyExistsException) {
@@ -92,9 +87,7 @@ export class GenreManagementController {
     const genres = await this.getAllGenresUseCase.execute()
     return ResponseBuilder.success({
       message: 'Géneros obtenidos exitosamente',
-      data: {
-        genres,
-      },
+      data: genres,
     })
   }
 
@@ -120,12 +113,7 @@ export class GenreManagementController {
 
       return ResponseBuilder.success({
         message: 'Género actualizado exitosamente',
-        data: {
-          genre: {
-            id: result.id,
-            name: result.name,
-          },
-        },
+        data: result,
       })
     } catch (error) {
       if (error instanceof GenreAlreadyExistsException) {

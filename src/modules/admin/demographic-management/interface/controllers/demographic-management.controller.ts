@@ -35,9 +35,7 @@ export class DemographicManagementController {
     const demographics = await this.getAllDemographicsUseCase.execute()
     return ResponseBuilder.success({
       message: 'Demografías obtenidas correctamente',
-      data: {
-        demographics,
-      },
+      data: demographics,
     })
   }
 }
