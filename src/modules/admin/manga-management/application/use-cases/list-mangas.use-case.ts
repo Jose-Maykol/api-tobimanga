@@ -2,7 +2,6 @@ import { Inject, Injectable, Logger } from '@nestjs/common'
 
 import { calculatePagination } from '@/common/utils/pagination.util'
 
-// Manga entity import removed
 import { MangaRepository } from '../../domain/repositories/manga.repository'
 import { MANGA_REPOSITORY } from '../../domain/tokens'
 import { ListMangasDto } from '../dtos/list-mangas.dto'
