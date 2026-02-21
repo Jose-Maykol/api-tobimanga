@@ -6,7 +6,6 @@ import { AUTHOR_CATALOG_REPOSITORY } from '../../infrastructure/tokens'
 @Injectable()
 export class ListAuthorsUseCase {
   constructor(
-    @Inject()
     @Inject(AUTHOR_CATALOG_REPOSITORY)
     private readonly authorCatalogRepository: IAuthorCatalogRepository,
   ) {}

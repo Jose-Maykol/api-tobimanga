@@ -6,7 +6,6 @@ import { DEMOGRAPHIC_CATALOG_REPOSITORY } from '../../infrastructure/tokens'
 @Injectable()
 export class ListDemographicsUseCase {
   constructor(
-    @Inject()
     @Inject(DEMOGRAPHIC_CATALOG_REPOSITORY)
     private readonly demographicCatalogRepository: IDemographicCatalogRepository,
   ) {}

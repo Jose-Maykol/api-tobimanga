@@ -6,7 +6,6 @@ import { GENRE_CATALOG_REPOSITORY } from '../../infrastructure/tokens'
 @Injectable()
 export class ListGenresUseCase {
   constructor(
-    @Inject()
     @Inject(GENRE_CATALOG_REPOSITORY)
     private readonly genreCatalogRepository: IGenreCatalogRepository,
   ) {}
