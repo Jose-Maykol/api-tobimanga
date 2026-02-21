@@ -5,4 +5,11 @@ export interface UploadRepository {
   updateStatus(id: string, status: UploadStatus, usedAt?: Date): Promise<Upload>
   findByUrl(url: string): Promise<Upload | null>
   findById(id: string): Promise<Upload | null>
+  findAll(params: {
+    page: number
+    limit: number
+    orderBy?: 'asc' | 'desc'
+    status?: UploadStatus
+  }): Promise<Upload[]>
+  countAll(params?: { status?: UploadStatus }): Promise<number>
 }

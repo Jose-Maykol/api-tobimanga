@@ -1,12 +1,14 @@
 import {
   Body,
   Controller,
+  Get,
   HttpException,
   HttpStatus,
   Inject,
   Param,
   Patch,
   Post,
+  Query,
   UploadedFile,
   UseGuards,
   UseInterceptors,
@@ -27,8 +29,10 @@ import { Roles } from '@/modules/auth/interface/decorators/roles.decorator'
 import { JwtAuthGuard } from '@/modules/auth/interface/guards/jwt-auth.guard'
 import { RolesGuard } from '@/modules/auth/interface/guards/roles.guard'
 
+import { ListUploadsDto } from '../../application/dtos/list-uploads.dto'
 import { UpdateStatusUploadDto } from '../../application/dtos/update-status-upload.dto'
 import { UploadFileDto } from '../../application/dtos/upload-file.dto'
+import { ListUploadsUseCase } from '../../application/use-cases/list-uploads.use-case'
 import { UpdateUploadStatusUseCase } from '../../application/use-cases/update-upload-status.use-case'
 import { UploadFileUseCase } from '../../application/use-cases/upload-file.use-case'
 import { FileValidationPipe } from '../pipes/file-validation.pipe'
@@ -44,7 +48,27 @@ export class UploadController {
     private readonly uploadFileUseCase: UploadFileUseCase,
     @Inject()
     private readonly updateStatusUploadUseCase: UpdateUploadStatusUseCase,
+    @Inject()
+    private readonly listUploadsUseCase: ListUploadsUseCase,
   ) {}
+
+  @Get()
+  @ApiOperation({
+    summary: 'Listar archivos subidos',
+    description:
+      'Obtiene una lista paginada de archivos subidos. Permite ordenar por fecha y filtrar por estado. Solo accesible por usuarios ADMIN.',
+  })
+  @ApiResponse(UploadSwagger.listUploads.responses.ok)
+  @ApiBearerAuth()
+  async listUploads(@Query() dto: ListUploadsDto) {
+    const { items, meta } = await this.listUploadsUseCase.execute(dto)
+
+    return ResponseBuilder.success({
+      message: 'Archivos subidos obtenidos exitosamente',
+      data: items,
+      meta,
+    })
+  }
 
   @Post()
   @ApiOperation({

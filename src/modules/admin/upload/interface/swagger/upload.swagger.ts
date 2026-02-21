@@ -1,4 +1,43 @@
 export const UploadSwagger = {
+  listUploads: {
+    responses: {
+      ok: {
+        status: 200,
+        description:
+          'Lista paginada de archivos subidos obtenida exitosamente.',
+        schema: {
+          example: {
+            success: true,
+            message: 'Archivos subidos obtenidos exitosamente',
+            data: {
+              items: [
+                {
+                  id: 'a3f1c2d4-5678-4e9b-8c2d-123456789abc',
+                  fileName: 'image.png',
+                  contentType: 'image/png',
+                  url: 'https://example.com/uploads/image.png',
+                  status: 'PENDING',
+                  objectKey: 'image.png',
+                  entityType: 'manga',
+                  usedAt: null,
+                  createdAt: '2024-06-01T12:00:00.000Z',
+                  updatedAt: null,
+                },
+              ],
+              meta: {
+                total: 10,
+                perPage: 20,
+                currentPage: 1,
+                pages: 1,
+                hasNextPage: false,
+                hasPreviousPage: false,
+              },
+            },
+          },
+        },
+      },
+    },
+  },
   uploadFile: {
     body: {
       description: 'Subir un archivo',

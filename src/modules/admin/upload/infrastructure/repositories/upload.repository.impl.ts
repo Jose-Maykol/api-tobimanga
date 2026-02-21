@@ -1,4 +1,4 @@
-import { eq } from 'drizzle-orm'
+import { asc, count, desc, eq } from 'drizzle-orm'
 
 import { Inject, Injectable } from '@nestjs/common'
 
@@ -100,5 +100,53 @@ export class UploadRepositoryImpl implements UploadRepository {
       createdAt: row.createdAt,
       updatedAt: row.updatedAt ?? null,
     }
+  }
+
+  async findAll(params: {
+    page: number
+    limit: number
+    orderBy?: 'asc' | 'desc'
+    status?: UploadStatus
+  }): Promise<Upload[]> {
+    const { page, limit, orderBy = 'desc', status } = params
+    const offset = (page - 1) * limit
+
+    const conditions = status ? eq(uploads.status, status) : undefined
+
+    const orderFn = orderBy === 'asc' ? asc : desc
+
+    const result = await this.db.client
+      .select()
+      .from(uploads)
+      .where(conditions)
+      .orderBy(orderFn(uploads.createdAt))
+      .limit(limit)
+      .offset(offset)
+
+    return result.map((row) => ({
+      id: row.id,
+      fileName: row.fileName,
+      contentType: row.contentType,
+      url: row.url,
+      status: row.status as UploadStatus,
+      objectKey: row.objectKey,
+      entityType: row.entityType,
+      usedAt: row.usedAt ?? null,
+      createdAt: row.createdAt,
+      updatedAt: row.updatedAt ?? null,
+    }))
+  }
+
+  async countAll(params?: { status?: UploadStatus }): Promise<number> {
+    const conditions = params?.status
+      ? eq(uploads.status, params.status)
+      : undefined
+
+    const totalResult = await this.db.client
+      .select({ count: count() })
+      .from(uploads)
+      .where(conditions)
+
+    return totalResult[0].count
   }
 }
