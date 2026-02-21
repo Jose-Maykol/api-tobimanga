@@ -63,12 +63,7 @@ export class AuthorManagementController {
 
       return ResponseBuilder.success({
         message: 'Autor creado exitosamente',
-        data: {
-          author: {
-            id: result.id,
-            name: result.name,
-          },
-        },
+        data: result,
       })
     } catch (error) {
       if (error instanceof AuthorAlreadyExistsException) {
@@ -92,9 +87,7 @@ export class AuthorManagementController {
     const authors = await this.getAllAuthorsUseCase.execute()
     return ResponseBuilder.success({
       message: 'Autores obtenidos exitosamente',
-      data: {
-        authors,
-      },
+      data: authors,
     })
   }
 
@@ -119,12 +112,7 @@ export class AuthorManagementController {
       const result = await this.updateAuthorUseCase.execute(id, updateAuthorDto)
       return ResponseBuilder.success({
         message: 'Autor actualizado exitosamente',
-        data: {
-          author: {
-            id: result.id,
-            name: result.name,
-          },
-        },
+        data: result,
       })
     } catch (error) {
       if (error instanceof AuthorAlreadyExistsException) {
