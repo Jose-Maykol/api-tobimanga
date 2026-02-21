@@ -1,4 +1,3 @@
-
 export class UserChapterListReadModel {
   id: string
   chapterNumber: number

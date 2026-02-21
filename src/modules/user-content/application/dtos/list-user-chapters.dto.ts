@@ -1,4 +1,3 @@
-
 import { IsEnum, IsNumber, IsOptional, Min } from 'class-validator'
 
 export class ListUserChaptersDto {
