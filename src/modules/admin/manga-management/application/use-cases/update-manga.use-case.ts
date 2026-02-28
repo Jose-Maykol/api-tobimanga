@@ -2,6 +2,8 @@ import slugify from 'slugify'
 
 import { Inject, Injectable, Logger } from '@nestjs/common'
 
+import { IMAGE_STORAGE_SERVICE } from '@/core/storage/constants/storage.constants'
+import { StorageService } from '@/core/storage/interfaces/storage.service'
 import { GetAuthorByIdUseCase } from '@/modules/admin/author-management/application/use-cases/get-author-by-id.use-case'
 import { GetDemographicByIdUseCase } from '@/modules/admin/demographic-management/application/use-cases/get-demographic-by-id.use-case'
 import { GetGenreByIdUseCase } from '@/modules/admin/genre-management/application/use-cases/get-genre-by-id.use-case'
@@ -23,6 +25,8 @@ export class UpdateMangaUseCase {
   constructor(
     @Inject(MANGA_REPOSITORY)
     private readonly mangaRepository: MangaRepository,
+    @Inject(IMAGE_STORAGE_SERVICE)
+    private readonly storageService: StorageService,
     @Inject()
     private readonly findUploadByUrlUseCase: FindUploadByUrlUseCase,
     @Inject()
@@ -80,7 +84,7 @@ export class UpdateMangaUseCase {
     const coverImage: string = params.coverImage
     const bannerImage: string = params.bannerImage
 
-    if (coverImage) {
+    if (coverImage && coverImage !== manga.coverImage) {
       const coverUpload = await this.findUploadByUrlUseCase.execute({
         url: coverImage,
       })
@@ -88,9 +92,26 @@ export class UpdateMangaUseCase {
         id: coverUpload.id,
         status: UploadStatus.ACTIVE,
       })
+
+      if (manga.coverImage) {
+        try {
+          const oldCoverUpload = await this.findUploadByUrlUseCase.execute({
+            url: manga.coverImage,
+          })
+          await this.storageService.delete(oldCoverUpload.objectKey)
+          await this.updateStatusUploadUseCase.execute({
+            id: oldCoverUpload.id,
+            status: UploadStatus.DELETED,
+          })
+        } catch (error) {
+          this.logger.error(
+            `Failed to delete old cover image: ${(error as Error).message}`,
+          )
+        }
+      }
     }
 
-    if (bannerImage) {
+    if (bannerImage && bannerImage !== manga.bannerImage) {
       const bannerUpload = await this.findUploadByUrlUseCase.execute({
         url: bannerImage,
       })
@@ -98,9 +119,24 @@ export class UpdateMangaUseCase {
         id: bannerUpload.id,
         status: UploadStatus.ACTIVE,
       })
-    }
 
-    //TODO: Borrar imagenes antiguas si es que cambiaron
+      if (manga.bannerImage) {
+        try {
+          const oldBannerUpload = await this.findUploadByUrlUseCase.execute({
+            url: manga.bannerImage,
+          })
+          await this.storageService.delete(oldBannerUpload.objectKey)
+          await this.updateStatusUploadUseCase.execute({
+            id: oldBannerUpload.id,
+            status: UploadStatus.DELETED,
+          })
+        } catch (error) {
+          this.logger.error(
+            `Failed to delete old banner image: ${(error as Error).message}`,
+          )
+        }
+      }
+    }
 
     const updatedManga: Manga = {
       id: manga.id,
