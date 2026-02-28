@@ -38,8 +38,8 @@ export class SaveMangaDemographicDto {
 export class CreateMangaDto {
   @IsString({ message: 'El nombre original debe ser un string' })
   @IsNotEmpty({ message: 'El nombre original es requerido' })
-  @MinLength(3, {
-    message: 'El nombre original debe tener al menos 3 caracteres',
+  @MinLength(1, {
+    message: 'El nombre original debe tener al menos 1 carácter',
   })
   originalName: string
 
