@@ -1,7 +1,8 @@
-import { IsString, Length } from 'class-validator'
+import { IsNotEmpty, IsString, Length } from 'class-validator'
 
 export class UpdateGenreDto {
   @IsString()
-  @Length(3, 100)
+  @IsNotEmpty()
+  @Length(2, 100)
   name: string
 }
