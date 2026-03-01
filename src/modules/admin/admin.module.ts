@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common'
 
+import { CronJobManagementModule } from './cron-job-management/cron-job-management.module'
 import { DemographicManagementModule } from './demographic-management/demographic-management.module'
 import { GenreManagementModule } from './genre-management/genre-management.module'
 import { MangaManagementModule } from './manga-management/manga-management.module'
@@ -11,6 +12,7 @@ import { UploadModule } from './upload/upload.module'
     GenreManagementModule,
     DemographicManagementModule,
     UploadModule,
+    CronJobManagementModule,
   ],
   providers: [],
   exports: [
@@ -18,6 +20,7 @@ import { UploadModule } from './upload/upload.module'
     GenreManagementModule,
     DemographicManagementModule,
     UploadModule,
+    CronJobManagementModule,
   ],
 })
 export class AdminModule {}

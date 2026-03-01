@@ -6,6 +6,7 @@ import { AppController } from './app.controller'
 import { AppService } from './app.service'
 import { AdminModule } from './modules/admin/admin.module'
 import { AuthorManagementModule } from './modules/admin/author-management/author-management.module'
+import { CronJobManagementModule } from './modules/admin/cron-job-management/cron-job-management.module'
 import { DemographicManagementModule } from './modules/admin/demographic-management/demographic-management.module'
 import { GenreManagementModule } from './modules/admin/genre-management/genre-management.module'
 import { MangaManagementModule } from './modules/admin/manga-management/manga-management.module'
@@ -23,6 +24,7 @@ const modules = [
   DemographicManagementModule,
   AuthorManagementModule,
   UploadModule,
+  CronJobManagementModule,
   CatalogModule,
   MangaCatalogModule,
   UserContentModule,
@@ -57,6 +59,10 @@ const modules = [
           {
             module: UploadModule,
             path: 'uploads',
+          },
+          {
+            module: CronJobManagementModule,
+            path: 'cron-jobs',
           },
         ],
       },
