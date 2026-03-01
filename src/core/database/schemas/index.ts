@@ -4,6 +4,8 @@ import { mangaAuthorRelations } from '../relations/manga-author.relations'
 import { mangaGenreRelations } from '../relations/manga-genre.relations'
 import { authors } from './author.schema'
 import { chapters } from './chapter.schema'
+import { cronJobs } from './cron-job.schema'
+import { cronJobExecutions } from './cron-job-execution.schema'
 import { demographics } from './demographic.schema'
 import { genres } from './genres.schema'
 import { mangas } from './manga.schema'
@@ -18,6 +20,8 @@ import { userMangas } from './user-manga.schema'
 export const databaseSchema = {
   authors,
   chapters,
+  cronJobs,
+  cronJobExecutions,
   demographics,
   genres,
   mangas,

@@ -14,6 +14,7 @@ export const cronJobs = pgTable('cron_jobs', {
     .primaryKey(),
   key: varchar('key').notNull().unique(),
   name: varchar('name').notNull(),
+  description: varchar('description'),
   schedule: varchar('schedule').notNull(),
   options: jsonb('options').notNull().default('{}'),
   isActive: boolean('is_active').notNull().default(true),
