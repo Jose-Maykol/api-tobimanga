@@ -1,5 +1,5 @@
 {
-  "id": "04f5e422-d05e-463d-b1db-3d6262f3c438",
+  "id": "cb049f1d-e0ab-4acc-a5c2-65afeafc52cb",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -74,6 +74,12 @@
           "primaryKey": false,
           "notNull": true
         },
+        "title": {
+          "name": "title",
+          "type": "varchar(255)",
+          "primaryKey": false,
+          "notNull": false
+        },
         "release_date": {
           "name": "release_date",
           "type": "date",
@@ -94,7 +100,38 @@
           "notNull": false
         }
       },
-      "indexes": {},
+      "indexes": {
+        "chapters_manga_id_idx": {
+          "name": "chapters_manga_id_idx",
+          "columns": [
+            {
+              "expression": "manga_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "chapters_chapter_number_idx": {
+          "name": "chapters_chapter_number_idx",
+          "columns": [
+            {
+              "expression": "chapter_number",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
       "foreignKeys": {
         "chapters_manga_id_mangas_manga_id_fk": {
           "name": "chapters_manga_id_mangas_manga_id_fk",
@@ -133,6 +170,14 @@
           "primaryKey": false,
           "notNull": true
         },
+        "status": {
+          "name": "status",
+          "type": "cron_job_execution_status",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "'PENDING'"
+        },
         "started_at": {
           "name": "started_at",
           "type": "timestamp",
@@ -146,18 +191,17 @@
           "primaryKey": false,
           "notNull": false
         },
-        "duration": {
-          "name": "duration",
-          "type": "timestamp",
+        "duration_ms": {
+          "name": "duration_ms",
+          "type": "integer",
           "primaryKey": false,
           "notNull": false
         },
-        "status": {
-          "name": "status",
-          "type": "cron_job_execution_status",
-          "typeSchema": "public",
+        "error_message": {
+          "name": "error_message",
+          "type": "text",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         }
       },
       "indexes": {},
@@ -193,11 +237,23 @@
           "notNull": true,
           "default": "uuid_generate_v4()"
         },
+        "key": {
+          "name": "key",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
         "name": {
           "name": "name",
           "type": "varchar",
           "primaryKey": false,
           "notNull": true
+        },
+        "description": {
+          "name": "description",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
         },
         "schedule": {
           "name": "schedule",
@@ -205,11 +261,12 @@
           "primaryKey": false,
           "notNull": true
         },
-        "task": {
-          "name": "task",
-          "type": "text",
+        "options": {
+          "name": "options",
+          "type": "jsonb",
           "primaryKey": false,
-          "notNull": true
+          "notNull": true,
+          "default": "'{}'"
         },
         "is_active": {
           "name": "is_active",
@@ -217,6 +274,18 @@
           "primaryKey": false,
           "notNull": true,
           "default": true
+        },
+        "last_run_at": {
+          "name": "last_run_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "next_run_at": {
+          "name": "next_run_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": false
         },
         "created_at": {
           "name": "created_at",
@@ -229,14 +298,21 @@
           "name": "updated_at",
           "type": "timestamp",
           "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
+          "notNull": false
         }
       },
       "indexes": {},
       "foreignKeys": {},
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
+      "uniqueConstraints": {
+        "cron_jobs_key_unique": {
+          "name": "cron_jobs_key_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "key"
+          ]
+        }
+      },
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false
@@ -468,13 +544,13 @@
           "name": "slug_name",
           "type": "text",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "scrapping_name": {
           "name": "scrapping_name",
           "type": "text",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "alternative_names": {
           "name": "alternative_names",
@@ -492,37 +568,26 @@
           "name": "chapters",
           "type": "smallint",
           "primaryKey": false,
-          "notNull": true
+          "notNull": true,
+          "default": 0
         },
         "release_date": {
           "name": "release_date",
           "type": "date",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "cover_image_url": {
           "name": "cover_image_url",
           "type": "text",
           "primaryKey": false,
-          "notNull": false
-        },
-        "cover_image_object_key": {
-          "name": "cover_image_object_key",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "banner_image_url": {
           "name": "banner_image_url",
           "type": "text",
           "primaryKey": false,
-          "notNull": false
-        },
-        "banner_image_object_key": {
-          "name": "banner_image_object_key",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "publication_status": {
           "name": "publication_status",
@@ -559,7 +624,89 @@
           "notNull": false
         }
       },
-      "indexes": {},
+      "indexes": {
+        "mangas_demographic_id_idx": {
+          "name": "mangas_demographic_id_idx",
+          "columns": [
+            {
+              "expression": "demographic_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "mangas_rating_idx": {
+          "name": "mangas_rating_idx",
+          "columns": [
+            {
+              "expression": "rating",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "mangas_updated_at_idx": {
+          "name": "mangas_updated_at_idx",
+          "columns": [
+            {
+              "expression": "updated_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "mangas_publication_status_idx": {
+          "name": "mangas_publication_status_idx",
+          "columns": [
+            {
+              "expression": "publication_status",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "mangas_demographic_id_rating_idx": {
+          "name": "mangas_demographic_id_rating_idx",
+          "columns": [
+            {
+              "expression": "demographic_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "rating",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
       "foreignKeys": {
         "mangas_demographic_id_demographics_demographic_id_fk": {
           "name": "mangas_demographic_id_demographics_demographic_id_fk",
@@ -753,65 +900,6 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.user_favorite_mangas": {
-      "name": "user_favorite_mangas",
-      "schema": "",
-      "columns": {
-        "user_id": {
-          "name": "user_id",
-          "type": "uuid",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "manga_id": {
-          "name": "manga_id",
-          "type": "uuid",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "favorited_at": {
-          "name": "favorited_at",
-          "type": "timestamp",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {
-        "user_favorite_mangas_user_id_users_user_id_fk": {
-          "name": "user_favorite_mangas_user_id_users_user_id_fk",
-          "tableFrom": "user_favorite_mangas",
-          "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "user_id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        },
-        "user_favorite_mangas_manga_id_mangas_manga_id_fk": {
-          "name": "user_favorite_mangas_manga_id_mangas_manga_id_fk",
-          "tableFrom": "user_favorite_mangas",
-          "tableTo": "mangas",
-          "columnsFrom": [
-            "manga_id"
-          ],
-          "columnsTo": [
-            "manga_id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    },
     "public.user_mangas": {
       "name": "user_mangas",
       "schema": "",
@@ -848,6 +936,13 @@
           "primaryKey": false,
           "notNull": true
         },
+        "is_favorite": {
+          "name": "is_favorite",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
         "created_at": {
           "name": "created_at",
           "type": "timestamp",
@@ -862,7 +957,44 @@
           "notNull": false
         }
       },
-      "indexes": {},
+      "indexes": {
+        "user_mangas_user_id_manga_id_idx": {
+          "name": "user_mangas_user_id_manga_id_idx",
+          "columns": [
+            {
+              "expression": "user_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            },
+            {
+              "expression": "manga_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "user_mangas_manga_id_idx": {
+          "name": "user_mangas_manga_id_idx",
+          "columns": [
+            {
+              "expression": "manga_id",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
       "foreignKeys": {
         "user_mangas_user_id_users_user_id_fk": {
           "name": "user_mangas_user_id_users_user_id_fk",
@@ -930,7 +1062,7 @@
         },
         "email": {
           "name": "email",
-          "type": "varchar(100)",
+          "type": "varchar(255)",
           "primaryKey": false,
           "notNull": true
         },
@@ -981,7 +1113,38 @@
           "notNull": false
         }
       },
-      "indexes": {},
+      "indexes": {
+        "users_created_at_idx": {
+          "name": "users_created_at_idx",
+          "columns": [
+            {
+              "expression": "created_at",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "users_role_idx": {
+          "name": "users_role_idx",
+          "columns": [
+            {
+              "expression": "role",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        }
+      },
       "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
