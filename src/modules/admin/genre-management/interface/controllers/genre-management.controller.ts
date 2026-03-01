@@ -33,7 +33,7 @@ import { CreateGenreUseCase } from '../../application/use-cases/create-genre.use
 import { DeleteGenreUseCase } from '../../application/use-cases/delete-genre.use-case'
 import { GetAllGenresUseCase } from '../../application/use-cases/get-all-genres.use-case'
 import { UpdateGenreUseCase } from '../../application/use-cases/update-genre.use-case'
-import { GenreManagementSwagger } from '../swagger/genre-maagement.swagger'
+import { GenreManagementSwagger } from '../swagger/genre-magement.swagger'
 
 @UseGuards(JwtAuthGuard, RolesGuard)
 @Roles(ROLES.ADMIN)
