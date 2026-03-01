@@ -18,6 +18,7 @@ import { UpdateMangaUseCase } from './application/use-cases/update-manga.use-cas
 import { ChapterFactory } from './domain/factories/chapter.factory'
 import { MangaFactory } from './domain/factories/manga.factory'
 import { CHAPTER_REPOSITORY, MANGA_REPOSITORY } from './domain/tokens'
+import { SyncMangaChaptersHandler } from './infrastructure/handlers/sync-manga-chapters.handler'
 import { ChapterRepositoryImpl } from './infrastructure/repositories/chapter.repository.impl'
 import { MangaRepositoryImpl } from './infrastructure/repositories/manga.repository.impl'
 import { MangaManagementController } from './interface/controllers/manga-management.controller'
@@ -44,6 +45,7 @@ import { MangaManagementController } from './interface/controllers/manga-managem
     UpdateChapterUseCase,
     MangaFactory,
     ChapterFactory,
+    SyncMangaChaptersHandler,
   ],
   controllers: [MangaManagementController],
   exports: [CreateMangaUseCase, ListMangasUseCase, UpdateMangaUseCase],
