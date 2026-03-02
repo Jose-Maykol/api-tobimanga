@@ -7,10 +7,12 @@ import { AuthModule } from '@/modules/auth/auth.module'
 
 import { CreateCronJobUseCase } from './application/use-cases/create-cron-job.use-case'
 import { DeleteCronJobUseCase } from './application/use-cases/delete-cron-job.use-case'
+import { ExecuteCronJobUseCase } from './application/use-cases/execute-cron-job.use-case'
 import { GetAllCronJobsUseCase } from './application/use-cases/get-all-cron-jobs.use-case'
 import { GetCronJobByIdUseCase } from './application/use-cases/get-cron-job-by-id.use-case'
 import { GetCronJobExecutionsUseCase } from './application/use-cases/get-cron-job-executions.use-case'
 import { GetCronJobProcessesUseCase } from './application/use-cases/get-cron-job-processes.use-case'
+import { StopCronJobExecutionUseCase } from './application/use-cases/stop-cron-job-execution.use-case'
 import { ToggleCronJobUseCase } from './application/use-cases/toggle-cron-job.use-case'
 import { UpdateCronJobUseCase } from './application/use-cases/update-cron-job.use-case'
 import {
@@ -47,6 +49,8 @@ import { CronJobManagementController } from './interface/controllers/cron-job-ma
     ToggleCronJobUseCase,
     GetCronJobExecutionsUseCase,
     GetCronJobProcessesUseCase,
+    ExecuteCronJobUseCase,
+    StopCronJobExecutionUseCase,
   ],
   controllers: [CronJobManagementController],
   exports: [CronJobSchedulerService],

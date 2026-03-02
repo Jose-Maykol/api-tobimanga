@@ -17,24 +17,30 @@ export class SyncMangaChaptersHandler implements ICronJobHandler {
     private readonly mangaRepository: MangaRepository,
   ) {}
 
-  async execute(options?: Record<string, unknown>): Promise<void> {
+  async execute(
+    options?: Record<string, unknown>,
+    signal?: AbortSignal,
+  ): Promise<void> {
     const limit = (options?.limit as number) || 50
     this.logger.log(
       `Starting manga chapters synchronization (limit: ${limit})...`,
     )
 
-    // In a real scenario, you would probably filter by active mangas and those that have a scrappingName
     const mangas = await this.mangaRepository.findAll(1, limit)
+
+    await new Promise((resolve) => setTimeout(resolve, 10000))
 
     let syncedCount = 0
     for (const manga of mangas) {
+      if (signal?.aborted) {
+        this.logger.warn('Synchronization aborted manually.')
+        throw new Error('Ejecución cancelada manualmente')
+      }
+
       if (manga.scrappingName) {
         this.logger.log(
           `Syncing chapters for manga: "${manga.originalName}" [Slug: ${manga.slugName}, ScrappingName: ${manga.scrappingName}]`,
         )
-
-        // Here you would call your scrapper logic.
-        // For example: await this.scrapperService.syncManga(manga.scrappingName);
 
         syncedCount++
       } else {

@@ -1,5 +1,8 @@
 import { Inject, Injectable, Logger } from '@nestjs/common'
 
+import { Pagination } from '@/common/interfaces/pagination.interface'
+import { calculatePagination } from '@/common/utils/pagination.util'
+
 import { CronJobExecution } from '../../domain/entities/cron-job-execution.entity'
 import { CronJobNotFoundException } from '../../domain/exceptions/cron-job-not-found.exception'
 import { CronJobRepository } from '../../domain/repositories/cron-job.repository'
@@ -20,7 +23,14 @@ export class GetCronJobExecutionsUseCase {
     private readonly executionRepository: CronJobExecutionRepository,
   ) {}
 
-  async execute(cronJobId: string, limit = 20): Promise<CronJobExecution[]> {
+  async execute(
+    cronJobId: string,
+    page = 1,
+    limit = 20,
+  ): Promise<{
+    executions: CronJobExecution[]
+    meta: Pagination
+  }> {
     const cronJob = await this.cronJobRepository.findById(cronJobId)
     if (!cronJob) {
       this.logger.warn(
@@ -29,15 +39,20 @@ export class GetCronJobExecutionsUseCase {
       throw new CronJobNotFoundException(cronJobId)
     }
 
-    const executions = await this.executionRepository.findByCronJobId(
-      cronJobId,
-      limit,
-    )
+    const [executions, total] = await Promise.all([
+      this.executionRepository.findByCronJobId(cronJobId, page, limit),
+      this.executionRepository.countByCronJobId(cronJobId),
+    ])
+
+    const pagination = calculatePagination(total, page, limit)
 
     this.logger.log(
-      `Retrieved ${executions.length} execution(s) for cron job "${cronJob.key}"`,
+      `Retrieved ${executions.length} execution(s) for cron job "${cronJob.key}" (Total: ${total})`,
     )
 
-    return executions
+    return {
+      executions,
+      meta: pagination,
+    }
   }
 }

@@ -32,13 +32,16 @@ import { CreateCronJobDto } from '../../application/dtos/create-cron-job.dto'
 import { UpdateCronJobDto } from '../../application/dtos/update-cron-job.dto'
 import { CreateCronJobUseCase } from '../../application/use-cases/create-cron-job.use-case'
 import { DeleteCronJobUseCase } from '../../application/use-cases/delete-cron-job.use-case'
+import { ExecuteCronJobUseCase } from '../../application/use-cases/execute-cron-job.use-case'
 import { GetAllCronJobsUseCase } from '../../application/use-cases/get-all-cron-jobs.use-case'
 import { GetCronJobByIdUseCase } from '../../application/use-cases/get-cron-job-by-id.use-case'
 import { GetCronJobExecutionsUseCase } from '../../application/use-cases/get-cron-job-executions.use-case'
 import { GetCronJobProcessesUseCase } from '../../application/use-cases/get-cron-job-processes.use-case'
+import { StopCronJobExecutionUseCase } from '../../application/use-cases/stop-cron-job-execution.use-case'
 import { ToggleCronJobUseCase } from '../../application/use-cases/toggle-cron-job.use-case'
 import { UpdateCronJobUseCase } from '../../application/use-cases/update-cron-job.use-case'
 import { CronJobAlreadyExistsException } from '../../domain/exceptions/cron-job-already-exists.exception'
+import { CronJobDeactivatedException } from '../../domain/exceptions/cron-job-deactivated.exception'
 import { CronJobNotFoundException } from '../../domain/exceptions/cron-job-not-found.exception'
 import { CronJobManagementSwagger } from '../swagger/cron-job-management.swagger'
 
@@ -56,6 +59,8 @@ export class CronJobManagementController {
     private readonly toggleCronJobUseCase: ToggleCronJobUseCase,
     private readonly getCronJobExecutionsUseCase: GetCronJobExecutionsUseCase,
     private readonly getCronJobProcessesUseCase: GetCronJobProcessesUseCase,
+    private readonly executeCronJobUseCase: ExecuteCronJobUseCase,
+    private readonly stopCronJobExecutionUseCase: StopCronJobExecutionUseCase,
   ) {}
 
   @Get('processes')
@@ -280,6 +285,13 @@ export class CronJobManagementController {
   })
   @ApiParam(CronJobManagementSwagger.executions.param)
   @ApiQuery({
+    name: 'page',
+    required: false,
+    type: Number,
+    description: 'Número de página',
+    example: 1,
+  })
+  @ApiQuery({
     name: 'limit',
     required: false,
     type: Number,
@@ -289,16 +301,22 @@ export class CronJobManagementController {
   @ApiResponse(CronJobManagementSwagger.executions.responses.ok)
   @ApiResponse(CronJobManagementSwagger.executions.responses.notFound)
   @ApiBearerAuth()
-  async getExecutions(@Param('id') id: string, @Query('limit') limit?: number) {
+  async getExecutions(
+    @Param('id') id: string,
+    @Query('page') page?: number,
+    @Query('limit') limit?: number,
+  ) {
     try {
-      const executions = await this.getCronJobExecutionsUseCase.execute(
+      const result = await this.getCronJobExecutionsUseCase.execute(
         id,
+        page ? Number(page) : undefined,
         limit ? Number(limit) : undefined,
       )
 
       return ResponseBuilder.success({
         message: 'Ejecuciones obtenidas exitosamente',
-        data: executions,
+        data: result.executions,
+        meta: result.meta,
       })
     } catch (error) {
       if (error instanceof CronJobNotFoundException) {
@@ -312,6 +330,83 @@ export class CronJobManagementController {
         )
       }
       throw error
+    }
+  }
+
+  @Post(':id/start')
+  @ApiOperation({
+    summary: 'Iniciar manualmente un cron job',
+    description:
+      'Ejecuta un cron job independientemente de su programación. Solo accesible por usuarios ADMIN.',
+  })
+  @ApiParam({ name: 'id', description: 'ID del cron job a ejecutar' })
+  @ApiResponse(CronJobManagementSwagger.executeManually.responses.success)
+  @ApiResponse(CronJobManagementSwagger.executeManually.responses.notFound)
+  @ApiResponse(CronJobManagementSwagger.executeManually.responses.badRequest)
+  @ApiBearerAuth()
+  async executeManually(@Param('id') id: string) {
+    try {
+      const result = await this.executeCronJobUseCase.execute(id)
+      return ResponseBuilder.success({
+        message: 'Ejecución del cron job iniciada',
+        data: result,
+      })
+    } catch (error) {
+      if (error instanceof CronJobNotFoundException) {
+        throw new HttpException(
+          ResponseBuilder.error(
+            error.message,
+            error.code,
+            HttpStatus.NOT_FOUND,
+          ),
+          HttpStatus.NOT_FOUND,
+        )
+      }
+
+      if (error instanceof CronJobDeactivatedException) {
+        throw new HttpException(
+          ResponseBuilder.error(
+            error.message,
+            error.code,
+            HttpStatus.BAD_REQUEST,
+          ),
+          HttpStatus.BAD_REQUEST,
+        )
+      }
+      throw error
+    }
+  }
+
+  @Post('executions/:executionId/stop')
+  @ApiOperation({
+    summary: 'Detener una ejecución de cron job',
+    description:
+      'Envía una señal para cancelar una ejecución en curso. Solo accesible por usuarios ADMIN.',
+  })
+  @ApiParam({
+    name: 'executionId',
+    description: 'ID de la ejecución a detener',
+  })
+  @ApiResponse(CronJobManagementSwagger.stopExecution.responses.success)
+  @ApiResponse(CronJobManagementSwagger.stopExecution.responses.badRequest)
+  @ApiResponse(CronJobManagementSwagger.stopExecution.responses.notFound)
+  @ApiBearerAuth()
+  async stopExecution(@Param('executionId') executionId: string) {
+    try {
+      await this.stopCronJobExecutionUseCase.execute(executionId)
+      return ResponseBuilder.success({
+        message: 'Señal de detención enviada a la ejecución',
+        data: null,
+      })
+    } catch (error) {
+      const status = error.message.includes('no encontrado')
+        ? HttpStatus.NOT_FOUND
+        : HttpStatus.BAD_REQUEST
+
+      throw new HttpException(
+        ResponseBuilder.error(error.message, 'CRON_JOB_STOP_ERROR', status),
+        status,
+      )
     }
   }
 }

@@ -224,6 +224,13 @@ export const CronJobManagementSwagger = {
                 errorMessage: null,
               },
             ],
+            meta: {
+              currentPage: 1,
+              itemCount: 1,
+              itemsPerPage: 20,
+              totalItems: 1,
+              totalPages: 1,
+            },
           },
         },
       },
@@ -252,6 +259,54 @@ export const CronJobManagementSwagger = {
             ],
           },
         },
+      },
+    },
+  },
+  executeManually: {
+    responses: {
+      success: {
+        status: 200,
+        description: 'Ejecución del cron job iniciada exitosamente.',
+        schema: {
+          example: {
+            success: true,
+            message: 'Ejecución del cron job iniciada',
+            data: {
+              executionId: 'uuid-1',
+            },
+          },
+        },
+      },
+      notFound: {
+        status: 404,
+        description: 'Cron job no encontrado.',
+      },
+      badRequest: {
+        status: 400,
+        description: 'El cron job está desactivado.',
+      },
+    },
+  },
+  stopExecution: {
+    responses: {
+      success: {
+        status: 200,
+        description: 'Señal de detención enviada a la ejecución.',
+        schema: {
+          example: {
+            success: true,
+            message: 'Señal de detención enviada a la ejecución',
+            data: null,
+          },
+        },
+      },
+      badRequest: {
+        status: 400,
+        description: 'Error al intentar detener la ejecución.',
+      },
+      notFound: {
+        status: 404,
+        description: 'Ejecución no encontrada.',
       },
     },
   },

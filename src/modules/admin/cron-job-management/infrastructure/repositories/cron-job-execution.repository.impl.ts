@@ -1,4 +1,4 @@
-import { desc, eq } from 'drizzle-orm'
+import { count, desc, eq } from 'drizzle-orm'
 
 import { Inject, Injectable } from '@nestjs/common'
 
@@ -18,18 +18,40 @@ export class CronJobExecutionRepositoryImpl
     private readonly db: DatabaseService,
   ) {}
 
+  async findById(id: string): Promise<CronJobExecution | null> {
+    const result = await this.db.client
+      .select()
+      .from(cronJobExecutions)
+      .where(eq(cronJobExecutions.id, id))
+      .limit(1)
+
+    return result[0] ? (result[0] as CronJobExecution) : null
+  }
+
   async findByCronJobId(
     cronJobId: string,
+    page = 1,
     limit = 20,
   ): Promise<CronJobExecution[]> {
+    const offset = (page - 1) * limit
     const result = await this.db.client
       .select()
       .from(cronJobExecutions)
       .where(eq(cronJobExecutions.cronJobId, cronJobId))
       .orderBy(desc(cronJobExecutions.startedAt))
       .limit(limit)
+      .offset(offset)
 
     return result as CronJobExecution[]
+  }
+
+  async countByCronJobId(cronJobId: string): Promise<number> {
+    const result = await this.db.client
+      .select({ count: count() })
+      .from(cronJobExecutions)
+      .where(eq(cronJobExecutions.cronJobId, cronJobId))
+
+    return result[0]?.count ?? 0
   }
 
   async save(execution: CronJobExecution): Promise<CronJobExecution> {

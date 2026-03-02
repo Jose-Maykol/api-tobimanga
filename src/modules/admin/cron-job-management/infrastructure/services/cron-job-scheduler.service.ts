@@ -1,4 +1,5 @@
 import { CronJob as CronJobInstance } from 'cron'
+import { v4 as uuidv4 } from 'uuid'
 
 import { Inject, Injectable, Logger, OnModuleInit } from '@nestjs/common'
 import { DiscoveryService, MetadataScanner } from '@nestjs/core'
@@ -20,6 +21,7 @@ import { CRON_JOB_HANDLER_KEY } from '../decorators/cron-job-handler.decorator'
 export class CronJobSchedulerService implements OnModuleInit {
   private readonly logger = new Logger(CronJobSchedulerService.name)
   private readonly handlers = new Map<string, ICronJobHandler>()
+  private readonly activeExecutions = new Map<string, AbortController>()
 
   constructor(
     private readonly schedulerRegistry: SchedulerRegistry,
@@ -123,9 +125,58 @@ export class CronJobSchedulerService implements OnModuleInit {
   }
 
   /**
-   * Handles the execution of a cron job.
-   * Creates an execution record, runs the job logic, and updates the record
-   * with the result (completed or failed).
+   * Triggers a job manually bypassing its schedule.
+   * Returns the execution ID for tracking.
+   */
+  async executeJobManually(key: CronJobKey): Promise<string> {
+    const cronJob = await this.cronJobRepository.findByKey(key)
+    if (!cronJob) {
+      throw new Error(`Cron job "${key}" not found in database.`)
+    }
+
+    if (!cronJob.isActive) {
+      throw new Error(
+        `El cron job "${cronJob.name}" se encuentra desactivado y no puede ser ejecutado.`,
+      )
+    }
+
+    const execution: CronJobExecution = {
+      id: uuidv4(),
+      cronJobId: cronJob.id,
+      status: CronJobExecutionStatus.RUNNING,
+      startedAt: new Date(),
+      finishedAt: null,
+      durationMs: null,
+      errorMessage: null,
+    }
+    await this.cronJobExecutionRepository.save(execution)
+
+    // Run in background without awaiting
+    this.handleJobExecutionWithRecord(key, execution.id, cronJob.options).catch(
+      (err) => {
+        this.logger.error(`Manual execution failed: ${err.message}`, err.stack)
+      },
+    )
+
+    return execution.id
+  }
+
+  /**
+   * Stops an ongoing execution by sending an abort signal.
+   */
+  async stopJobExecution(executionId: string): Promise<void> {
+    const controller = this.activeExecutions.get(executionId)
+    if (controller) {
+      controller.abort()
+      this.logger.log(`Sent abort signal to execution: ${executionId}`)
+    } else {
+      this.logger.warn(`No active execution found with ID: ${executionId}`)
+      throw new Error(`La ejecución ${executionId} no está activa o no existe.`)
+    }
+  }
+
+  /**
+   * Handles the execution of a cron job by its key.
    */
   private async handleJobExecution(key: CronJobKey) {
     const cronJob = await this.cronJobRepository.findByKey(key)
@@ -137,10 +188,18 @@ export class CronJobSchedulerService implements OnModuleInit {
       return
     }
 
-    const startTime = Date.now()
+    if (!cronJob.isActive) {
+      this.logger.warn(
+        `Cron job "${key}" triggered but it is deactivated in database. Removing from scheduler.`,
+      )
+      this.removeCronJobIfExists(key)
+      return
+    }
+
+    const executionId = crypto.randomUUID()
 
     const execution: CronJobExecution = {
-      id: crypto.randomUUID(),
+      id: executionId,
       cronJobId: cronJob.id,
       status: CronJobExecutionStatus.RUNNING,
       startedAt: new Date(),
@@ -149,63 +208,95 @@ export class CronJobSchedulerService implements OnModuleInit {
       errorMessage: null,
     }
 
-    const savedExecution = await this.cronJobExecutionRepository.save(execution)
+    await this.cronJobExecutionRepository.save(execution)
+    await this.handleJobExecutionWithRecord(key, executionId, cronJob.options)
+  }
+
+  /**
+   * Core logic to run a job, properly handling AbortController and status updates.
+   */
+  private async handleJobExecutionWithRecord(
+    key: CronJobKey,
+    executionId: string,
+    options: Record<string, unknown>,
+  ) {
+    const startTime = Date.now()
+    const abortController = new AbortController()
+
+    this.activeExecutions.set(executionId, abortController)
 
     try {
-      this.logger.log(`Executing cron job "${key}"...`)
+      this.logger.log(
+        `Executing cron job "${key}" (Execution ID: ${executionId})...`,
+      )
 
-      // TODO: Here you can implement a handler registry pattern
-      // to dispatch different job logic based on the key.
-      // For now, the execution is logged as completed.
-      await this.executeJobByKey(key, cronJob.options)
+      await this.executeJobByKey(key, options, abortController.signal)
 
       const durationMs = Date.now() - startTime
 
-      await this.cronJobExecutionRepository.update(savedExecution.id, {
+      await this.cronJobExecutionRepository.update(executionId, {
         status: CronJobExecutionStatus.COMPLETED,
         finishedAt: new Date(),
         durationMs,
       })
 
-      await this.cronJobRepository.update(cronJob.id, {
-        lastRunAt: new Date(),
-      })
+      const cronJob = await this.cronJobRepository.findByKey(key)
+      if (cronJob) {
+        await this.cronJobRepository.update(cronJob.id, {
+          lastRunAt: new Date(),
+        })
+      }
 
       this.logger.log(
         `Cron job "${key}" completed successfully in ${durationMs}ms`,
       )
     } catch (error) {
       const durationMs = Date.now() - startTime
+      const isManualCancellation =
+        error.message === 'Ejecución cancelada manualmente'
 
-      await this.cronJobExecutionRepository.update(savedExecution.id, {
-        status: CronJobExecutionStatus.FAILED,
+      await this.cronJobExecutionRepository.update(executionId, {
+        status: isManualCancellation
+          ? CronJobExecutionStatus.CANCELLED
+          : CronJobExecutionStatus.FAILED,
         finishedAt: new Date(),
         durationMs,
         errorMessage: error.message || 'Unknown error',
       })
 
-      await this.cronJobRepository.update(cronJob.id, {
-        lastRunAt: new Date(),
-      })
+      const cronJob = await this.cronJobRepository.findByKey(key)
+      if (cronJob) {
+        await this.cronJobRepository.update(cronJob.id, {
+          lastRunAt: new Date(),
+        })
+      }
 
-      this.logger.error(
-        `Cron job "${key}" failed after ${durationMs}ms: ${error.message}`,
-      )
+      if (isManualCancellation) {
+        this.logger.warn(
+          `Cron job "${key}" execution (${executionId}) was manually canceled after ${durationMs}ms`,
+        )
+      } else {
+        this.logger.error(
+          `Cron job "${key}" failed after ${durationMs}ms: ${error.message}`,
+        )
+      }
+    } finally {
+      this.activeExecutions.delete(executionId)
     }
   }
 
   /**
    * Dispatches the actual job logic based on the job key.
-   * This is where you add handlers for each specific cron job.
    */
   private async executeJobByKey(
     key: string,
     options: Record<string, unknown>,
+    signal?: AbortSignal,
   ): Promise<void> {
     const handler = this.handlers.get(key)
 
     if (handler) {
-      await handler.execute(options)
+      await handler.execute(options, signal)
     } else {
       this.logger.warn(
         `No handler registered for cron job key "${key}". Options: ${JSON.stringify(options)}`,
