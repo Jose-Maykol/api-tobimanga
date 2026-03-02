@@ -24,6 +24,7 @@ export class DatabaseService implements IDatabaseService, OnModuleDestroy {
     try {
       this.dbInstance = drizzle(this.pool, {
         schema: databaseSchema,
+        // Enable SQL query logging to the console
         logger: process.env.NODE_ENV === 'development',
       })
       this.logger.log('Database connection established')
