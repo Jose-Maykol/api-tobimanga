@@ -12,6 +12,7 @@ import { GetAllCronJobsUseCase } from './application/use-cases/get-all-cron-jobs
 import { GetCronJobByIdUseCase } from './application/use-cases/get-cron-job-by-id.use-case'
 import { GetCronJobExecutionsUseCase } from './application/use-cases/get-cron-job-executions.use-case'
 import { GetCronJobProcessesUseCase } from './application/use-cases/get-cron-job-processes.use-case'
+import { RetryCronJobExecutionUseCase } from './application/use-cases/retry-cron-job-execution.use-case'
 import { StopCronJobExecutionUseCase } from './application/use-cases/stop-cron-job-execution.use-case'
 import { ToggleCronJobUseCase } from './application/use-cases/toggle-cron-job.use-case'
 import { UpdateCronJobUseCase } from './application/use-cases/update-cron-job.use-case'
@@ -51,6 +52,7 @@ import { CronJobManagementController } from './interface/controllers/cron-job-ma
     GetCronJobProcessesUseCase,
     ExecuteCronJobUseCase,
     StopCronJobExecutionUseCase,
+    RetryCronJobExecutionUseCase,
   ],
   controllers: [CronJobManagementController],
   exports: [CronJobSchedulerService],

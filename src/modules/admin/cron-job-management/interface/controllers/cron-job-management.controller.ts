@@ -37,11 +37,14 @@ import { GetAllCronJobsUseCase } from '../../application/use-cases/get-all-cron-
 import { GetCronJobByIdUseCase } from '../../application/use-cases/get-cron-job-by-id.use-case'
 import { GetCronJobExecutionsUseCase } from '../../application/use-cases/get-cron-job-executions.use-case'
 import { GetCronJobProcessesUseCase } from '../../application/use-cases/get-cron-job-processes.use-case'
+import { RetryCronJobExecutionUseCase } from '../../application/use-cases/retry-cron-job-execution.use-case'
 import { StopCronJobExecutionUseCase } from '../../application/use-cases/stop-cron-job-execution.use-case'
 import { ToggleCronJobUseCase } from '../../application/use-cases/toggle-cron-job.use-case'
 import { UpdateCronJobUseCase } from '../../application/use-cases/update-cron-job.use-case'
 import { CronJobAlreadyExistsException } from '../../domain/exceptions/cron-job-already-exists.exception'
 import { CronJobDeactivatedException } from '../../domain/exceptions/cron-job-deactivated.exception'
+import { CronJobExecutionNotFoundException } from '../../domain/exceptions/cron-job-execution-not-found.exception'
+import { CronJobExecutionNotRunningException } from '../../domain/exceptions/cron-job-execution-not-running.exception'
 import { CronJobNotFoundException } from '../../domain/exceptions/cron-job-not-found.exception'
 import { CronJobManagementSwagger } from '../swagger/cron-job-management.swagger'
 
@@ -61,6 +64,7 @@ export class CronJobManagementController {
     private readonly getCronJobProcessesUseCase: GetCronJobProcessesUseCase,
     private readonly executeCronJobUseCase: ExecuteCronJobUseCase,
     private readonly stopCronJobExecutionUseCase: StopCronJobExecutionUseCase,
+    private readonly retryCronJobExecutionUseCase: RetryCronJobExecutionUseCase,
   ) {}
 
   @Get('processes')
@@ -373,6 +377,7 @@ export class CronJobManagementController {
           HttpStatus.BAD_REQUEST,
         )
       }
+
       throw error
     }
   }
@@ -399,14 +404,81 @@ export class CronJobManagementController {
         data: null,
       })
     } catch (error) {
-      const status = error.message.includes('no encontrado')
-        ? HttpStatus.NOT_FOUND
-        : HttpStatus.BAD_REQUEST
+      if (error instanceof CronJobExecutionNotFoundException) {
+        throw new HttpException(
+          ResponseBuilder.error(
+            error.message,
+            error.code,
+            HttpStatus.NOT_FOUND,
+          ),
+          HttpStatus.NOT_FOUND,
+        )
+      }
 
-      throw new HttpException(
-        ResponseBuilder.error(error.message, 'CRON_JOB_STOP_ERROR', status),
-        status,
-      )
+      if (error instanceof CronJobExecutionNotRunningException) {
+        throw new HttpException(
+          ResponseBuilder.error(
+            error.message,
+            error.code,
+            HttpStatus.BAD_REQUEST,
+          ),
+          HttpStatus.BAD_REQUEST,
+        )
+      }
+
+      throw error
+    }
+  }
+
+  @Post('executions/:executionId/retry')
+  @ApiOperation({
+    summary: 'Reintentar una ejecución de cron job',
+    description:
+      'Inicia una nueva ejecución bassada en la ejecución original especificada mediante su ID. Solo accesible por usuarios ADMIN.',
+  })
+  @ApiParam({
+    name: 'executionId',
+    description: 'ID de la ejecución a reintentar',
+  })
+  @ApiResponse(CronJobManagementSwagger.retryExecution.responses.success)
+  @ApiResponse(CronJobManagementSwagger.retryExecution.responses.badRequest)
+  @ApiResponse(CronJobManagementSwagger.retryExecution.responses.notFound)
+  @ApiBearerAuth()
+  async retryExecution(@Param('executionId') executionId: string) {
+    try {
+      const result =
+        await this.retryCronJobExecutionUseCase.execute(executionId)
+      return ResponseBuilder.success({
+        message: 'Reintento de ejecución iniciado',
+        data: result,
+      })
+    } catch (error) {
+      if (
+        error instanceof CronJobNotFoundException ||
+        error instanceof CronJobExecutionNotFoundException
+      ) {
+        throw new HttpException(
+          ResponseBuilder.error(
+            error.message,
+            error.code,
+            HttpStatus.NOT_FOUND,
+          ),
+          HttpStatus.NOT_FOUND,
+        )
+      }
+
+      if (error instanceof CronJobDeactivatedException) {
+        throw new HttpException(
+          ResponseBuilder.error(
+            error.message,
+            error.code,
+            HttpStatus.BAD_REQUEST,
+          ),
+          HttpStatus.BAD_REQUEST,
+        )
+      }
+
+      throw error
     }
   }
 }

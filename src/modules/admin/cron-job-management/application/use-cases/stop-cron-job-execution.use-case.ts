@@ -1,6 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common'
 
 import { CronJobExecutionStatus } from '../../domain/enums/cron-job-execution-status.enum'
+import { CronJobExecutionNotFoundException } from '../../domain/exceptions/cron-job-execution-not-found.exception'
+import { CronJobExecutionNotRunningException } from '../../domain/exceptions/cron-job-execution-not-running.exception'
 import { CronJobExecutionRepository } from '../../domain/repositories/cron-job-execution.repository'
 import { CRON_JOB_EXECUTION_REPOSITORY } from '../../domain/tokens'
 import { CronJobSchedulerService } from '../../infrastructure/services/cron-job-scheduler.service'
@@ -17,13 +19,11 @@ export class StopCronJobExecutionUseCase {
     const execution = await this.executionRepository.findById(executionId)
 
     if (!execution) {
-      throw new Error(`Cron job execution con id ${executionId} no encontrado`)
+      throw new CronJobExecutionNotFoundException(executionId)
     }
 
     if (execution.status !== CronJobExecutionStatus.RUNNING) {
-      throw new Error(
-        `La ejecución no está en estado RUNNING (estado actual: ${execution.status})`,
-      )
+      throw new CronJobExecutionNotRunningException(execution.status)
     }
 
     await this.cronJobSchedulerService.stopJobExecution(executionId)

@@ -310,4 +310,31 @@ export const CronJobManagementSwagger = {
       },
     },
   },
+  retryExecution: {
+    responses: {
+      success: {
+        status: 200,
+        description:
+          'Reintento de ejecución del cron job iniciado exitosamente.',
+        schema: {
+          example: {
+            success: true,
+            message: 'Reintento de ejecución iniciado',
+            data: {
+              executionId: 'uuid-2',
+            },
+          },
+        },
+      },
+      badRequest: {
+        status: 400,
+        description:
+          'Error al intentar reintentar la ejecución (ej: cron job desactivado).',
+      },
+      notFound: {
+        status: 404,
+        description: 'Ejecución o cron job no encontrado.',
+      },
+    },
+  },
 }

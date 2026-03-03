@@ -33,14 +33,19 @@ export class CronJobSchedulerService implements OnModuleInit {
     private readonly metadataScanner: MetadataScanner,
   ) {}
 
+  /**
+   * Initializes the module by discovering handlers and loading active jobs from the database.
+   * Part of the NestJS OnModuleInit lifecycle hook.
+   */
   async onModuleInit() {
     this.discoverHandlers()
     await this.loadActiveJobs()
   }
 
   /**
-   * Scans all application providers to find those decorated with @CronJobHandler
-   * and registers them in the handlers map.
+   * Scans all application providers to find those decorated with @CronJobHandler.
+   * Registers found handlers in the internal map for later execution.
+   * @private
    */
   private discoverHandlers() {
     const providers = this.discoveryService.getProviders()
@@ -70,8 +75,9 @@ export class CronJobSchedulerService implements OnModuleInit {
   }
 
   /**
-   * Loads all active cron jobs from the database and registers them
-   * in the scheduler registry on application startup.
+   * Loads all active cron jobs from the database and registers them in the SchedulerRegistry.
+   * Executed on application startup to restore previous scheduler state.
+   * @private
    */
   private async loadActiveJobs() {
     const activeJobs = await this.cronJobRepository.findAllActive()
@@ -85,8 +91,10 @@ export class CronJobSchedulerService implements OnModuleInit {
   }
 
   /**
-   * Registers a cron job in the NestJS SchedulerRegistry.
-   * The actual job handler creates an execution record and logs the result.
+   * Registers a new cron job in the NestJS SchedulerRegistry.
+   * Starts the job immediately after registration.
+   * @param key Unique identifier key for the cron job.
+   * @param schedule Standard cron expression defined for the frequency.
    */
   registerCronJob(key: CronJobKey, schedule: string) {
     try {
@@ -111,7 +119,8 @@ export class CronJobSchedulerService implements OnModuleInit {
   }
 
   /**
-   * Removes a cron job from the scheduler registry if it exists.
+   * Safely removes a cron job from the scheduler registry if it is currently registered.
+   * @param key Unique identifier key of the cron job to remove.
    */
   removeCronJobIfExists(key: CronJobKey) {
     try {
@@ -125,8 +134,11 @@ export class CronJobSchedulerService implements OnModuleInit {
   }
 
   /**
-   * Triggers a job manually bypassing its schedule.
-   * Returns the execution ID for tracking.
+   * Triggers a job's execution manually, bypassing its defined schedule.
+   * Creates an initial execution record and starts the job in the background.
+   * @param key Unique identifier key for the cron job.
+   * @returns The unique ID of the created execution record.
+   * @throws {Error} If cron job is not found or is deactivated.
    */
   async executeJobManually(key: CronJobKey): Promise<string> {
     const cronJob = await this.cronJobRepository.findByKey(key)
@@ -162,7 +174,10 @@ export class CronJobSchedulerService implements OnModuleInit {
   }
 
   /**
-   * Stops an ongoing execution by sending an abort signal.
+   * Stops an ongoing job execution.
+   * If the execution is active in memory, sends an abort signal to the handler.
+   * If it's a "zombie" execution (not in memory), it marks it as CANCELLED in the database.
+   * @param executionId Unique ID of the execution record to stop.
    */
   async stopJobExecution(executionId: string): Promise<void> {
     const controller = this.activeExecutions.get(executionId)
@@ -170,13 +185,22 @@ export class CronJobSchedulerService implements OnModuleInit {
       controller.abort()
       this.logger.log(`Sent abort signal to execution: ${executionId}`)
     } else {
-      this.logger.warn(`No active execution found with ID: ${executionId}`)
-      throw new Error(`La ejecución ${executionId} no está activa o no existe.`)
+      this.logger.warn(
+        `No active execution found with ID: ${executionId}. It might be a zombie execution. Marking as cancelled.`,
+      )
+      await this.cronJobExecutionRepository.update(executionId, {
+        status: CronJobExecutionStatus.CANCELLED,
+        finishedAt: new Date(),
+        errorMessage: 'Ejecución cancelada manualmente (ejecución huérfana)',
+      })
     }
   }
 
   /**
-   * Handles the execution of a cron job by its key.
+   * Logic for handling an automated cron job trigger.
+   * Validates job status and creates an execution record before running the handler.
+   * @param key Unique identifier key for the cron job.
+   * @private
    */
   private async handleJobExecution(key: CronJobKey) {
     const cronJob = await this.cronJobRepository.findByKey(key)
@@ -213,7 +237,12 @@ export class CronJobSchedulerService implements OnModuleInit {
   }
 
   /**
-   * Core logic to run a job, properly handling AbortController and status updates.
+   * Orchestrates the full lifecycle of a job execution: record updates, AbortSignal management,
+   * duration tracking, and logging.
+   * @param key Unique identifier key for the cron job.
+   * @param executionId Unique ID of the execution record.
+   * @param options Additional options/parameters for the job handler.
+   * @private
    */
   private async handleJobExecutionWithRecord(
     key: CronJobKey,
@@ -286,7 +315,11 @@ export class CronJobSchedulerService implements OnModuleInit {
   }
 
   /**
-   * Dispatches the actual job logic based on the job key.
+   * Dispatches the actual business logic by finding the appropriate handler.
+   * @param key Unique identifier key for the cron job.
+   * @param options Options to pass to the handler.
+   * @param signal AbortSignal to allow task cancellation.
+   * @private
    */
   private async executeJobByKey(
     key: string,
