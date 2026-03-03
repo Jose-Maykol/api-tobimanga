@@ -9,6 +9,7 @@ import { ListUploadsUseCase } from './application/use-cases/list-uploads.use-cas
 import { UpdateUploadStatusUseCase } from './application/use-cases/update-upload-status.use-case'
 import { UploadFileUseCase } from './application/use-cases/upload-file.use-case'
 import { UPLOAD_REPOSITORY } from './domain/tokens'
+import { CleanupUnusedUploadsHandler } from './infrastructure/handlers/cleanup-unused-uploads.handler'
 import { UploadRepositoryImpl } from './infrastructure/repositories/upload.repository.impl'
 import { UploadController } from './interface/controllers/upload.controller'
 
@@ -20,6 +21,7 @@ import { UploadController } from './interface/controllers/upload.controller'
     UpdateUploadStatusUseCase,
     FindUploadByUrlUseCase,
     ListUploadsUseCase,
+    CleanupUnusedUploadsHandler,
   ],
   controllers: [UploadController],
   exports: [UpdateUploadStatusUseCase, FindUploadByUrlUseCase],

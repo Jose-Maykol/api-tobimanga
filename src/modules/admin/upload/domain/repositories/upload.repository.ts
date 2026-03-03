@@ -12,4 +12,6 @@ export interface UploadRepository {
     status?: UploadStatus
   }): Promise<Upload[]>
   countAll(params?: { status?: UploadStatus }): Promise<number>
+  findUnusedSince(since: Date): Promise<Upload[]>
+  deleteById(id: string): Promise<void>
 }

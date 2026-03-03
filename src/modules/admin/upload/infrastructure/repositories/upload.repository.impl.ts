@@ -1,4 +1,4 @@
-import { asc, count, desc, eq } from 'drizzle-orm'
+import { and, asc, count, desc, eq, isNull, lt, or } from 'drizzle-orm'
 
 import { Inject, Injectable } from '@nestjs/common'
 
@@ -148,5 +148,35 @@ export class UploadRepositoryImpl implements UploadRepository {
       .where(conditions)
 
     return totalResult[0].count
+  }
+
+  async findUnusedSince(since: Date): Promise<Upload[]> {
+    const result = await this.db.client
+      .select()
+      .from(uploads)
+      .where(
+        and(
+          eq(uploads.status, UploadStatus.PENDING),
+          or(isNull(uploads.usedAt), lt(uploads.createdAt, since)),
+          lt(uploads.createdAt, since),
+        ),
+      )
+
+    return result.map((row) => ({
+      id: row.id,
+      fileName: row.fileName,
+      contentType: row.contentType,
+      url: row.url,
+      status: row.status as UploadStatus,
+      objectKey: row.objectKey,
+      entityType: row.entityType,
+      usedAt: row.usedAt ?? null,
+      createdAt: row.createdAt,
+      updatedAt: row.updatedAt ?? null,
+    }))
+  }
+
+  async deleteById(id: string): Promise<void> {
+    await this.db.client.delete(uploads).where(eq(uploads.id, id))
   }
 }
