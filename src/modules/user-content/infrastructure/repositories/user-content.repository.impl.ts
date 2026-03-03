@@ -1,11 +1,13 @@
-import { eq } from 'drizzle-orm'
+import { and, eq } from 'drizzle-orm'
 
 import { Inject, Injectable } from '@nestjs/common'
 
 import { DATABASE_SERVICE } from '@/core/database/constants/database.constants'
+import { userChapterProgress } from '@/core/database/schemas/user-chapter-progress.schema'
 import { userMangas } from '@/core/database/schemas/user-manga.schema'
 import { DatabaseService } from '@/core/database/services/database.service'
 
+import { UserChapterProgress } from '../../domain/entities/user-chapter-progress.entity'
 import { UserManga } from '../../domain/entities/user-manga.entity'
 import { IUserContentRepository } from '../../domain/repositories/user-content.repository'
 import { ReadingStatus } from '../../domain/value-objects/reading-status.vo'
@@ -90,5 +92,59 @@ export class UserContentRepositoryImpl implements IUserContentRepository {
       createdAt: result.createdAt,
       updatedAt: result.updatedAt,
     }
+  }
+
+  async findChapterProgress(
+    userId: string,
+    chapterId: string,
+  ): Promise<UserChapterProgress | null> {
+    const result = await this.db.client.query.userChapterProgress.findFirst({
+      where: (ucp, { eq, and }) =>
+        and(eq(ucp.userId, userId), eq(ucp.chapterId, chapterId)),
+    })
+
+    if (!result) return null
+
+    return {
+      id: result.id,
+      userId: result.userId,
+      chapterId: result.chapterId,
+      readAt: result.readAt,
+    }
+  }
+
+  async saveChapterProgress(
+    userId: string,
+    chapterId: string,
+  ): Promise<UserChapterProgress> {
+    // Upsert: if it already exists, return it; otherwise insert
+    const existing = await this.findChapterProgress(userId, chapterId)
+    if (existing) return existing
+
+    const [result] = await this.db.client
+      .insert(userChapterProgress)
+      .values({ userId, chapterId })
+      .returning()
+
+    return {
+      id: result.id,
+      userId: result.userId,
+      chapterId: result.chapterId,
+      readAt: result.readAt,
+    }
+  }
+
+  async deleteChapterProgress(
+    userId: string,
+    chapterId: string,
+  ): Promise<void> {
+    await this.db.client
+      .delete(userChapterProgress)
+      .where(
+        and(
+          eq(userChapterProgress.userId, userId),
+          eq(userChapterProgress.chapterId, chapterId),
+        ),
+      )
   }
 }

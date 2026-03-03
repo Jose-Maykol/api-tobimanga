@@ -34,8 +34,11 @@ import { FollowMangaUseCase } from '../../application/use-cases/follow-manga.use
 import { GetUserFavoritesUseCase } from '../../application/use-cases/get-user-favorites.use-case'
 import { GetUserMangaBySlugUseCase } from '../../application/use-cases/get-user-manga-by-slug.use-case'
 import { ListChaptersByMangaSlugUseCase } from '../../application/use-cases/list-chapters-by-manga-slug.use-case'
+import { MarkChapterAsReadUseCase } from '../../application/use-cases/mark-chapter-as-read.use-case'
 import { RemoveFavoriteUseCase } from '../../application/use-cases/remove-favorite.use-case'
+import { UnmarkChapterAsReadUseCase } from '../../application/use-cases/unmark-chapter-as-read.use-case'
 import { UpdateReadingStatusUseCase } from '../../application/use-cases/update-reading-status.use-case'
+import { ChapterProgressNotFoundException } from '../../domain/exceptions/chapter-progress-not-found.exception'
 import { MangaNotFollowedException } from '../../domain/exceptions/manga-not-followed.exception'
 import { UserContentSwagger } from '../swagger/user-content.swagger'
 
@@ -52,6 +55,8 @@ export class UserContentController {
     private readonly getUserFavoritesUseCase: GetUserFavoritesUseCase,
     private readonly getUserMangaBySlugUseCase: GetUserMangaBySlugUseCase,
     private readonly listChaptersByMangaSlugUseCase: ListChaptersByMangaSlugUseCase,
+    private readonly markChapterAsReadUseCase: MarkChapterAsReadUseCase,
+    private readonly unmarkChapterAsReadUseCase: UnmarkChapterAsReadUseCase,
   ) {}
 
   @Post()
@@ -294,5 +299,69 @@ export class UserContentController {
       message: 'Capítulos listados exitosamente',
       data: result,
     })
+  }
+
+  @Post('chapters/:chapterId/read')
+  @HttpCode(HttpStatus.CREATED)
+  @ApiOperation({
+    summary: 'Marcar capítulo como leído',
+    description:
+      'Registra que el usuario ha leído un capítulo específico. ' +
+      'Si el registro ya existe es idempotente (devuelve el existente).',
+  })
+  @ApiParam(UserContentSwagger.markChapterAsRead.param)
+  @ApiResponse(UserContentSwagger.markChapterAsRead.responses.created)
+  async markChapterAsRead(
+    @User() user: AuthenticatedUser,
+    @Param('chapterId') chapterId: string,
+  ) {
+    const progress = await this.markChapterAsReadUseCase.execute({
+      userId: user.id,
+      chapterId,
+    })
+
+    return ResponseBuilder.success({
+      message: 'Capítulo marcado como leído exitosamente',
+      data: { progress },
+    })
+  }
+
+  @Delete('chapters/:chapterId/read')
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({
+    summary: 'Desmarcar capítulo como leído',
+    description:
+      'Elimina el registro de lectura de un capítulo para el usuario autenticado.',
+  })
+  @ApiParam(UserContentSwagger.unmarkChapterAsRead.param)
+  @ApiResponse(UserContentSwagger.unmarkChapterAsRead.responses.success)
+  @ApiResponse(UserContentSwagger.unmarkChapterAsRead.responses.notFound)
+  async unmarkChapterAsRead(
+    @User() user: AuthenticatedUser,
+    @Param('chapterId') chapterId: string,
+  ) {
+    try {
+      await this.unmarkChapterAsReadUseCase.execute({
+        userId: user.id,
+        chapterId,
+      })
+
+      return ResponseBuilder.success({
+        message: 'Registro de lectura eliminado exitosamente',
+        data: null,
+      })
+    } catch (error) {
+      if (error instanceof ChapterProgressNotFoundException) {
+        throw new HttpException(
+          ResponseBuilder.error(
+            error.message,
+            error.code,
+            HttpStatus.NOT_FOUND,
+          ),
+          HttpStatus.NOT_FOUND,
+        )
+      }
+      throw error
+    }
   }
 }

@@ -321,4 +321,65 @@ export const UserContentSwagger = {
       },
     },
   },
+  markChapterAsRead: {
+    param: {
+      name: 'chapterId',
+      type: String,
+      description: 'ID del capítulo a marcar como leído',
+      example: 'chapter-uuid-1234',
+    },
+    responses: {
+      created: {
+        status: 201,
+        description: 'Capítulo marcado como leído exitosamente.',
+        schema: {
+          example: {
+            success: true,
+            message: 'Capítulo marcado como leído exitosamente',
+            data: {
+              progress: {
+                id: 'progress-uuid-1',
+                userId: 'user-uuid-1',
+                chapterId: 'chapter-uuid-1234',
+                readAt: '2026-03-03T05:00:00Z',
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+  unmarkChapterAsRead: {
+    param: {
+      name: 'chapterId',
+      type: String,
+      description: 'ID del capítulo a desmarcar como leído',
+      example: 'chapter-uuid-1234',
+    },
+    responses: {
+      success: {
+        status: 200,
+        description: 'Registro de lectura eliminado exitosamente.',
+        schema: {
+          example: {
+            success: true,
+            message: 'Registro de lectura eliminado exitosamente',
+            data: null,
+          },
+        },
+      },
+      notFound: {
+        status: 404,
+        description: 'No existe registro de lectura para este capítulo.',
+        schema: {
+          example: {
+            statusCode: 404,
+            message:
+              'No se encontró progreso de lectura para el capítulo "chapter-uuid-1234"',
+            error: 'CHAPTER_PROGRESS_NOT_FOUND',
+          },
+        },
+      },
+    },
+  },
 }

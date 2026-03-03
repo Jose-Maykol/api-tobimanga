@@ -7,7 +7,9 @@ import { FollowMangaUseCase } from './application/use-cases/follow-manga.use-cas
 import { GetUserFavoritesUseCase } from './application/use-cases/get-user-favorites.use-case'
 import { GetUserMangaBySlugUseCase } from './application/use-cases/get-user-manga-by-slug.use-case'
 import { ListChaptersByMangaSlugUseCase } from './application/use-cases/list-chapters-by-manga-slug.use-case'
+import { MarkChapterAsReadUseCase } from './application/use-cases/mark-chapter-as-read.use-case'
 import { RemoveFavoriteUseCase } from './application/use-cases/remove-favorite.use-case'
+import { UnmarkChapterAsReadUseCase } from './application/use-cases/unmark-chapter-as-read.use-case'
 import { UpdateReadingStatusUseCase } from './application/use-cases/update-reading-status.use-case'
 import {
   USER_CONTENT_QUERY_REPOSITORY,
@@ -35,6 +37,8 @@ import { UserContentController } from './interface/controllers/user-content.cont
     GetUserFavoritesUseCase,
     GetUserMangaBySlugUseCase,
     ListChaptersByMangaSlugUseCase,
+    MarkChapterAsReadUseCase,
+    UnmarkChapterAsReadUseCase,
   ],
   controllers: [UserContentController],
   exports: [],
