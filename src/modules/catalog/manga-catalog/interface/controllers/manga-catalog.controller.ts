@@ -9,6 +9,8 @@ import {
 
 import { ResponseBuilder } from '@/common/utils/response.util'
 
+import { ListChaptersDto } from '../../application/dtos/chapter-list.dto'
+import { ListPublicMangasDto } from '../../application/dtos/manga-list.dto'
 import { FindMangaBySlugUseCase } from '../../application/use-cases/find-manga-by-slug.use-case'
 import { ListChaptersByMangaSlugUseCase } from '../../application/use-cases/list-chapters-by-manga-slug.use-case'
 import { ListPublicMangasUseCase } from '../../application/use-cases/list-public-mangas.use-case'
@@ -35,22 +37,8 @@ export class MangaCatalogController {
   @ApiQuery(MangaCatalogSwagger.listMangas.queries.page)
   @ApiQuery(MangaCatalogSwagger.listMangas.queries.limit)
   @ApiResponse(MangaCatalogSwagger.listMangas.responses.success)
-  async getAll(
-    @Query('page') page = 1,
-    @Query('limit') limit = 10,
-    @Query('genreId') genreId?: string,
-    @Query('authorId') authorId?: string,
-    @Query('rating') rating?: number,
-    @Query('search') search?: string,
-  ) {
-    const mangas = await this.listPublicMangasUseCase.execute({
-      page: Number(page),
-      limit: Number(limit),
-      genreId,
-      authorId,
-      rating: rating ? Number(rating) : undefined,
-      search,
-    })
+  async getAll(@Query() query: ListPublicMangasDto) {
+    const mangas = await this.listPublicMangasUseCase.execute(query)
     return ResponseBuilder.success({
       data: mangas.items,
       meta: mangas.meta,
@@ -96,15 +84,12 @@ export class MangaCatalogController {
   @ApiResponse(MangaCatalogSwagger.getMangaBySlug.responses.notFound)
   async getChaptersByMangaSlug(
     @Param('slug') slug: string,
-    @Query('page') page = 1,
-    @Query('limit') limit = 20,
-    @Query('order') order: 'ASC' | 'DESC' = 'DESC',
+    @Query() query: ListChaptersDto,
   ) {
-    const chapters = await this.listChaptersByMangaSlugUseCase.execute(slug, {
-      page: Number(page),
-      limit: Number(limit),
-      order,
-    })
+    const chapters = await this.listChaptersByMangaSlugUseCase.execute(
+      slug,
+      query,
+    )
 
     return ResponseBuilder.success({
       data: chapters.items,

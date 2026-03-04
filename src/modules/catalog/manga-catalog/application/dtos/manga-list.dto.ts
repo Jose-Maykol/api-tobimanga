@@ -1,3 +1,8 @@
+import { Type } from 'class-transformer'
+import { IsNumber, IsOptional, IsString } from 'class-validator'
+
+import { PaginationDto } from '@/common/dto/pagination.dto'
+
 export interface MangaListItemDto {
   id: string
   originalName: string
@@ -25,11 +30,21 @@ export interface MangaDetailDto {
   demographic: { id: string; name: string }
 }
 
-export interface ListPublicMangasDto {
-  page: number
-  limit: number
+export class ListPublicMangasDto extends PaginationDto {
+  @IsOptional()
+  @IsString({ message: 'genreId debe ser un string' })
   genreId?: string
+
+  @IsOptional()
+  @IsString({ message: 'authorId debe ser un string' })
   authorId?: string
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsNumber({}, { message: 'rating debe ser un número' })
   rating?: number
+
+  @IsOptional()
+  @IsString({ message: 'search debe ser un string' })
   search?: string
 }
