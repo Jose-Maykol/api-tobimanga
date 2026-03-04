@@ -23,6 +23,7 @@ import {
 } from '@nestjs/swagger'
 
 import { ROLES } from '@/common/constants/roles.const'
+import { PaginationDto } from '@/common/dto/pagination.dto'
 import { ResponseBuilder } from '@/common/utils/response.util'
 import { Roles } from '@/modules/auth/interface/decorators/roles.decorator'
 import { JwtAuthGuard } from '@/modules/auth/interface/guards/jwt-auth.guard'
@@ -305,16 +306,12 @@ export class CronJobManagementController {
   @ApiResponse(CronJobManagementSwagger.executions.responses.ok)
   @ApiResponse(CronJobManagementSwagger.executions.responses.notFound)
   @ApiBearerAuth()
-  async getExecutions(
-    @Param('id') id: string,
-    @Query('page') page?: number,
-    @Query('limit') limit?: number,
-  ) {
+  async getExecutions(@Param('id') id: string, @Query() query: PaginationDto) {
     try {
       const result = await this.getCronJobExecutionsUseCase.execute(
         id,
-        page ? Number(page) : undefined,
-        limit ? Number(limit) : undefined,
+        query.page,
+        query.limit,
       )
 
       return ResponseBuilder.success({
