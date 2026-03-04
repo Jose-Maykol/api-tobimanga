@@ -35,6 +35,8 @@ import { Roles } from '@/modules/auth/interface/decorators/roles.decorator'
 import { JwtAuthGuard } from '@/modules/auth/interface/guards/jwt-auth.guard'
 import { RolesGuard } from '@/modules/auth/interface/guards/roles.guard'
 
+import { ListChaptersDto } from '../../application/dtos/list-chapters.dto'
+import { ListMangasDto } from '../../application/dtos/list-mangas.dto'
 import { UpdateChapterDto } from '../../application/dtos/update-chapter.dto'
 import { UpdateMangaDto } from '../../application/dtos/update-manga.dto'
 import { CreateChapterUseCase } from '../../application/use-cases/create-chapter.use-case'
@@ -44,7 +46,6 @@ import { ListChaptersByMangaUseCase } from '../../application/use-cases/list-cha
 import { ListMangasUseCase } from '../../application/use-cases/list-mangas.use-case'
 import { UpdateChapterUseCase } from '../../application/use-cases/update-chapter.use-case'
 import { UpdateMangaUseCase } from '../../application/use-cases/update-manga.use-case'
-import { PublicationStatus } from '../../domain/value-objects/publication-status.vo'
 import { MangaManagementSwagger } from '../swagger/manga-management.swagger'
 
 @UseGuards(JwtAuthGuard, RolesGuard)
@@ -108,16 +109,8 @@ export class MangaManagementController {
   @ApiQuery(MangaManagementSwagger.listMangas.queries.publicationStatus)
   @ApiResponse(MangaManagementSwagger.listMangas.responses.success)
   @ApiBearerAuth()
-  async getAll(
-    @Query('page') page = 1,
-    @Query('limit') limit = 10,
-    @Query('publicationStatus') publicationStatus?: PublicationStatus,
-  ) {
-    const mangas = await this.listMangasUseCase.execute({
-      page: Number(page),
-      limit: Number(limit),
-      publicationStatus,
-    })
+  async getAll(@Query() query: ListMangasDto) {
+    const mangas = await this.listMangasUseCase.execute(query)
     return ResponseBuilder.success({
       data: mangas.items,
       meta: mangas.meta,
@@ -322,16 +315,12 @@ export class MangaManagementController {
   @ApiBearerAuth()
   async getChaptersByMangaId(
     @Param('mangaId') mangaId: string,
-    @Query('page') page = 1,
-    @Query('limit') limit = 30,
-    @Query('order') order: 'asc' | 'desc' = 'desc',
+    @Query() query: ListChaptersDto,
   ) {
     try {
       const result = await this.listChaptersByMangaUseCase.execute({
+        ...query,
         mangaId,
-        page: Number(page),
-        limit: Number(limit),
-        order,
       })
       return ResponseBuilder.success({
         message: 'Capítulos obtenidos exitosamente',
