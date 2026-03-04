@@ -9,10 +9,11 @@ import { DatabaseService } from '@/core/database/services/database.service'
 
 import { ChapterListItemDto } from '../../application/dtos/chapter-list.dto'
 import {
-  ListPublicMangasDto,
   MangaDetailDto,
   MangaListItemDto,
 } from '../../application/dtos/manga-list.dto'
+import { FindChaptersDto } from '../../domain/dtos/find-chapters.dto'
+import { FindMangasDto } from '../../domain/dtos/find-mangas.dto'
 import { IMangaCatalogRepository } from '../../domain/repositories/manga-catalog.repository'
 
 @Injectable()
@@ -22,7 +23,7 @@ export class MangaCatalogRepositoryImpl implements IMangaCatalogRepository {
     private readonly db: DatabaseService,
   ) {}
 
-  async findMangas(params: ListPublicMangasDto): Promise<MangaListItemDto[]> {
+  async findMangas(params: FindMangasDto): Promise<MangaListItemDto[]> {
     const { page, limit, search, rating, genreId, authorId } = params
     const offset = (page - 1) * limit
 
@@ -115,7 +116,7 @@ export class MangaCatalogRepositoryImpl implements IMangaCatalogRepository {
     }))
   }
 
-  async countMangas(params: ListPublicMangasDto): Promise<number> {
+  async countMangas(params: FindMangasDto): Promise<number> {
     const { search, rating, genreId, authorId } = params
 
     const results = await this.db.client.query.mangas.findMany({
@@ -255,10 +256,9 @@ export class MangaCatalogRepositoryImpl implements IMangaCatalogRepository {
 
   async findChaptersByMangaId(
     mangaId: string,
-    page: number,
-    limit: number,
-    order: 'ASC' | 'DESC',
+    params: FindChaptersDto,
   ): Promise<ChapterListItemDto[]> {
+    const { page, limit, order } = params
     const offset = (page - 1) * limit
 
     const results = await this.db.client.query.chapters.findMany({
