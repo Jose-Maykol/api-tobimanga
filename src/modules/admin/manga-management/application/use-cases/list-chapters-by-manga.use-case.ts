@@ -22,24 +22,17 @@ export class ListChaptersByMangaUseCase {
     chapters: Chapter[]
     meta: Pagination
   }> {
+    const { mangaId, page = 1, limit = 20, order = 'desc' } = params
+
     const [chapters, totalChapters] = await Promise.all([
-      this.chapterRepository.findByMangaId(
-        params.mangaId,
-        params.page,
-        params.limit,
-        params.order,
-      ),
-      this.chapterRepository.countAllByMangaId(params.mangaId),
+      this.chapterRepository.findByMangaId(mangaId, page, limit, order),
+      this.chapterRepository.countAllByMangaId(mangaId),
     ])
 
-    const pagination = calculatePagination(
-      totalChapters,
-      params.page,
-      params.limit,
-    )
+    const pagination = calculatePagination(totalChapters, page, limit)
 
     this.logger.log(
-      `Retrieved ${chapters.length} chapters for manga ID ${params.mangaId} (page ${params.page}, total ${totalChapters})`,
+      `Retrieved ${chapters.length} chapters for manga ID ${mangaId} (page ${page}, total ${totalChapters})`,
     )
 
     return {

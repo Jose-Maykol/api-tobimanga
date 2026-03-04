@@ -16,7 +16,7 @@ export class ListMangasUseCase {
   ) {}
 
   async execute(params: ListMangasDto) {
-    const { page, limit, publicationStatus } = params
+    const { page = 1, limit = 10, publicationStatus } = params
 
     const [mangas, totalMangas] = await Promise.all([
       this.mangaRepository.findAll(page, limit, publicationStatus),
