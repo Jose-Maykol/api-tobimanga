@@ -2,6 +2,7 @@ import { Inject, Injectable, Logger, NotFoundException } from '@nestjs/common'
 
 import { calculatePagination } from '@/common/utils/pagination.util'
 
+import { FindChaptersDto } from '../../domain/dtos/find-chapters.dto'
 import { IMangaCatalogRepository } from '../../domain/repositories/manga-catalog.repository'
 import { MANGA_CATALOG_REPOSITORY } from '../../infrastructure/tokens'
 import { ListChaptersDto } from '../dtos/chapter-list.dto'
@@ -25,13 +26,14 @@ export class ListChaptersByMangaSlugUseCase {
       throw new NotFoundException(`Manga with slug ${slug} not found`)
     }
 
+    const findParams: FindChaptersDto = {
+      page,
+      limit,
+      order,
+    }
+
     const [chapters, totalChapters] = await Promise.all([
-      this.mangaCatalogRepository.findChaptersByMangaId(
-        mangaId,
-        page,
-        limit,
-        order,
-      ),
+      this.mangaCatalogRepository.findChaptersByMangaId(mangaId, findParams),
       this.mangaCatalogRepository.countChaptersByMangaId(mangaId),
     ])
 
