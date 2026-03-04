@@ -1,17 +1,9 @@
-import { IsEnum, IsNumber, IsOptional, Min } from 'class-validator'
+import { IsEnum, IsOptional } from 'class-validator'
 
-export class ListUserChaptersDto {
-  @IsOptional()
-  @IsNumber()
-  @Min(1)
-  page?: number = 1
+import { PaginationDto } from '@/common/dto/pagination.dto'
 
+export class ListUserChaptersDto extends PaginationDto {
   @IsOptional()
-  @IsNumber()
-  @Min(1)
-  limit?: number = 20
-
-  @IsOptional()
-  @IsEnum(['ASC', 'DESC'])
+  @IsEnum(['ASC', 'DESC'], { message: 'order debe ser ASC o DESC' })
   order?: 'ASC' | 'DESC' = 'DESC'
 }

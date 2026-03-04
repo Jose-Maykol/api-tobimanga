@@ -28,6 +28,8 @@ import { User } from '@/modules/auth/interface/decorators/user.decorator'
 import { JwtAuthGuard } from '@/modules/auth/interface/guards/jwt-auth.guard'
 
 import { FollowMangaDto } from '../../application/dtos/follow-manga.dto'
+import { ListUserChaptersDto } from '../../application/dtos/list-user-chapters.dto'
+import { ListUserFavoritesDto } from '../../application/dtos/list-user-favorites.dto'
 import { UpdateReadingStatusDto } from '../../application/dtos/update-reading-status.dto'
 import { AddFavoriteUseCase } from '../../application/use-cases/add-favorite.use-case'
 import { FollowMangaUseCase } from '../../application/use-cases/follow-manga.use-case'
@@ -226,17 +228,11 @@ export class UserContentController {
   @ApiResponse(UserContentSwagger.getUserFavorites.responses.success)
   async getUserFavorites(
     @User() user: AuthenticatedUser,
-    @Query('page') page?: string,
-    @Query('pageSize') pageSize?: string,
-    @Query('sortBy') sortBy?: 'favoritedAt' | 'title' | 'rating',
-    @Query('sortOrder') sortOrder?: 'asc' | 'desc',
+    @Query() query: ListUserFavoritesDto,
   ) {
     const result = await this.getUserFavoritesUseCase.execute({
       userId: user.id,
-      page: page ? parseInt(page, 10) : 1,
-      pageSize: pageSize ? parseInt(pageSize, 10) : 20,
-      sortBy,
-      sortOrder,
+      ...query,
     })
 
     return ResponseBuilder.success({
@@ -281,18 +277,12 @@ export class UserContentController {
   async listChapters(
     @User() user: AuthenticatedUser,
     @Param('slug') slug: string,
-    @Query('page') page?: number,
-    @Query('limit') limit?: number,
-    @Query('order') order?: 'ASC' | 'DESC',
+    @Query() query: ListUserChaptersDto,
   ) {
     const result = await this.listChaptersByMangaSlugUseCase.execute(
       user.id,
       slug,
-      {
-        page,
-        limit,
-        order,
-      },
+      query,
     )
 
     return ResponseBuilder.success({
