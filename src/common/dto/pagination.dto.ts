@@ -1,5 +1,5 @@
 import { Type } from 'class-transformer'
-import { IsInt, IsOptional, Min } from 'class-validator'
+import { IsInt, IsOptional, Max, Min } from 'class-validator'
 
 export class PaginationDto {
   @IsOptional()
@@ -12,5 +12,6 @@ export class PaginationDto {
   @Type(() => Number)
   @IsInt({ message: 'limit debe ser un número entero' })
   @Min(1, { message: 'limit debe ser un número positivo' })
+  @Max(100, { message: 'limit no puede ser mayor a 100' })
   limit?: number = 10
 }
