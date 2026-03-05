@@ -5,7 +5,7 @@ export interface User {
   email: string
   profileImage: string | null
   coverImage: string | null
-  role: 'USER' | 'ADMIN'
+  roles: ('USER' | 'ADMIN')[]
   isActive: boolean
   refreshToken: string | null
   createdAt: Date

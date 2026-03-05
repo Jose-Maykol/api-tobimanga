@@ -24,7 +24,7 @@ export const users = pgTable(
     email: varchar('email', { length: 255 }).notNull().unique(),
     profileImage: text('profile_image'),
     coverImage: text('cover_image'),
-    role: userRoleEnum('role').default('USER').notNull(),
+    roles: userRoleEnum('roles').array().default(['USER']).notNull(),
     isActive: boolean('is_active').default(true).notNull(),
     refreshToken: text('refresh_token'),
     createdAt: timestamp('created_at').defaultNow().notNull(),
@@ -33,7 +33,7 @@ export const users = pgTable(
   (table) => {
     return {
       createdAtIndex: index('users_created_at_idx').on(table.createdAt),
-      roleIndex: index('users_role_idx').on(table.role),
+      rolesIndex: index('users_role_idx').on(table.roles),
     }
   },
 )

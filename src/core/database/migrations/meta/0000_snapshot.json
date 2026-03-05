@@ -1,5 +1,5 @@
 {
-  "id": "cb049f1d-e0ab-4acc-a5c2-65afeafc52cb",
+  "id": "1ef566d7-eb8e-4b89-9109-0d347cdb1a93",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -1078,13 +1078,12 @@
           "primaryKey": false,
           "notNull": false
         },
-        "role": {
-          "name": "role",
-          "type": "user_role",
-          "typeSchema": "public",
+        "roles": {
+          "name": "roles",
+          "type": "user_role[]",
           "primaryKey": false,
           "notNull": true,
-          "default": "'USER'"
+          "default": "'{\"USER\"}'"
         },
         "is_active": {
           "name": "is_active",
@@ -1133,7 +1132,7 @@
           "name": "users_role_idx",
           "columns": [
             {
-              "expression": "role",
+              "expression": "roles",
               "isExpression": false,
               "asc": true,
               "nulls": "last"

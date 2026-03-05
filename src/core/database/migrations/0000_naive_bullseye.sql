@@ -133,7 +133,7 @@ CREATE TABLE "users" (
 	"email" varchar(255) NOT NULL,
 	"profile_image" text,
 	"cover_image" text,
-	"role" "user_role" DEFAULT 'USER' NOT NULL,
+	"roles" "user_role"[] DEFAULT '{"USER"}' NOT NULL,
 	"is_active" boolean DEFAULT true NOT NULL,
 	"refresh_token" text,
 	"created_at" timestamp DEFAULT now() NOT NULL,
@@ -164,4 +164,4 @@ CREATE INDEX "mangas_demographic_id_rating_idx" ON "mangas" USING btree ("demogr
 CREATE INDEX "user_mangas_user_id_manga_id_idx" ON "user_mangas" USING btree ("user_id","manga_id");--> statement-breakpoint
 CREATE INDEX "user_mangas_manga_id_idx" ON "user_mangas" USING btree ("manga_id");--> statement-breakpoint
 CREATE INDEX "users_created_at_idx" ON "users" USING btree ("created_at");--> statement-breakpoint
-CREATE INDEX "users_role_idx" ON "users" USING btree ("role");
+CREATE INDEX "users_role_idx" ON "users" USING btree ("roles");
