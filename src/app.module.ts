@@ -10,6 +10,7 @@ import { CronJobManagementModule } from './modules/admin/cron-job-management/cro
 import { DemographicManagementModule } from './modules/admin/demographic-management/demographic-management.module'
 import { GenreManagementModule } from './modules/admin/genre-management/genre-management.module'
 import { MangaManagementModule } from './modules/admin/manga-management/manga-management.module'
+import { StatisticsModule } from './modules/admin/statistics/statistics.module'
 import { UploadModule } from './modules/admin/upload/upload.module'
 import { UserManagementModule } from './modules/admin/user-management/user-management.module'
 import { AuthModule } from './modules/auth/auth.module'
@@ -27,6 +28,7 @@ const modules = [
   UploadModule,
   CronJobManagementModule,
   UserManagementModule,
+  StatisticsModule,
   CatalogModule,
   MangaCatalogModule,
   UserContentModule,
@@ -69,6 +71,10 @@ const modules = [
           {
             module: UserManagementModule,
             path: 'users',
+          },
+          {
+            module: StatisticsModule,
+            path: 'statistics',
           },
         ],
       },

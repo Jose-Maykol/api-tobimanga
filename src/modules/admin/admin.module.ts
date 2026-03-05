@@ -4,6 +4,7 @@ import { CronJobManagementModule } from './cron-job-management/cron-job-manageme
 import { DemographicManagementModule } from './demographic-management/demographic-management.module'
 import { GenreManagementModule } from './genre-management/genre-management.module'
 import { MangaManagementModule } from './manga-management/manga-management.module'
+import { StatisticsModule } from './statistics/statistics.module'
 import { UploadModule } from './upload/upload.module'
 import { UserManagementModule } from './user-management/user-management.module'
 
@@ -15,6 +16,7 @@ import { UserManagementModule } from './user-management/user-management.module'
     UploadModule,
     CronJobManagementModule,
     UserManagementModule,
+    StatisticsModule,
   ],
   providers: [],
   exports: [
@@ -24,6 +26,7 @@ import { UserManagementModule } from './user-management/user-management.module'
     UploadModule,
     CronJobManagementModule,
     UserManagementModule,
+    StatisticsModule,
   ],
 })
 export class AdminModule {}
