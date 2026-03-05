@@ -121,7 +121,7 @@ export const AuthSwagger = {
                 id: '12345',
                 email: 'user@example.com',
                 username: 'usuario123',
-                role: 'user',
+                roles: ['user'],
               },
             },
           },

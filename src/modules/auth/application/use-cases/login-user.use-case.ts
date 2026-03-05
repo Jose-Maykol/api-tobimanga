@@ -44,7 +44,7 @@ export class LoginUserUseCase {
       this.accessTokenService.generateToken({
         sub: user.id,
         email: user.email,
-        role: user.role,
+        roles: user.roles,
       }),
       Promise.resolve(this.refreshTokenService.generateToken()),
     ])

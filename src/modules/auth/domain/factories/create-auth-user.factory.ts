@@ -14,7 +14,7 @@ export function createAuthUserFactory({
     username: '',
     profileImage: null,
     coverImage: null,
-    role: 'USER',
+    roles: ['USER'],
     isActive: false,
     refreshToken: null,
     createdAt: new Date(),

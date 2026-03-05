@@ -15,7 +15,7 @@ export interface RegisterUserUseCaseResult {
   id: string
   email: string
   username: string
-  role: string
+  roles: string[]
 }
 
 @Injectable()
@@ -52,8 +52,8 @@ export class RegisterUserUseCase {
       username,
       profileImage: null,
       coverImage: null,
-      role: 'USER',
-      isActive: false,
+      roles: ['USER'],
+      isActive: true,
       refreshToken: null,
       createdAt: new Date(),
       updatedAt: null,
@@ -67,7 +67,7 @@ export class RegisterUserUseCase {
       id: user.id,
       email: user.email,
       username: user.username,
-      role: user.role.toLowerCase(),
+      roles: user.roles,
     }
   }
 }

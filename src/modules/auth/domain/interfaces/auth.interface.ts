@@ -1,7 +1,7 @@
 export interface JwtPayload {
   sub: string
   email: string
-  role: 'USER' | 'ADMIN'
+  roles: ('USER' | 'ADMIN')[]
 }
 
 export interface DecodedJwtPayload extends JwtPayload {

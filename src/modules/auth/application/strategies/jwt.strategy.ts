@@ -54,7 +54,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
       return {
         email: payload.email,
         id: payload.sub,
-        role: payload.role,
+        roles: payload.roles,
       }
     } catch (error) {
       this.logger.warn(`JWT validation failed: ${error.message}`)
