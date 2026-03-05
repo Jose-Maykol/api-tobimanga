@@ -5,6 +5,7 @@ import { DemographicManagementModule } from './demographic-management/demographi
 import { GenreManagementModule } from './genre-management/genre-management.module'
 import { MangaManagementModule } from './manga-management/manga-management.module'
 import { UploadModule } from './upload/upload.module'
+import { UserManagementModule } from './user-management/user-management.module'
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { UploadModule } from './upload/upload.module'
     DemographicManagementModule,
     UploadModule,
     CronJobManagementModule,
+    UserManagementModule,
   ],
   providers: [],
   exports: [
@@ -21,6 +23,7 @@ import { UploadModule } from './upload/upload.module'
     DemographicManagementModule,
     UploadModule,
     CronJobManagementModule,
+    UserManagementModule,
   ],
 })
 export class AdminModule {}
