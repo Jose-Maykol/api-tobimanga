@@ -2,9 +2,6 @@ import { Inject, Injectable, Logger } from '@nestjs/common'
 
 import { RefreshTokenService } from '@/modules/auth/domain/services/refresh-token.service'
 
-import { InvalidRefreshTokenException } from '../../domain/exceptions/invalid-refresh-token.exception'
-import { RefreshTokenNotFoundException } from '../../domain/exceptions/refresh-token-not-found.exception'
-import { UserNotFoundException } from '../../domain/exceptions/user-not-found.exception'
 import { UserRepository } from '../../domain/repositories/auth-user.repository'
 
 @Injectable()
@@ -18,32 +15,22 @@ export class LogoutUserUseCase {
     private readonly refreshTokenService: RefreshTokenService,
   ) {}
 
-  async execute(userId: string, refreshToken: string) {
-    this.logger.log(`Logout attempt for userId: ${userId}`)
+  async execute(refreshToken: string) {
+    if (!refreshToken) return
 
-    const user = await this.userRepository.findById(userId)
+    const hashedIncomingToken = this.refreshTokenService.hashToken(refreshToken)
+    const user =
+      await this.userRepository.findByRefreshToken(hashedIncomingToken)
+
     if (!user) {
-      this.logger.warn(`User not found for userId: ${userId}`)
-      throw new UserNotFoundException(`User with id ${userId} not found`)
+      this.logger.warn(`Logout attempt with invalid refresh token`)
+      return // Silently return if token is already invalid/not found for logout
     }
 
-    if (!user.refreshToken) {
-      this.logger.warn(`No refresh token found for userId: ${userId}`)
-      throw new RefreshTokenNotFoundException()
-    }
+    this.logger.log(`Logout attempt for userId: ${user.id}`)
 
-    const isRefreshTokenValid = this.refreshTokenService.verifyToken(
-      refreshToken,
-      user.refreshToken,
-    )
+    await this.userRepository.updateRefreshToken(user.id, null)
 
-    if (!isRefreshTokenValid) {
-      this.logger.warn(`Invalid refresh token for userId: ${userId}`)
-      throw new InvalidRefreshTokenException()
-    }
-
-    await this.userRepository.updateRefreshToken(userId, null)
-
-    this.logger.log(`Logout successful for userId: ${userId}`)
+    this.logger.log(`Logout successful for userId: ${user.id}`)
   }
 }
