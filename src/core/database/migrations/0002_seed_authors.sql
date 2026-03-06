@@ -18,4 +18,5 @@ VALUES
     ('Koyoharu Gotouge'),
     ('Makoto Yukimura'),
     ('Tatsuki Fujimoto'),
-    ('Aka Akasaka');
+    ('Aka Akasaka')
+ON CONFLICT (name) DO NOTHING;

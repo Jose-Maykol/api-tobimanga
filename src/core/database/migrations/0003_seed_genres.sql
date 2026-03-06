@@ -15,4 +15,5 @@ INSERT INTO genres (name) VALUES
     ('Slice of Life'),
     ('Romance'),
     ('Sobrenatural'),
-    ('Thriller');
+    ('Thriller')
+ON CONFLICT (name) DO NOTHING;
