@@ -176,18 +176,7 @@ export const AuthSwagger = {
           },
         },
       },
-      notFound: {
-        status: HttpStatus.NOT_FOUND,
-        description: 'User not found or refresh token not found',
-        schema: {
-          example: {
-            success: false,
-            message: 'Usuario no encontrado',
-            code: 'USER_NOT_FOUND',
-            statusCode: HttpStatus.NOT_FOUND,
-          },
-        },
-      },
+
       unauthorized: {
         status: HttpStatus.UNAUTHORIZED,
         description: 'Invalid or expired refresh token',
@@ -218,18 +207,7 @@ export const AuthSwagger = {
           },
         },
       },
-      notFound: {
-        status: HttpStatus.NOT_FOUND,
-        description: 'User not found or refresh token not found',
-        schema: {
-          example: {
-            success: false,
-            message: 'Usuario no encontrado',
-            code: 'USER_NOT_FOUND',
-            statusCode: HttpStatus.NOT_FOUND,
-          },
-        },
-      },
+
       unauthorized: {
         status: HttpStatus.UNAUTHORIZED,
         description: 'Invalid or expired refresh token',

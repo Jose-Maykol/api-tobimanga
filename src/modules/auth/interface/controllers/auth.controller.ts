@@ -9,12 +9,10 @@ import {
   Post,
   Req,
   Res,
-  UseGuards,
 } from '@nestjs/common'
 import { Logger } from '@nestjs/common'
 import { ConfigService } from '@nestjs/config'
 import {
-  ApiBearerAuth,
   ApiBody,
   ApiCookieAuth,
   ApiOperation,
@@ -23,7 +21,6 @@ import {
 } from '@nestjs/swagger'
 
 import { SuccessResponse } from '@/common/interfaces/api-response'
-import { AuthenticatedUser } from '@/common/interfaces/authenticated-user.interface'
 import { ResponseBuilder } from '@/common/utils/response.util'
 
 import { LoginUserUseCase } from '../../application/use-cases/login-user.use-case'
@@ -38,10 +35,8 @@ import { InvalidRefreshTokenException } from '../../domain/exceptions/invalid-re
 import { RefreshTokenNotFoundException } from '../../domain/exceptions/refresh-token-not-found.exception'
 import { UserAlreadyExistsException } from '../../domain/exceptions/user-already-exists.exception'
 import { UserNotFoundException } from '../../domain/exceptions/user-not-found.exception'
-import { User } from '../decorators/user.decorator'
 import { UserLoginDto } from '../dtos/login-user.dto'
 import { RegisterUserDto } from '../dtos/register-user.dto'
-import { JwtAuthGuard } from '../guards/jwt-auth.guard'
 import { AuthSwagger } from '../swagger/auth.swagger'
 
 @Controller()
@@ -196,8 +191,6 @@ export class AuthController {
   }
 
   @Post('logout')
-  @UseGuards(JwtAuthGuard)
-  @ApiBearerAuth()
   @ApiCookieAuth('refreshToken')
   @ApiOperation({
     summary: 'Cerrar sesión',
@@ -205,35 +198,27 @@ export class AuthController {
       'Cierra la sesión del usuario actual, invalida el refresh token y limpia la cookie.',
   })
   @ApiResponse(AuthSwagger.logout.responses.ok)
-  @ApiResponse(AuthSwagger.logout.responses.notFound)
   @ApiResponse(AuthSwagger.logout.responses.unauthorized)
-  async logout(
-    @User() user: AuthenticatedUser,
-    @Req() req: Request,
-    @Res({ passthrough: true }) res: Response,
-  ) {
+  async logout(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
     try {
-      const { id } = user
       const refreshToken = req.cookies['refreshToken']
 
-      this.logger.log(`Logout endpoint called for userId: ${id}`)
+      this.logger.log(`Logout endpoint called`)
 
-      await this.logoutUserUseCase.execute(id, refreshToken)
+      await this.logoutUserUseCase.execute(refreshToken)
 
       res.clearCookie('refreshToken', {
         path: '/api/auth',
       })
 
-      this.logger.log(`Logout successful for userId: ${id}`)
+      this.logger.log(`Logout successful`)
 
       return ResponseBuilder.success({
         message: 'Sesión cerrada exitosamente',
         data: null,
       })
     } catch (error) {
-      this.logger.warn(
-        `Logout failed for userId: ${user?.id} - ${error.message}`,
-      )
+      this.logger.warn(`Logout failed - ${error.message}`)
 
       if (error instanceof UserNotFoundException) {
         throw new HttpException(
@@ -268,8 +253,6 @@ export class AuthController {
   }
 
   @Post('refresh')
-  @UseGuards(JwtAuthGuard)
-  @ApiBearerAuth()
   @ApiCookieAuth('refreshToken')
   @ApiOperation({
     summary: 'Renovar tokens',
@@ -277,20 +260,21 @@ export class AuthController {
       'Genera un nuevo access token y refresh token usando el refresh token actual. El nuevo refresh token se establece como cookie httpOnly.',
   })
   @ApiResponse(AuthSwagger.refresh.responses.ok)
-  @ApiResponse(AuthSwagger.refresh.responses.notFound)
   @ApiResponse(AuthSwagger.refresh.responses.unauthorized)
   async refresh(
-    @User() user: AuthenticatedUser,
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
   ) {
     try {
-      const { id } = user
       const refreshToken = req.cookies['refreshToken']
 
-      this.logger.log(`Refresh endpoint called for userId: ${id}`)
+      if (!refreshToken) {
+        throw new InvalidRefreshTokenException()
+      }
 
-      const result = await this.refreshTokenUseCase.execute(id, refreshToken)
+      this.logger.log(`Refresh endpoint called`)
+
+      const result = await this.refreshTokenUseCase.execute(refreshToken)
       const secure = this.configService.get<string>('NODE_ENV') === 'production'
 
       res.cookie('refreshToken', result.refreshToken, {
@@ -301,7 +285,7 @@ export class AuthController {
         maxAge: 7 * 24 * 60 * 60 * 1000, // 7 días
       })
 
-      this.logger.log(`Token refresh successful for userId: ${id}`)
+      this.logger.log(`Token refresh successful`)
 
       return ResponseBuilder.success({
         message: 'Sesión renovada exitosamente',
@@ -310,9 +294,7 @@ export class AuthController {
         },
       })
     } catch (error) {
-      this.logger.warn(
-        `Token refresh failed for userId: ${user?.id} - ${error.message}`,
-      )
+      this.logger.warn(`Token refresh failed - ${error.message}`)
 
       if (error instanceof UserNotFoundException) {
         throw new HttpException(
