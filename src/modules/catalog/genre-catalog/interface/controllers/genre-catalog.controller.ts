@@ -4,6 +4,7 @@ import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { ResponseBuilder } from '@/common/utils/response.util'
 
 import { ListGenresUseCase } from '../../application/use-cases/list-genres.use-case'
+import { GenreCatalogSwagger } from '../swagger/genre-catalog.swagger'
 
 @Controller('genres')
 @ApiTags('Catálogo de Géneros')
@@ -18,10 +19,7 @@ export class GenreCatalogController {
     summary: 'Listar géneros',
     description: 'Obtiene una lista de todos los géneros disponibles.',
   })
-  @ApiResponse({
-    status: 200,
-    description: 'Lista de géneros obtenida exitosamente.',
-  })
+  @ApiResponse(GenreCatalogSwagger.listGenres.responses.success)
   async findAll() {
     const genres = await this.listGenresUseCase.execute()
     return ResponseBuilder.success({

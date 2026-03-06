@@ -4,6 +4,7 @@ import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'
 import { ResponseBuilder } from '@/common/utils/response.util'
 
 import { ListAuthorsUseCase } from '../../application/use-cases/list-authors.use-case'
+import { AuthorCatalogSwagger } from '../swagger/author-catalog.swagger'
 
 @Controller('authors')
 @ApiTags('Catálogo de Autores')
@@ -18,10 +19,7 @@ export class AuthorCatalogController {
     summary: 'Listar autores',
     description: 'Obtiene una lista de todos los autores disponibles.',
   })
-  @ApiResponse({
-    status: 200,
-    description: 'Lista de autores obtenida exitosamente.',
-  })
+  @ApiResponse(AuthorCatalogSwagger.listAuthors.responses.success)
   async findAll() {
     const authors = await this.listAuthorsUseCase.execute()
     return ResponseBuilder.success({
