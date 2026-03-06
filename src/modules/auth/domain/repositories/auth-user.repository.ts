@@ -7,4 +7,5 @@ export interface UserRepository {
   create(user: User): Promise<User>
   update(id: string, data: Partial<User>): Promise<void>
   updateRefreshToken(id: string, refreshToken: string | null): Promise<void>
+  findByRefreshToken(refreshToken: string): Promise<User | null>
 }

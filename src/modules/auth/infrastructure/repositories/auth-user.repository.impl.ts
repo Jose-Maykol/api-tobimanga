@@ -60,6 +60,28 @@ export class UserRepositoryImpl implements UserRepository {
     return result.length > 0 ? (result[0] as User) : null
   }
 
+  async findByRefreshToken(refreshToken: string): Promise<User | null> {
+    const result = await this.db.client
+      .select({
+        id: users.id,
+        email: users.email,
+        password: users.password,
+        username: users.username,
+        profileImage: users.profileImage,
+        coverImage: users.coverImage,
+        roles: users.roles,
+        isActive: users.isActive,
+        refreshToken: users.refreshToken,
+        createdAt: users.createdAt,
+        updatedAt: users.updatedAt,
+      })
+      .from(users)
+      .where(eq(users.refreshToken, refreshToken))
+      .limit(1)
+
+    return result.length > 0 ? (result[0] as User) : null
+  }
+
   async exists(email: string): Promise<boolean> {
     const result = await this.db.client
       .select({ id: users.id })
