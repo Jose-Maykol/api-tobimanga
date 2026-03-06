@@ -270,10 +270,11 @@ export class UserContentController {
     description:
       'Retorna la lista de capítulos incluyendo si han sido leídos por el usuario.',
   })
-  @ApiParam(UserContentSwagger.getUserMangaBySlug.param) // Reusing slug param doc
-  @ApiQuery({ name: 'page', required: false, type: Number })
-  @ApiQuery({ name: 'limit', required: false, type: Number })
-  @ApiQuery({ name: 'order', required: false, enum: ['ASC', 'DESC'] })
+  @ApiParam(UserContentSwagger.listChapters.param)
+  @ApiQuery(UserContentSwagger.listChapters.queries.page)
+  @ApiQuery(UserContentSwagger.listChapters.queries.limit)
+  @ApiQuery(UserContentSwagger.listChapters.queries.order)
+  @ApiResponse(UserContentSwagger.listChapters.responses.success)
   async listChapters(
     @User() user: AuthenticatedUser,
     @Param('slug') slug: string,

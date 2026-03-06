@@ -321,6 +321,68 @@ export const UserContentSwagger = {
       },
     },
   },
+  listChapters: {
+    param: {
+      name: 'slug',
+      type: String,
+      description: 'Slug del manga',
+      example: 'one-piece',
+    },
+    queries: {
+      page: {
+        name: 'page',
+        required: false,
+        type: Number,
+        description: 'Número de página',
+        example: 1,
+      },
+      limit: {
+        name: 'limit',
+        required: false,
+        type: Number,
+        description: 'Límite de capítulos a mostrar',
+        example: 20,
+      },
+      order: {
+        name: 'order',
+        required: false,
+        enum: ['ASC', 'DESC'],
+        description: 'Orden por número de capítulo (ASC o DESC)',
+        example: 'DESC',
+      },
+    },
+    responses: {
+      success: {
+        status: 200,
+        description: 'Capítulos listados exitosamente.',
+        schema: {
+          example: {
+            success: true,
+            message: 'Capítulos listados exitosamente',
+            data: {
+              chapters: [
+                {
+                  id: 'chapter-uuid-1',
+                  chapterNumber: 1,
+                  title: 'El principio de la aventura',
+                  releaseDate: '1997-07-22T00:00:00.000Z',
+                  createdAt: '2023-10-27T10:00:00.000Z',
+                  isRead: true,
+                  readAt: '2023-11-01T15:30:00.000Z',
+                },
+              ],
+              pagination: {
+                page: 1,
+                limit: 20,
+                total: 100,
+                totalPages: 5,
+              },
+            },
+          },
+        },
+      },
+    },
+  },
   markChapterAsRead: {
     param: {
       name: 'chapterId',
