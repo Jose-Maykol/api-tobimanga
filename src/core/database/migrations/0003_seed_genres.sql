@@ -1,0 +1,18 @@
+INSERT INTO genres (name) VALUES
+    ('Acción'),
+    ('Aventura'),
+    ('Sci-Fi'),
+    ('Comedia'),
+    ('Spokon'),
+    ('Drama'),
+    ('Fantasía'),
+    ('Historical'),
+    ('Horror'),
+    ('Isekai'),
+    ('Mecha'),
+    ('Misterio'),
+    ('Psicológico'),
+    ('Slice of Life'),
+    ('Romance'),
+    ('Sobrenatural'),
+    ('Thriller');

@@ -1,0 +1,21 @@
+INSERT INTO authors (name)
+VALUES
+    ('Kanehito Yamada'),
+    ('Gege Akutami'),
+    ('Naoya Matsumoto'),
+    ('Norio Sakurai'),
+    ('Eiichiro Oda'),
+    ('Akira Toriyama'),
+    ('Masashi Kishimoto'),
+    ('Tite Kubo'),
+    ('Kentaro Miura'),
+    ('Hajime Isayama'),
+    ('Takehiko Inoue'),
+    ('Rumiko Takahashi'),
+    ('Hiromu Arakawa'),
+    ('Naoko Takeuchi'),
+    ('Sui Ishida'),
+    ('Koyoharu Gotouge'),
+    ('Makoto Yukimura'),
+    ('Tatsuki Fujimoto'),
+    ('Aka Akasaka');
