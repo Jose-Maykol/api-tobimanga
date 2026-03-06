@@ -8,8 +8,10 @@ import { AuthorManagementModule } from '../author-management/author-management.m
 import { DemographicManagementModule } from '../demographic-management/demographic-management.module'
 import { GenreManagementModule } from '../genre-management/genre-management.module'
 import { UploadModule } from '../upload/upload.module'
+import { ActivateMangaUseCase } from './application/use-cases/activate-manga.use-case'
 import { CreateChapterUseCase } from './application/use-cases/create-chapter.use-case'
 import { CreateMangaUseCase } from './application/use-cases/create-manga.use-case'
+import { DeactivateMangaUseCase } from './application/use-cases/deactivate-manga.use-case'
 import { FindMangaByIdUseCase } from './application/use-cases/find-manga-by-id.use-case'
 import { ListChaptersByMangaUseCase } from './application/use-cases/list-chapters-by-manga.use-case'
 import { ListMangasUseCase } from './application/use-cases/list-mangas.use-case'
@@ -38,6 +40,8 @@ import { MangaManagementController } from './interface/controllers/manga-managem
     { provide: CHAPTER_REPOSITORY, useClass: ChapterRepositoryImpl },
     CreateMangaUseCase,
     FindMangaByIdUseCase,
+    ActivateMangaUseCase,
+    DeactivateMangaUseCase,
     ListMangasUseCase,
     UpdateMangaUseCase,
     ListChaptersByMangaUseCase,
@@ -48,6 +52,12 @@ import { MangaManagementController } from './interface/controllers/manga-managem
     SyncMangaChaptersHandler,
   ],
   controllers: [MangaManagementController],
-  exports: [CreateMangaUseCase, ListMangasUseCase, UpdateMangaUseCase],
+  exports: [
+    CreateMangaUseCase,
+    ListMangasUseCase,
+    UpdateMangaUseCase,
+    ActivateMangaUseCase,
+    DeactivateMangaUseCase,
+  ],
 })
 export class MangaManagementModule {}
