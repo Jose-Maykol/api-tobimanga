@@ -57,7 +57,7 @@ export class StatisticsRepositoryImpl implements StatisticsRepository {
       // Total chapters + average per manga
       this.db.client
         .select({
-          total: count(),
+          total: sql<number>`SUM(manga_chapter_count.chapter_count)::int`,
           avgPerManga: avg(sql`manga_chapter_count.chapter_count`),
         })
         .from(
