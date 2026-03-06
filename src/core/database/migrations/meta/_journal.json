@@ -5,8 +5,29 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1772675179301,
-      "tag": "0000_naive_bullseye",
+      "when": 1772772724380,
+      "tag": "0000_tobimanga_database",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1772772961646,
+      "tag": "0001_seed_demographics",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1772772972555,
+      "tag": "0002_seed_authors",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1772772987290,
+      "tag": "0003_seed_genres",
       "breakpoints": true
     }
   ]
