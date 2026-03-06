@@ -39,8 +39,10 @@ import { ListChaptersDto } from '../../application/dtos/list-chapters.dto'
 import { ListMangasDto } from '../../application/dtos/list-mangas.dto'
 import { UpdateChapterDto } from '../../application/dtos/update-chapter.dto'
 import { UpdateMangaDto } from '../../application/dtos/update-manga.dto'
+import { ActivateMangaUseCase } from '../../application/use-cases/activate-manga.use-case'
 import { CreateChapterUseCase } from '../../application/use-cases/create-chapter.use-case'
 import { CreateMangaUseCase } from '../../application/use-cases/create-manga.use-case'
+import { DeactivateMangaUseCase } from '../../application/use-cases/deactivate-manga.use-case'
 import { FindMangaByIdUseCase } from '../../application/use-cases/find-manga-by-id.use-case'
 import { ListChaptersByMangaUseCase } from '../../application/use-cases/list-chapters-by-manga.use-case'
 import { ListMangasUseCase } from '../../application/use-cases/list-mangas.use-case'
@@ -58,6 +60,10 @@ export class MangaManagementController {
     private readonly createMangaUseCase: CreateMangaUseCase,
     @Inject()
     private readonly findMangaByIdUseCase: FindMangaByIdUseCase,
+    @Inject()
+    private readonly activateMangaUseCase: ActivateMangaUseCase,
+    @Inject()
+    private readonly deactivateMangaUseCase: DeactivateMangaUseCase,
     @Inject()
     private readonly listMangasUseCase: ListMangasUseCase,
     @Inject()
@@ -177,6 +183,66 @@ export class MangaManagementController {
           HttpStatus.CONFLICT,
         )
       }
+      if (error instanceof MangaNotFoundException) {
+        throw new HttpException(
+          ResponseBuilder.error(
+            error.message,
+            error.code,
+            HttpStatus.NOT_FOUND,
+          ),
+          HttpStatus.NOT_FOUND,
+        )
+      }
+      throw error
+    }
+  }
+
+  @Patch(':id/activate')
+  @ApiOperation({
+    summary: 'Activar un manga',
+    description: 'Cambia el estado del manga a activo.',
+  })
+  @ApiResponse(MangaManagementSwagger.activate.responses.success)
+  @ApiResponse(MangaManagementSwagger.activate.responses.notFound)
+  @ApiBearerAuth()
+  async activate(@Param('id') id: string) {
+    try {
+      const result = await this.activateMangaUseCase.execute(id)
+      return ResponseBuilder.success({
+        message: 'Manga activado exitosamente',
+        data: result,
+      })
+    } catch (error) {
+      if (error instanceof MangaNotFoundException) {
+        throw new HttpException(
+          ResponseBuilder.error(
+            error.message,
+            error.code,
+            HttpStatus.NOT_FOUND,
+          ),
+          HttpStatus.NOT_FOUND,
+        )
+      }
+      throw error
+    }
+  }
+
+  @Patch(':id/deactivate')
+  @ApiOperation({
+    summary: 'Desactivar un manga',
+    description: 'Cambia el estado del manga a inactivo.',
+  })
+  @ApiResponse(MangaManagementSwagger.deactivate.responses.success)
+  @ApiResponse(MangaManagementSwagger.deactivate.responses.notFound)
+  @ApiBearerAuth()
+  async deactivate(@Param('id') id: string) {
+    try {
+      const result = await this.deactivateMangaUseCase.execute(id)
+      return ResponseBuilder.success({
+        message: 'Manga desactivado exitosamente',
+        data: result,
+      })
+    } catch (error) {
       if (error instanceof MangaNotFoundException) {
         throw new HttpException(
           ResponseBuilder.error(

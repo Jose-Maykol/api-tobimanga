@@ -354,6 +354,30 @@ export const MangaManagementSwagger = {
       },
     },
   },
+  activate: {
+    responses: {
+      success: {
+        status: 200,
+        description: 'Manga activado exitosamente.',
+      },
+      notFound: {
+        status: 404,
+        description: 'Manga no encontrado.',
+      },
+    },
+  },
+  deactivate: {
+    responses: {
+      success: {
+        status: 200,
+        description: 'Manga desactivado exitosamente.',
+      },
+      notFound: {
+        status: 404,
+        description: 'Manga no encontrado.',
+      },
+    },
+  },
   listChapters: {
     param: {
       name: 'mangaId',
