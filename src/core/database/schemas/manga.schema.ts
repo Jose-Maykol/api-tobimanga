@@ -1,4 +1,3 @@
-import { sql } from 'drizzle-orm'
 import {
   boolean,
   date,
@@ -9,6 +8,7 @@ import {
   timestamp,
   uuid,
 } from 'drizzle-orm/pg-core'
+import { sql } from 'drizzle-orm/sql'
 
 import { demographics } from './demographic.schema'
 import { publicationStatusEnum } from './publication-status.schema'

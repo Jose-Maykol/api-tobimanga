@@ -1,5 +1,5 @@
-import { sql } from 'drizzle-orm'
 import { pgTable, uuid } from 'drizzle-orm/pg-core'
+import { sql } from 'drizzle-orm/sql'
 
 import { genres } from './genres.schema'
 import { mangas } from './manga.schema'

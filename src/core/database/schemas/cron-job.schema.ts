@@ -1,4 +1,3 @@
-import { sql } from 'drizzle-orm'
 import {
   boolean,
   jsonb,
@@ -7,6 +6,7 @@ import {
   uuid,
   varchar,
 } from 'drizzle-orm/pg-core'
+import { sql } from 'drizzle-orm/sql'
 
 export const cronJobs = pgTable('cron_jobs', {
   id: uuid('cron_job_id')

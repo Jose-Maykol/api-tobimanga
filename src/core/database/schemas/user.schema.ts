@@ -1,4 +1,3 @@
-import { sql } from 'drizzle-orm'
 import { index } from 'drizzle-orm/pg-core'
 import {
   boolean,
@@ -9,6 +8,7 @@ import {
   uuid,
   varchar,
 } from 'drizzle-orm/pg-core'
+import { sql } from 'drizzle-orm/sql'
 
 export const userRoleEnum = pgEnum('user_role', ['USER', 'ADMIN'])
 

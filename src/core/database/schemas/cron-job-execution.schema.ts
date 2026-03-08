@@ -1,4 +1,3 @@
-import { sql } from 'drizzle-orm'
 import {
   integer,
   pgEnum,
@@ -7,6 +6,7 @@ import {
   timestamp,
   uuid,
 } from 'drizzle-orm/pg-core'
+import { sql } from 'drizzle-orm/sql'
 
 import { cronJobs } from './cron-job.schema'
 

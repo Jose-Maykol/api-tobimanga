@@ -1,5 +1,5 @@
-import { sql } from 'drizzle-orm'
 import { pgTable, timestamp, uuid, varchar } from 'drizzle-orm/pg-core'
+import { sql } from 'drizzle-orm/sql'
 
 export const demographics = pgTable('demographics', {
   id: uuid('demographic_id')
