@@ -2,13 +2,14 @@ export const MangaManagementSwagger = {
   create: {
     body: {
       description:
-        'Datos para la creación de un nuevo manga. Incluye información básica, imágenes (URLs de uploads previos), autores, géneros y demografía.',
+        'Datos para la creación de un nuevo manga. Incluye información básica, imágenes (URLs de uploads previos), autores, géneros y demografía. Si no se proporciona "scrappingName", este tomará el mismo valor que "originalName".',
       type: 'CreateMangaDto',
       examples: {
         validManga: {
           summary: 'Ejemplo válido para la creación de un manga',
           value: {
             originalName: 'Attack on Titan',
+            scrappingName: 'shingeki-no-kyojin-scrapper',
             alternativeNames: ['Shingeki no Kyojin', '進撃の巨人'],
             sinopsis:
               'In a world where humanity lives inside cities surrounded by enormous walls as a defense against the Titans...',
@@ -42,7 +43,7 @@ export const MangaManagementSwagger = {
               id: '880e8400-e29b-41d4-a716-446655440001',
               originalName: 'Attack on Titan',
               slugName: 'attack-on-titan',
-              scrappingName: 'attack-on-titan',
+              scrappingName: 'shingeki-no-kyojin-scrapper',
               alternativeNames: ['Shingeki no Kyojin', '進撃の巨人'],
               sinopsis:
                 'In a world where humanity lives inside cities surrounded by enormous walls...',
@@ -196,7 +197,7 @@ export const MangaManagementSwagger = {
               id: '880e8400-e29b-41d4-a716-446655440001',
               originalName: 'Attack on Titan',
               slugName: 'attack-on-titan',
-              scrappingName: 'attack-on-titan',
+              scrappingName: 'Attack on Titan',
               alternativeNames: ['Shingeki no Kyojin', '進撃の巨人'],
               sinopsis:
                 'In a world where humanity lives inside cities surrounded by enormous walls as a defense against the Titans...',
@@ -257,13 +258,14 @@ export const MangaManagementSwagger = {
     },
     body: {
       description:
-        'Datos para actualización del manga. IMPORTANTE: El campo "chapters" NO se actualiza (se mantiene el valor existente). El scrappingName tampoco se modifica.',
+        'Datos para actualización del manga. IMPORTANTE: El campo "chapters" NO se actualiza (se mantiene el valor existente).',
       type: 'UpdateMangaDto',
       examples: {
         validUpdate: {
           summary: 'Actualización válida de un manga',
           value: {
             originalName: 'Attack on Titan - Final Season',
+            scrappingName: 'aot-final-scrapper',
             alternativeNames: ['Shingeki no Kyojin', '進撃の巨人', 'AoT'],
             sinopsis:
               'Updated synopsis with more details about the final season...',
@@ -294,7 +296,7 @@ export const MangaManagementSwagger = {
               id: '880e8400-e29b-41d4-a716-446655440001',
               originalName: 'Attack on Titan - Final Season',
               slugName: 'attack-on-titan-final-season',
-              scrappingName: 'attack-on-titan',
+              scrappingName: 'aot-final-scrapper',
               alternativeNames: ['Shingeki no Kyojin', '進撃の巨人', 'AoT'],
               sinopsis: 'Updated synopsis with more details...',
               chapters: 139,

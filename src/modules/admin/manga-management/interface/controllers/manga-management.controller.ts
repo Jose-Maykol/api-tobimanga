@@ -158,7 +158,7 @@ export class MangaManagementController {
   @ApiOperation({
     summary: 'Actualizar un manga',
     description:
-      'Actualiza todos los campos del manga EXCEPTO chapters y scrappingName. Regenera el slug si cambia el originalName. Activa los uploads de nuevas imágenes. Solo accesible por ADMIN.',
+      'Actualiza todos los campos del manga EXCEPTO el campo chapters. Regenera el slug si cambia el originalName. Activa los uploads de nuevas imágenes. Solo accesible por ADMIN.',
   })
   @ApiParam(MangaManagementSwagger.update.param)
   @ApiBody(MangaManagementSwagger.update.body)

@@ -142,8 +142,7 @@ export class UpdateMangaUseCase {
       id: manga.id,
       originalName: params.originalName,
       slugName,
-      //TODO: Agregar scrappingName en dto
-      scrappingName: manga.scrappingName,
+      scrappingName: params.scrappingName || params.originalName,
       alternativeNames: params.alternativeNames || [],
       sinopsis: params.sinopsis,
       chapters: manga.chapters,

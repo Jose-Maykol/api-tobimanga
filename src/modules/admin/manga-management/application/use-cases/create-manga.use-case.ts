@@ -82,6 +82,7 @@ export class CreateMangaUseCase {
     const newManga = this.mangaFactory.create({
       originalName: params.originalName,
       slugName: slugName,
+      scrappingName: params.scrappingName || params.originalName,
       alternativeNames: params.alternativeNames || null,
       sinopsis: params.sinopsis,
       chapters: params.chapters,

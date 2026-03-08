@@ -44,6 +44,10 @@ export class CreateMangaDto {
   originalName: string
 
   @IsOptional()
+  @IsString({ message: 'El nombre de scrapping debe ser un string' })
+  scrappingName?: string
+
+  @IsOptional()
   @IsArray({ message: 'Los nombres alternativos deben ser un array' })
   @IsString({
     each: true,

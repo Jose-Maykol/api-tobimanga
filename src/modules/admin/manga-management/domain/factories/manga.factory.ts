@@ -6,14 +6,12 @@ export class MangaFactory {
   constructor() {}
 
   public create(
-    props: Omit<
-      Manga,
-      'id' | 'scrappingName' | 'rating' | 'active' | 'createdAt' | 'updatedAt'
-    >,
+    props: Omit<Manga, 'id' | 'rating' | 'active' | 'createdAt' | 'updatedAt'>,
   ): Manga {
     const {
       originalName,
       slugName,
+      scrappingName,
       alternativeNames,
       sinopsis,
       chapters,
@@ -30,7 +28,7 @@ export class MangaFactory {
       id: uuidv4(),
       originalName,
       slugName,
-      scrappingName: originalName.toLowerCase(),
+      scrappingName,
       alternativeNames: alternativeNames,
       sinopsis,
       chapters,
