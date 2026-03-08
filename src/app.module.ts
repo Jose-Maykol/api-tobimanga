@@ -16,6 +16,7 @@ import { UserManagementModule } from './modules/admin/user-management/user-manag
 import { AuthModule } from './modules/auth/auth.module'
 import { CatalogModule } from './modules/catalog/catalog.module'
 import { MangaCatalogModule } from './modules/catalog/manga-catalog/manga-catalog.module'
+import { HealthModule } from './modules/health/health.module'
 import { UserContentModule } from './modules/user-content/user-content.module'
 
 const modules = [
@@ -32,6 +33,7 @@ const modules = [
   CatalogModule,
   MangaCatalogModule,
   UserContentModule,
+  HealthModule,
 ]
 @Module({
   imports: [
@@ -40,6 +42,10 @@ const modules = [
     }),
     ...modules,
     RouterModule.register([
+      {
+        module: HealthModule,
+        path: 'health',
+      },
       {
         module: AdminModule,
         path: 'admin',
